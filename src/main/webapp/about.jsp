@@ -37,6 +37,7 @@
       style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
 
       <h1>About the CodeU Chat App</h1>
+      <h3>JRAMM</h3>
       <p>
         This is an example chat application designed to be a starting point
         for your CodeU project team work. Here's some stuff to think about:
