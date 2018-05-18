@@ -17,6 +17,7 @@
 <%@ page import="codeu.model.data.Conversation" %>
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.store.basic.UserStore" %>
+<%@ page import="java.util.Arrays" %>
 <%
 Conversation conversation = (Conversation) request.getAttribute("conversation");
 List<Message> messages = (List<Message>) request.getAttribute("messages");
@@ -51,7 +52,10 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     <a href="/conversations">Conversations</a>
       <% if (request.getSession().getAttribute("user") != null) { %>
     <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
-    <% } else { %>
+    <%List<String> admins = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
+      if(admins.contains(request.getSession().getAttribute("user"))){%>
+    <a href = "/admin">Admin</a><%}
+      } else { %>
       <a href="/login">Login</a>
     <% } %>
     <a href="/about.jsp">About</a>
