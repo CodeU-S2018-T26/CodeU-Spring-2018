@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AdminServlet extends HttpServlet {
-  List<String> admins = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
+  static final List<String> ADMIN_USERNAMES = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
   //This function fires when a user requests the /admin page.
   //It forwards the request to admin.jsp.
   @Override
@@ -20,7 +20,7 @@ public class AdminServlet extends HttpServlet {
       response.sendRedirect("/login");
       return;
     }
-    else if(! admins.contains(username)) {
+    else if(! ADMIN_USERNAMES.contains(username)) {
       // user is not an admin, show error message
       request.setAttribute("error", "Only admins can access this page.");
     }

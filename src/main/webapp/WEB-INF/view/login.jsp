@@ -27,8 +27,8 @@
     <a href="/conversations">Conversations</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
       <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
-    <%List<String> admins = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
-      if(admins.contains(request.getSession().getAttribute("user"))){%>
+    <%final List<String> ADMIN_USERNAMES = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
+      if(ADMIN_USERNAMES.contains(request.getSession().getAttribute("user"))){%>
     <a href = "/admin">Admin</a><%}
     } else{ %>
       <a href="/login">Login</a>
