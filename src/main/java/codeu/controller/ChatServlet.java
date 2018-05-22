@@ -164,6 +164,7 @@ public class ChatServlet extends HttpServlet {
     markToHtml.put("**", new String[]{"<b>", "</b>"});
     markToHtml.put("__", new String[]{"<b>", "</b>"});
 
+    // tokenizes message into array list of strings
     for (int i = 0; i < cleanedMessageLength; i++) {
         if (validCharFlags.contains(cleanedMessageContent.charAt(i))){
             if (i+1 < cleanedMessageLength && cleanedMessageContent.charAt(i) == cleanedMessageContent.charAt(i+1)){
@@ -180,6 +181,7 @@ public class ChatServlet extends HttpServlet {
 
     }
 
+    // matches valid pairs of tokens and replaces with html syntax
     for (int i = 0; i < tokenizedMessageContent.size(); i++){
         if (validStrFlags.contains(tokenizedMessageContent.get(i))){
             for (int j = tokenizedMessageContent.size() - 1; j > i; j--){
@@ -193,6 +195,7 @@ public class ChatServlet extends HttpServlet {
         }
     }
 
+    // converts ArrayList to string
     for (String token:tokenizedMessageContent){
         parsedMessageContent += token;
     }
