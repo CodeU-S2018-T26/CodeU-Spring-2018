@@ -154,20 +154,21 @@ public class ChatServlet extends HttpServlet {
     boolean inBold = false;
     ArrayList<String> tokenizedMessageContent = new ArrayList();
     String parsedMessageContent = "";
-    List<Character> validCharFlags = Arrays.asList('*', '_');
-    List<String> validStrFlags = Arrays.asList("*", "_", "**", "__");
+    List<Character> validCharFlags = Arrays.asList('*', '_', '`');
+    List<String> validStrFlags = Arrays.asList("*", "_", "`", "**", "__");
 
     Map<String, String[]> markToHtml = new HashMap<>();
 
-    markToHtml.put("*", new String[]{"<i>", "</i>"});
-    markToHtml.put("_", new String[]{"<i>", "</i>"});
-    markToHtml.put("**", new String[]{"<b>", "</b>"});
-    markToHtml.put("__", new String[]{"<b>", "</b>"});
+    markToHtml.put("*", new String[]{"<em>", "</em>"});
+    markToHtml.put("_", new String[]{"<em>", "</em>"});
+    markToHtml.put("`", new String[]{"<code>", "</code>"});
+    markToHtml.put("**", new String[]{"<strong>", "</strong>"});
+    markToHtml.put("__", new String[]{"<strong>", "</strong>"});
 
     // tokenizes message into array list of strings
     for (int i = 0; i < cleanedMessageLength; i++) {
         if (validCharFlags.contains(cleanedMessageContent.charAt(i))){
-            if (i+1 < cleanedMessageLength && cleanedMessageContent.charAt(i) == cleanedMessageContent.charAt(i+1)){
+            if (i+1 < cleanedMessageLength && validStrFlags.contains("" + cleanedMessageContent.charAt(i) + cleanedMessageContent.charAt(i+1))){
                 tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i)+cleanedMessageContent.charAt(i));
                 i += 1;
             }
