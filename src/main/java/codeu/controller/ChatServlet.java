@@ -31,6 +31,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+
+
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
 
@@ -146,36 +152,51 @@ public class ChatServlet extends HttpServlet {
     int cleanedMessageLength = cleanedMessageContent.length();
     boolean inItalics = false;
     boolean inBold = false;
+    ArrayList<String> tokenizedMessageContent = new ArrayList();
     String parsedMessageContent = "";
+    List<Character> validCharFlags = Arrays.asList('*', '_');
+    List<String> validStrFlags = Arrays.asList("*", "_", "**", "__");
+
+    Map<String, String[]> markToHtml = new HashMap<>();
+
+    markToHtml.put("*", new String[]{"<i>", "</i>"});
+    markToHtml.put("_", new String[]{"<i>", "</i>"});
+    markToHtml.put("**", new String[]{"<b>", "</b>"});
+    markToHtml.put("__", new String[]{"<b>", "</b>"});
 
     for (int i = 0; i < cleanedMessageLength; i++) {
-        if (cleanedMessageContent.charAt(i) == '*'){
-            if (i+1 < cleanedMessageLength && cleanedMessageContent.charAt(i+1) == '*'){
+        if (validCharFlags.contains(cleanedMessageContent.charAt(i))){
+            if (i+1 < cleanedMessageLength && cleanedMessageContent.charAt(i) == cleanedMessageContent.charAt(i+1)){
+                tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i)+cleanedMessageContent.charAt(i));
                 i += 1;
-                if(inBold){
-                    parsedMessageContent += "</b>";
-                    inBold = false;
-                }
-                else{
-                    parsedMessageContent += "<b>";
-                    inBold = true;
-                }
             }
             else{
-                if(inItalics){
-                    parsedMessageContent += "</i>";
-                    inItalics = false;
-                }
-                else{
-                    parsedMessageContent += "<i>";
-                    inItalics = true;
-                }
+                tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
             }
         }
         else{
-            parsedMessageContent += cleanedMessageContent.charAt(i);
+            tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
+        }
+
+    }
+
+    for (int i = 0; i < tokenizedMessageContent.size(); i++){
+        if (validStrFlags.contains(tokenizedMessageContent.get(i))){
+            for (int j = tokenizedMessageContent.size() - 1; j > i; j--){
+                if(tokenizedMessageContent.get(i).equals(tokenizedMessageContent.get(j))){
+                    String mark = tokenizedMessageContent.get(i);
+                    tokenizedMessageContent.set(i, markToHtml.get(mark)[0]);
+                    tokenizedMessageContent.set(j, markToHtml.get(mark)[1]);
+                    break;
+                }
+            }
         }
     }
+
+    for (String token:tokenizedMessageContent){
+        parsedMessageContent += token;
+    }
+
     Message message =
         new Message(
             UUID.randomUUID(),
