@@ -143,12 +143,45 @@ public class ChatServlet extends HttpServlet {
     // this removes any HTML from the message content
     String cleanedMessageContent = Jsoup.clean(messageContent, Whitelist.none());
 
+    int cleanedMessageLength = cleanedMessageContent.length();
+    boolean inItalics = false;
+    boolean inBold = false;
+    String parsedMessageContent = "";
+
+    for (int i = 0; i < cleanedMessageLength; i++) {
+        if (cleanedMessageContent.charAt(i) == '*'){
+            if (i+1 < cleanedMessageLength && cleanedMessageContent.charAt(i+1) == '*'){
+                i += 1;
+                if(inBold){
+                    parsedMessageContent += "</b>";
+                    inBold = false;
+                }
+                else{
+                    parsedMessageContent += "<b>";
+                    inBold = true;
+                }
+            }
+            else{
+                if(inItalics){
+                    parsedMessageContent += "</i>";
+                    inItalics = false;
+                }
+                else{
+                    parsedMessageContent += "<i>";
+                    inItalics = true;
+                }
+            }
+        }
+        else{
+            parsedMessageContent += cleanedMessageContent.charAt(i);
+        }
+    }
     Message message =
         new Message(
             UUID.randomUUID(),
             conversation.getId(),
             user.getId(),
-            cleanedMessageContent,
+            parsedMessageContent,
             Instant.now());
 
     messageStore.addMessage(message);
