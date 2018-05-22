@@ -1,4 +1,5 @@
-<%--
+<%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.List" %><%--
   Copyright 2017 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +27,10 @@
     <a href="/conversations">Conversations</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
       <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
-    <% } else{ %>
+    <%final List<String> ADMIN_USERNAMES = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
+      if(ADMIN_USERNAMES.contains(request.getSession().getAttribute("user"))){%>
+    <a href = "/admin">Admin</a><%}
+    } else{ %>
       <a href="/login">Login</a>
     <% } %>
     <a href="/about.jsp">About</a>
