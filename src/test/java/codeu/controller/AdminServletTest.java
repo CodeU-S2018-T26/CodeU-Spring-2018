@@ -1,6 +1,9 @@
 package codeu.controller;
 
 import codeu.model.data.Conversation;
+import codeu.model.store.basic.ConversationStore;
+import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.UserStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -18,6 +21,9 @@ public class AdminServletTest {
   private HttpSession mockSession;
   private HttpServletResponse mockResponse;
   private RequestDispatcher mockRequestDispatcher;
+  private ConversationStore mockConversationStore;
+  private UserStore mockUserStore;
+  private MessageStore mockMessageStore;
 
   @Before
   public void setUp() {
@@ -30,6 +36,15 @@ public class AdminServletTest {
     mockRequestDispatcher = Mockito.mock(RequestDispatcher.class);
     Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/admin.jsp"))
       .thenReturn(mockRequestDispatcher);
+
+    mockUserStore = Mockito.mock(UserStore.class);
+    AdminServlet.setUserStore(mockUserStore);
+
+    mockConversationStore = Mockito.mock(ConversationStore.class);
+    AdminServlet.setConversationStore(mockConversationStore);
+
+    mockMessageStore = Mockito.mock(MessageStore.class);
+    AdminServlet.setMessageStore(mockMessageStore);
   }
 
   @Test
@@ -56,6 +71,10 @@ public class AdminServletTest {
     Mockito.when(mockSession.getAttribute("user")).thenReturn("ayliana");
 
     AdminServlet.doGet(mockRequest, mockResponse);
+
+    Mockito.verify(mockRequest).setAttribute("numUsers", mockUserStore.getNumUsers());
+    Mockito.verify(mockRequest).setAttribute("numConversations", mockConversationStore.getNumConversations());
+    Mockito.verify(mockRequest).setAttribute("numMessages", mockMessageStore.getNumMessages());
 
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }

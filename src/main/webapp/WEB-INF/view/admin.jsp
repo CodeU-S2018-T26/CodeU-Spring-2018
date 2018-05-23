@@ -31,6 +31,9 @@
   <% }
   else { %>
     <h1>ADMIN PAGE!!!</h1>
+    <h3> Number of Users: <%= request.getAttribute("numUsers") %></h3>
+    <h3> Number of Conversations: <%= request.getAttribute("numConversations") %></h3>
+    <h3> Number of Messages: <%= request.getAttribute("numMessages") %></h3>
   <%}%>
 
 </body>
