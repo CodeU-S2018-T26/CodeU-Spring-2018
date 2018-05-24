@@ -16,9 +16,8 @@ package codeu.model.store.basic;
 
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
 
 /**
  * Store class that uses in-memory data structures to hold values and automatically loads from and
@@ -119,9 +118,15 @@ public class UserStore {
     return false;
   }
 
-  /** returns the number of users. **/
+  /** returns the number of users. */
   public int getNumUsers(){
     return users.size();
+  }
+
+  /** returns the user who sent the most messages */
+  public User mostActiveUser(){
+    User user = users.stream().max(Comparator.comparing(u -> u.getNumMessages())).get();
+    return user;
   }
 
   /**

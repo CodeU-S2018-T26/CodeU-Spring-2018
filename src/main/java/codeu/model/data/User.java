@@ -23,6 +23,7 @@ public class User {
   private final String name;
   private final String passwordHash;
   private final Instant creation;
+  private int numMessages;
 
   /**
    * Constructs a new User.
@@ -57,5 +58,15 @@ public class User {
   /** Returns the creation time of this User. */
   public Instant getCreationTime() {
     return creation;
+  }
+
+  /** Increments the number of messages the user sent by 1. **/
+  public void incrementNumMessages(){
+    numMessages+=1;
+  }
+
+  /** Returns the number of messages sent. */
+  public int getNumMessages(){
+    return numMessages;
   }
 }

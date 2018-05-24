@@ -85,6 +85,9 @@ public class AdminServlet extends HttpServlet {
 
       int numMessages = messageStore.getNumMessages();
       request.setAttribute("numMessages", numMessages);
+
+      String mostActiveUser = userStore.mostActiveUser().getName();
+      request.setAttribute("mostActiveUser", mostActiveUser);
     }
     request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
   }
