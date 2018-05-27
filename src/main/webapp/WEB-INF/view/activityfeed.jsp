@@ -13,6 +13,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Arrays" %>
+<%@ page import="codeu.model.data.Conversation" %>
+<%@ page import="codeu.model.data.User" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,7 +35,47 @@
     <h1>Activity</h1>
 
   		<p>This is the activity feed page</p>
+		<%
+			List<Conversation> conversations = (List<Conversation>) request.getAttribute("conversations");
+			if (conversations == null || conversations.isEmpty()) {
+		%>
+		<li>There are no conversations created.</li>
+		<%
+			} else {
+		%>
+		<ul>
+			<%
+				for (Conversation conversation : conversations) {
+			%>
+			<li><%=conversation.getCreationTime()%>: Someone create a new conversation: <a href="/chat/<%= conversation.getTitle() %>"><%= conversation.getTitle() %></a></li>
+			<%
+				}
+			%>
+		</ul>
+		<%
+}
+%>
+		<%
+			List<User> users = (List<User>) request.getAttribute("users");
+			if (users == null || users.isEmpty()) {
+		%>
+		<li>There are no users signed up in the chat app.</li>
+		<%
+			} else {
+		%>
+		<ul>
+			<%
+				for (User user : users) {
+			%>
+			<li><%=user.getCreationTime()%>: <%=user.getName()%> joined!</li>
+			<%
+				}
+			%>
+		</ul>
+		<%
+}
+%>
 
-  </div>
+	</div>
 </body>
 </html>
