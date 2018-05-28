@@ -196,10 +196,6 @@ public class ChatServlet extends HttpServlet {
 
     }
 
-    for (String item: tokenizedMessageContent){
-        System.out.println(item);
-    }
-
     // matches valid pairs of tokens and replaces with html syntax
     for (int i = 0; i < tokenizedMessageContent.size(); i++){
         if (validStrFlags.contains(tokenizedMessageContent.get(i))){
@@ -227,11 +223,6 @@ public class ChatServlet extends HttpServlet {
             }
         }
     }
-    System.out.println("b");
-    for (String item: tokenizedMessageContent){
-        System.out.println(item);
-    }
-
 
     // converts ArrayList to string
     for (String token:tokenizedMessageContent){
