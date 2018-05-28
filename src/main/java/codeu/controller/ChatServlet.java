@@ -165,7 +165,7 @@ public class ChatServlet extends HttpServlet {
     markToHtml.put("`", new String[]{"<code>", "</code>"});
     markToHtml.put("**", new String[]{"<strong>", "</strong>"});
     markToHtml.put("__", new String[]{"<strong>", "</strong>"});
-    markToHtml.put("LINK", new String[]{"<a href=\"", "\">","</a>"});
+    markToHtml.put("LINK", new String[]{"<a href=\"", "\" target=\"_blank\">","</a>"});
 
     // tokenizes message into array list of strings
     for (int i = 0; i < cleanedMessageLength; i++) {
@@ -212,6 +212,9 @@ public class ChatServlet extends HttpServlet {
             tokenizedMessageContent.add(i, markToHtml.get("LINK")[0]);
             for (int j = i+1; j < tokenizedMessageContent.size(); j++){
                 if (tokenizedMessageContent.get(j).equals(" ") || j == tokenizedMessageContent.size()-1){
+                    if (tokenizedMessageContent.get(j).equals(" ")){
+                        j--;
+                    }
                     String linkContents = "";
                     for (int k = i+1; k < j+1; k++){
                         linkContents += tokenizedMessageContent.get(k);

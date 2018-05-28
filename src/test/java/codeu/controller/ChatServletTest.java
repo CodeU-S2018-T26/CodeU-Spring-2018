@@ -254,7 +254,7 @@ public class ChatServletTest {
     ArgumentCaptor<Message> messageArgumentCaptor = ArgumentCaptor.forClass(Message.class);
     Mockito.verify(mockMessageStore).addMessage(messageArgumentCaptor.capture());
     Assert.assertEquals(
-        "<a href=\"http://google.com\">http://google.com</a>", messageArgumentCaptor.getValue().getContent());
+        "<a href=\"http://google.com\" target=\"_blank\">http://google.com</a>", messageArgumentCaptor.getValue().getContent());
 
     Mockito.verify(mockResponse).sendRedirect("/chat/test_conversation");
   }
