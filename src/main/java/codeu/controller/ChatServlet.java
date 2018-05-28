@@ -156,6 +156,7 @@ public class ChatServlet extends HttpServlet {
     String parsedMessageContent = "";
     List<Character> validCharFlags = Arrays.asList('*', '_', '`');
     List<String> validStrFlags = Arrays.asList("*", "_", "`", "**", "__");
+    List<String> linkPrefix = Arrays.asList("http://", "https://", "www.");
 
     Map<String, String[]> markToHtml = new HashMap<>();
 
@@ -164,22 +165,39 @@ public class ChatServlet extends HttpServlet {
     markToHtml.put("`", new String[]{"<code>", "</code>"});
     markToHtml.put("**", new String[]{"<strong>", "</strong>"});
     markToHtml.put("__", new String[]{"<strong>", "</strong>"});
+    markToHtml.put("LINK", new String[]{"<a href=\"", "\">","</a>"});
 
     // tokenizes message into array list of strings
     for (int i = 0; i < cleanedMessageLength; i++) {
+
         if (validCharFlags.contains(cleanedMessageContent.charAt(i))){
             if (i+1 < cleanedMessageLength && validStrFlags.contains("" + cleanedMessageContent.charAt(i) + cleanedMessageContent.charAt(i+1))){
                 tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i)+cleanedMessageContent.charAt(i));
-                i += 1;
+                i++;
             }
             else{
                 tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
             }
         }
         else{
-            tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
+            boolean inLink = false;
+            for (String prefix: linkPrefix){
+                if(i + prefix.length() < cleanedMessageLength && prefix.equals(cleanedMessageContent.substring(i, i+prefix.length()))) {
+                    tokenizedMessageContent.add(prefix);
+                    i += prefix.length()-1;
+                    inLink = true;
+
+                }
+            }
+            if(!inLink){
+                tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
+            }
         }
 
+    }
+
+    for (String item: tokenizedMessageContent){
+        System.out.println(item);
     }
 
     // matches valid pairs of tokens and replaces with html syntax
@@ -194,7 +212,26 @@ public class ChatServlet extends HttpServlet {
                 }
             }
         }
+        if (linkPrefix.contains(tokenizedMessageContent.get(i))){
+            tokenizedMessageContent.add(i, markToHtml.get("LINK")[0]);
+            for (int j = i+1; j < tokenizedMessageContent.size(); j++){
+                if (tokenizedMessageContent.get(j).equals(" ") || j == tokenizedMessageContent.size()-1){
+                    String linkContents = "";
+                    for (int k = i+1; k < j+1; k++){
+                        linkContents += tokenizedMessageContent.get(k);
+                    }
+                    tokenizedMessageContent.add(j+1, markToHtml.get("LINK")[1] + linkContents + markToHtml.get("LINK")[2]);
+                    i++;
+                    break;
+                }
+            }
+        }
     }
+    System.out.println("b");
+    for (String item: tokenizedMessageContent){
+        System.out.println(item);
+    }
+
 
     // converts ArrayList to string
     for (String token:tokenizedMessageContent){
