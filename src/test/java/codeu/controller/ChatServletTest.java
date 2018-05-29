@@ -157,13 +157,16 @@ public class ChatServletTest {
     Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
     Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
 
+    UUID fakeUserId = UUID.randomUUID();
     User fakeUser =
         new User(
-            UUID.randomUUID(),
+            fakeUserId,
             "test_username",
             "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy",
             Instant.now());
+
     Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
+    Mockito.when(mockUserStore.getUser(fakeUserId)).thenReturn(fakeUser);
 
     Conversation fakeConversation =
         new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());
@@ -186,8 +189,10 @@ public class ChatServletTest {
     Mockito.when(mockRequest.getRequestURI()).thenReturn("/chat/test_conversation");
     Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
 
-    User fakeUser = new User(UUID.randomUUID(), "test_username", "test_username", Instant.now());
+    UUID fakeUserID = UUID.randomUUID();
+    User fakeUser = new User(fakeUserID, "test_username", "test_username", Instant.now());
     Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
+    Mockito.when(mockUserStore.getUser(fakeUserID)).thenReturn(fakeUser);
 
     Conversation fakeConversation =
         new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now());

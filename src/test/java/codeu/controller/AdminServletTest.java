@@ -1,6 +1,10 @@
 package codeu.controller;
 
 import codeu.model.data.Conversation;
+import codeu.model.data.User;
+import codeu.model.store.basic.ConversationStore;
+import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.UserStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -11,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.UUID;
 
 public class AdminServletTest {
   private AdminServlet AdminServlet;
@@ -18,6 +24,9 @@ public class AdminServletTest {
   private HttpSession mockSession;
   private HttpServletResponse mockResponse;
   private RequestDispatcher mockRequestDispatcher;
+  private ConversationStore mockConversationStore;
+  private UserStore mockUserStore;
+  private MessageStore mockMessageStore;
 
   @Before
   public void setUp() {
@@ -30,6 +39,15 @@ public class AdminServletTest {
     mockRequestDispatcher = Mockito.mock(RequestDispatcher.class);
     Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/admin.jsp"))
       .thenReturn(mockRequestDispatcher);
+
+    mockUserStore = Mockito.mock(UserStore.class);
+    AdminServlet.setUserStore(mockUserStore);
+
+    mockConversationStore = Mockito.mock(ConversationStore.class);
+    AdminServlet.setConversationStore(mockConversationStore);
+
+    mockMessageStore = Mockito.mock(MessageStore.class);
+    AdminServlet.setMessageStore(mockMessageStore);
   }
 
   @Test
@@ -54,8 +72,24 @@ public class AdminServletTest {
   @Test
   public void testDoGet_UserAdmin() throws IOException, ServletException{
     Mockito.when(mockSession.getAttribute("user")).thenReturn("ayliana");
+    UUID fakeUserId = UUID.randomUUID();
+    User fakeUser =
+      new User(
+        fakeUserId,
+        "ayliana",
+        "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy",
+        Instant.now());
+
+    Mockito.when(mockUserStore.getUser("ayliana")).thenReturn(fakeUser);
+    Mockito.when(mockUserStore.getUser(fakeUserId)).thenReturn(fakeUser);
+    Mockito.when(mockUserStore.mostActiveUser()).thenReturn(fakeUser);
 
     AdminServlet.doGet(mockRequest, mockResponse);
+
+    Mockito.verify(mockRequest).setAttribute("numUsers", mockUserStore.getNumUsers());
+    Mockito.verify(mockRequest).setAttribute("numConversations", mockConversationStore.getNumConversations());
+    Mockito.verify(mockRequest).setAttribute("numMessages", mockMessageStore.getNumMessages());
+    Mockito.verify(mockRequest).setAttribute("mostActiveUser", "ayliana");
 
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
