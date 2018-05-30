@@ -31,6 +31,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+
+
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
 
@@ -143,12 +149,95 @@ public class ChatServlet extends HttpServlet {
     // this removes any HTML from the message content
     String cleanedMessageContent = Jsoup.clean(messageContent, Whitelist.none());
 
+    int cleanedMessageLength = cleanedMessageContent.length();
+    boolean inItalics = false;
+    boolean inBold = false;
+    ArrayList<String> tokenizedMessageContent = new ArrayList();
+    String parsedMessageContent = "";
+    List<Character> validCharFlags = Arrays.asList('*', '_', '`');
+    List<String> validStrFlags = Arrays.asList("*", "_", "`", "**", "__");
+    List<String> linkPrefix = Arrays.asList("http://", "https://", "www.");
+
+    Map<String, String[]> markToHtml = new HashMap<>();
+
+    markToHtml.put("*", new String[]{"<em>", "</em>"});
+    markToHtml.put("_", new String[]{"<em>", "</em>"});
+    markToHtml.put("`", new String[]{"<code>", "</code>"});
+    markToHtml.put("**", new String[]{"<strong>", "</strong>"});
+    markToHtml.put("__", new String[]{"<strong>", "</strong>"});
+    markToHtml.put("LINK", new String[]{"<a href=\"", "\" target=\"_blank\">","</a>"});
+
+    // tokenizes message into array list of strings
+    for (int i = 0; i < cleanedMessageLength; i++) {
+
+        if (validCharFlags.contains(cleanedMessageContent.charAt(i))){
+            if (i+1 < cleanedMessageLength && validStrFlags.contains("" + cleanedMessageContent.charAt(i) + cleanedMessageContent.charAt(i+1))){
+                tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i)+cleanedMessageContent.charAt(i));
+                i++;
+            }
+            else{
+                tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
+            }
+        }
+        else{
+            boolean inLink = false;
+            for (String prefix: linkPrefix){
+                if(i + prefix.length() < cleanedMessageLength && prefix.equals(cleanedMessageContent.substring(i, i+prefix.length()))) {
+                    tokenizedMessageContent.add(prefix);
+                    i += prefix.length()-1;
+                    inLink = true;
+
+                }
+            }
+            if(!inLink){
+                tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
+            }
+        }
+
+    }
+
+    // matches valid pairs of tokens and replaces with html syntax
+    for (int i = 0; i < tokenizedMessageContent.size(); i++){
+        if (validStrFlags.contains(tokenizedMessageContent.get(i))){
+            for (int j = tokenizedMessageContent.size() - 1; j > i; j--){
+                if(tokenizedMessageContent.get(i).equals(tokenizedMessageContent.get(j))){
+                    String mark = tokenizedMessageContent.get(i);
+                    tokenizedMessageContent.set(i, markToHtml.get(mark)[0]);
+                    tokenizedMessageContent.set(j, markToHtml.get(mark)[1]);
+                    break;
+                }
+            }
+        }
+        if (linkPrefix.contains(tokenizedMessageContent.get(i))){
+            tokenizedMessageContent.add(i, markToHtml.get("LINK")[0]);
+            for (int j = i+1; j < tokenizedMessageContent.size(); j++){
+                if (tokenizedMessageContent.get(j).equals(" ") || j == tokenizedMessageContent.size()-1){
+                    if (tokenizedMessageContent.get(j).equals(" ")){
+                        j--;
+                    }
+                    String linkContents = "";
+                    for (int k = i+1; k < j+1; k++){
+                        linkContents += tokenizedMessageContent.get(k);
+                    }
+                    tokenizedMessageContent.add(j+1, markToHtml.get("LINK")[1] + linkContents + markToHtml.get("LINK")[2]);
+                    i++;
+                    break;
+                }
+            }
+        }
+    }
+
+    // converts ArrayList to string
+    for (String token:tokenizedMessageContent){
+        parsedMessageContent += token;
+    }
+
     Message message =
         new Message(
             UUID.randomUUID(),
             conversation.getId(),
             user.getId(),
-            cleanedMessageContent,
+            parsedMessageContent,
             Instant.now());
 
     messageStore.addMessage(message);
