@@ -15,6 +15,7 @@
 package codeu.model.store.basic;
 
 import codeu.model.data.Message;
+import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,5 +89,10 @@ public class MessageStore {
   /** Sets the List of Messages stored by this MessageStore. */
   public void setMessages(List<Message> messages) {
     this.messages = messages;
+  }
+  
+  /** Access the current set of messages known to the application. */
+  public List<Message> getAllMessages() {
+    return messages;
   }
 }

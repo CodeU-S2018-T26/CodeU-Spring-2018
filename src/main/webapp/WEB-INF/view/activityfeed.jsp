@@ -17,6 +17,7 @@
 <%@ page import="java.util.Arrays" %>
 <%@ page import="codeu.model.data.Conversation" %>
 <%@ page import="codeu.model.data.User" %>
+<%@ page import="codeu.model.data.Message" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,6 +36,32 @@
     <h1>Activity</h1>
 
   		<p>This is the activity feed page</p>
+  		
+  		<%-- This is User rendering --%>
+  		
+  		<%
+			List<User> users = (List<User>) request.getAttribute("users");
+			if (users == null || users.isEmpty()) {
+		%>
+		<li>There are no users signed up in the chat app.</li>
+		<%
+			} else {
+		%>
+		<ul>
+			<%
+				for (User user : users) {
+			%>
+			<li><%=user.getCreationTime()%>: <%=user.getName()%> joined!</li>
+			<%
+				}
+			%>
+		</ul>
+		<%
+}
+%>
+
+  		<%-- This is Conversation rendering --%>
+  		
 		<%
 			List<Conversation> conversations = (List<Conversation>) request.getAttribute("conversations");
 			if (conversations == null || conversations.isEmpty()) {
@@ -55,19 +82,22 @@
 		<%
 }
 %>
+
+  		<%-- This is Message rendering --%>
+
 		<%
-			List<User> users = (List<User>) request.getAttribute("users");
-			if (users == null || users.isEmpty()) {
+			List<Message> messages = (List<Message>) request.getAttribute("messages");
+			if (messages == null || messages.isEmpty()) {
 		%>
-		<li>There are no users signed up in the chat app.</li>
+		<li>There are no messages.</li>
 		<%
 			} else {
 		%>
 		<ul>
 			<%
-				for (User user : users) {
+				for (Message message : messages) {
 			%>
-			<li><%=user.getCreationTime()%>: <%=user.getName()%> joined!</li>
+			<li><%=message.getCreationTime()%>:  Someone sent a message in a conversation: <%=message.getContent()%></li>
 			<%
 				}
 			%>

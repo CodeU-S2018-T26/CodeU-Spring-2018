@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import codeu.model.data.Conversation;
+import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
@@ -70,8 +71,10 @@ public class ActivityFeedServlet extends HttpServlet
 	{
 	    List<Conversation> conversations = conversationStore.getAllConversations();
 	    List<User> users = userStore.getAllUsers();
+	    List<Message> messages = messageStore.getAllMessages();
 	    request.setAttribute("users",users);
 	    request.setAttribute("conversations", conversations);
+	    request.setAttribute("messages", messages);
 	    request.getRequestDispatcher("/WEB-INF/view/activityfeed.jsp").forward(request, response);
 
 	}
