@@ -18,6 +18,8 @@
 <%@ page import="codeu.model.data.Conversation" %>
 <%@ page import="codeu.model.data.User" %>
 <%@ page import="codeu.model.data.Message" %>
+<%@ page import="codeu.model.store.basic.UserStore" %>
+<%@ page import="codeu.model.store.basic.ConversationStore" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,9 +44,7 @@
   		<%
 			List<User> users = (List<User>) request.getAttribute("users");
 			if (users == null || users.isEmpty()) {
-		%>
-		<li>There are no users signed up in the chat app.</li>
-		<%
+				return;	
 			} else {
 		%>
 		<ul>
@@ -55,7 +55,7 @@
 			<%
 				}
 			%>
-		</ul>
+		
 		<%
 }
 %>
@@ -65,20 +65,19 @@
 		<%
 			List<Conversation> conversations = (List<Conversation>) request.getAttribute("conversations");
 			if (conversations == null || conversations.isEmpty()) {
-		%>
-		<li>There are no conversations created.</li>
-		<%
+				return;
 			} else {
 		%>
-		<ul>
+		
 			<%
 				for (Conversation conversation : conversations) {
+			        String author = UserStore.getInstance().getUser(conversation.getOwnerId()).getName();
 			%>
-			<li><%=conversation.getCreationTime()%>: Someone create a new conversation: <a href="/chat/<%= conversation.getTitle() %>"><%= conversation.getTitle() %></a></li>
+			<li><%=conversation.getCreationTime()%>: <%=author%> created a new conversation: <a href="/chat/<%= conversation.getTitle() %>"><%= conversation.getTitle() %></a></li>
 			<%
 				}
 			%>
-		</ul>
+		
 		<%
 }
 %>
@@ -88,16 +87,17 @@
 		<%
 			List<Message> messages = (List<Message>) request.getAttribute("messages");
 			if (messages == null || messages.isEmpty()) {
-		%>
-		<li>There are no messages.</li>
-		<%
+				return;
 			} else {
 		%>
-		<ul>
+	
 			<%
 				for (Message message : messages) {
+			        String author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
+			        String conversationTitle = ConversationStore.getInstance().getConversation(message.getConversationId()).getTitle();
+
 			%>
-			<li><%=message.getCreationTime()%>:  Someone sent a message in a conversation: <%=message.getContent()%></li>
+			<li><%=message.getCreationTime()%>:  <%=author%> sent a message in <a href="/chat/<%=conversationTitle%>"><%=conversationTitle%></a>: "<%=message.getContent()%>"</li>
 			<%
 				}
 			%>
