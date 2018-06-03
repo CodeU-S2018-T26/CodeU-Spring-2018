@@ -14,6 +14,7 @@
 
 package codeu.model.store.basic;
 
+import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
@@ -58,7 +59,7 @@ public class MessageStore {
   private PersistentStorageAgent persistentStorageAgent;
 
   /** The in-memory list of Messages. */
-  private List<Message> messages;
+  private static List<Message> messages;
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private MessageStore(PersistentStorageAgent persistentStorageAgent) {
@@ -92,7 +93,21 @@ public class MessageStore {
   }
   
   /** Access the current set of messages known to the application. */
-  public List<Message> getAllMessages() {
+  public static List<Message> getAllMessages() {
     return messages;
+  }
+  
+  /**
+   * Access the Message object with the given UUID.
+   *
+   * @return null if the UUID does not match any existing User.
+   */
+  public Message getMessage(UUID id) {
+    for (Message message : messages) {
+      if (message.getId().equals(id)) {
+        return message;
+      }
+    }
+    return null;
   }
 }
