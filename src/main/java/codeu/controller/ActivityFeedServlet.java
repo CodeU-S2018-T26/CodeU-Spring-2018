@@ -1,7 +1,14 @@
 package codeu.controller;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -60,6 +67,82 @@ public class ActivityFeedServlet extends HttpServlet
     this.userStore = userStore;
   }
   
+  /**
+   * This function takes in a list of conversations,users and messages and returns a HashMap of Instants mapping to 
+   * HashMaps of UUIDs mapping to either User,Conversation or Message
+   * @param conversations
+   * @param users
+   * @param messages
+   * @return built HashMap
+   */
+  HashMap<Instant,HashMap<UUID,String>> buildHashMap(List<Conversation> conversations,List<User> users,List<Message> messages) {
+	  HashMap<Instant,HashMap<UUID,String>> outerhm =new HashMap<Instant,HashMap<UUID,String>>();
+	  for (User user : users) {
+		  HashMap<UUID,String> innerhm=new HashMap<UUID,String>();
+		  innerhm.put(user.getId(),"user"); 
+		  outerhm.put(user.getCreationTime(), innerhm);
+	  }
+	  for (Conversation conversation : conversations) {
+		  HashMap<UUID,String> innerhm=new HashMap<UUID,String>();
+		  innerhm.put(conversation.getId(),"conversation"); 
+		  outerhm.put(conversation.getCreationTime(), innerhm);
+	  }
+	  for (Message message : messages) {
+		  HashMap<UUID,String> innerhm=new HashMap<UUID,String>();
+		  innerhm.put(message.getId(),"message"); 
+		  outerhm.put(message.getCreationTime(), innerhm);
+	  }
+	  return outerhm;
+  }
+
+  /**
+   * This function takes in a HashMap and finds the earliest Instant using the isBefore function
+   * @param hm
+   * @return the earliest instant
+   */
+  Instant findEarliestInstant(HashMap<Instant,HashMap<UUID,String>> hm) {
+	  	Instant earliestInstant=null;
+	  	for (Map.Entry<Instant, HashMap<UUID, String>> m : hm.entrySet()) {
+			earliestInstant = m.getKey();
+			break;
+	  	}
+		for (Map.Entry<Instant, HashMap<UUID, String>> m : hm.entrySet()) {
+			Instant toCmpInstant = m.getKey();
+			if (earliestInstant.isBefore(toCmpInstant)) {
+				earliestInstant = toCmpInstant;
+			}
+		}
+		return earliestInstant;
+  }
+
+  /**
+   * This function takes in a HashMap and sorts the instants from latest to oldest
+   * @param hm
+   * @return a sorted HashMap by Instants
+   */
+  HashMap<Instant, HashMap<UUID, String>> sortHashMap(HashMap<Instant,HashMap<UUID,String>> hm)
+  {
+	  Instant earlier=null;
+	  int size=hm.size();
+	  HashMap<Instant,HashMap<UUID,String>> sortedhm=new HashMap<Instant,HashMap<UUID,String>>();
+	  for (int i=0;i<size;i++) {	
+		earlier=findEarliestInstant(hm);
+		HashMap<UUID,String> innersm=hm.get(earlier);
+		System.out.println("PRINTING OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+		System.out.println("Instant:");
+		System.out.println(earlier.toString());
+	  	sortedhm.put(earlier, innersm);
+		for (Map.Entry<UUID,String> im:innersm.entrySet()) {
+			System.out.println("UUID:");
+			System.out.println(im.getKey());
+			System.out.println("Section:");
+			System.out.println(im.getValue());
+		}
+		hm.remove(earlier);
+	  }
+	  return sortedhm;      
+  }
+  
 	/**
 	 * This function fires when a user requests the /activity URL. It simply
 	 * forwards the request to activity.jsp.
@@ -69,14 +152,15 @@ public class ActivityFeedServlet extends HttpServlet
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-	    List<Conversation> conversations = conversationStore.getAllConversations();
-	    List<User> users = userStore.getAllUsers();
-	    List<Message> messages = messageStore.getAllMessages();
-	    request.setAttribute("users",users);
-	    request.setAttribute("conversations", conversations);
-	    request.setAttribute("messages", messages);
+		List<User> users = userStore.getAllUsers();
+		List<Conversation> conversations = conversationStore.getAllConversations();
+	    List<Message> messages = MessageStore.getAllMessages();
+	    HashMap<Instant,HashMap<UUID,String>> instantByInstance=buildHashMap(conversations,users,messages);
+	    instantByInstance=sortHashMap(instantByInstance);
+	    request.setAttribute("instantByInstance", instantByInstance);
 	    request.getRequestDispatcher("/WEB-INF/view/activityfeed.jsp").forward(request, response);
 
 	}
+	
 	
 }
