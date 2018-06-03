@@ -57,7 +57,7 @@ public class UserStore {
   private PersistentStorageAgent persistentStorageAgent;
 
   /** The in-memory list of Users. */
-  private List<User> users;
+  private static List<User> users;
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private UserStore(PersistentStorageAgent persistentStorageAgent) {
@@ -129,7 +129,7 @@ public class UserStore {
   }
   
   /** Access the current set of users known to the application. */
-  public List<User> getAllUsers() {
+  public static List<User> getAllUsers() {
     return users;
   }
 
