@@ -59,8 +59,6 @@ public class AdminServlet extends HttpServlet {
     setMessageStore(MessageStore.getInstance());
   }
 
-  static final List<String> ADMIN_USERNAMES = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
-
   //This function fires when a user requests the /admin page.
   //If the user is an admin it gets the number of users, conversations, and messages and forwards to admin.jsp
   @Override
@@ -71,7 +69,7 @@ public class AdminServlet extends HttpServlet {
       response.sendRedirect("/login");
       return;
     }
-    else if(! ADMIN_USERNAMES.contains(username)) {
+    else if((boolean) request.getSession().getAttribute("isAdmin") == false) {
       // user is not an admin, show error message
       request.setAttribute("error", "Only admins can access this page.");
     }

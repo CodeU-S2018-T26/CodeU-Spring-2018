@@ -8,6 +8,7 @@ import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.UserStore;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import javax.servlet.RequestDispatcher;
@@ -65,6 +66,7 @@ public class AdminServletTest {
   @Test
   public void testDoGet_UserNotAdmin() throws IOException, ServletException{
     Mockito.when(mockSession.getAttribute("user")).thenReturn("User1");
+    Mockito.when(mockSession.getAttribute("isAdmin")).thenReturn(false);
 
     AdminServlet.doGet(mockRequest, mockResponse);
 
@@ -75,6 +77,7 @@ public class AdminServletTest {
   @Test
   public void testDoGet_UserAdmin() throws IOException, ServletException{
     Mockito.when(mockSession.getAttribute("user")).thenReturn("marissa");
+    Mockito.when(mockSession.getAttribute("isAdmin")).thenReturn(true);
     UUID fakeUserId = UUID.randomUUID();
     User fakeUser =
       new User(

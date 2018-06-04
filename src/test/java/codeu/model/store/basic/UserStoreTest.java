@@ -102,6 +102,16 @@ public class UserStoreTest {
   }
 
   @Test
+  public void testIsUserAdminTrue(){
+    Assert.assertTrue(userStore.isUserAdmin("jeremy"));
+  }
+
+  @Test
+  public void testIsUserAdminFalse(){
+    Assert.assertFalse(userStore.isUserAdmin("test_username_two"));
+  }
+
+  @Test
   public void testNumUsers(){
     Assert.assertEquals(userStore.getNumUsers(), 3);
   }
