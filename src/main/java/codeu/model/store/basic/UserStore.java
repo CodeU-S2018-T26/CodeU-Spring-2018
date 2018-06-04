@@ -123,10 +123,9 @@ public class UserStore {
     return users.size();
   }
 
-  /** returns the user who sent the most messages */
-  public User mostActiveUser(){
-    User user = users.stream().max(Comparator.comparing(u -> u.getNumMessages())).get();
-    return user;
+  /** returns the newest user. */
+  public User newestUser(){
+    return users.get(users.size()-1);
   }
 
   /**

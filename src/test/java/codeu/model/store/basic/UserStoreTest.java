@@ -101,6 +101,16 @@ public class UserStoreTest {
     Assert.assertFalse(userStore.isUserRegistered("fake username"));
   }
 
+  @Test
+  public void testNumUsers(){
+    Assert.assertEquals(userStore.getNumUsers(), 3);
+  }
+
+  @Test
+  public void testNewestUser(){
+    Assert.assertEquals(userStore.newestUser(), USER_THREE);
+  }
+
   private void assertEquals(User expectedUser, User actualUser) {
     Assert.assertEquals(expectedUser.getId(), actualUser.getId());
     Assert.assertEquals(expectedUser.getName(), actualUser.getName());

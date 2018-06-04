@@ -79,6 +79,11 @@ public class MessageStoreTest {
     Mockito.verify(mockPersistentStorageAgent).writeThrough(inputMessage);
   }
 
+  @Test
+  public void testNumMessages(){
+    Assert.assertEquals(messageStore.getNumMessages(), 3);
+  }
+
   private void assertEquals(Message expectedMessage, Message actualMessage) {
     Assert.assertEquals(expectedMessage.getId(), actualMessage.getId());
     Assert.assertEquals(expectedMessage.getConversationId(), actualMessage.getConversationId());

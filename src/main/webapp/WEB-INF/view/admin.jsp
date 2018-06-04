@@ -34,7 +34,7 @@
     <h3> Number of Users: <%= request.getAttribute("numUsers") %></h3>
     <h3> Number of Conversations: <%= request.getAttribute("numConversations") %></h3>
     <h3> Number of Messages: <%= request.getAttribute("numMessages") %></h3>
-    <h3> Most Active User: <%= request.getAttribute("mostActiveUser") %></h3>
+    <h3> Newest User: <%= request.getAttribute("newestUser") %></h3>
   <%}%>
 
 </body>

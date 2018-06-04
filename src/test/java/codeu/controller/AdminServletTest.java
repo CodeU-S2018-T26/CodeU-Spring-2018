@@ -1,6 +1,7 @@
 package codeu.controller;
 
 import codeu.model.data.Conversation;
+import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class AdminServletTest {
@@ -71,25 +74,25 @@ public class AdminServletTest {
 
   @Test
   public void testDoGet_UserAdmin() throws IOException, ServletException{
-    Mockito.when(mockSession.getAttribute("user")).thenReturn("ayliana");
+    Mockito.when(mockSession.getAttribute("user")).thenReturn("marissa");
     UUID fakeUserId = UUID.randomUUID();
     User fakeUser =
       new User(
         fakeUserId,
-        "ayliana",
+        "marissa",
         "$2a$10$bBiLUAVmUFK6Iwg5rmpBUOIBW6rIMhU1eKfi3KR60V9UXaYTwPfHy",
         Instant.now());
 
-    Mockito.when(mockUserStore.getUser("ayliana")).thenReturn(fakeUser);
+    Mockito.when(mockUserStore.getUser("marissa")).thenReturn(fakeUser);
     Mockito.when(mockUserStore.getUser(fakeUserId)).thenReturn(fakeUser);
-    Mockito.when(mockUserStore.mostActiveUser()).thenReturn(fakeUser);
+    Mockito.when(mockUserStore.newestUser()).thenReturn(fakeUser);
 
     AdminServlet.doGet(mockRequest, mockResponse);
 
     Mockito.verify(mockRequest).setAttribute("numUsers", mockUserStore.getNumUsers());
     Mockito.verify(mockRequest).setAttribute("numConversations", mockConversationStore.getNumConversations());
     Mockito.verify(mockRequest).setAttribute("numMessages", mockMessageStore.getNumMessages());
-    Mockito.verify(mockRequest).setAttribute("mostActiveUser", "ayliana");
+    Mockito.verify(mockRequest).setAttribute("newestUser", "marissa");
 
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
