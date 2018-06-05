@@ -89,6 +89,7 @@ public class AdminServletTest {
     Mockito.when(mockUserStore.getUser("marissa")).thenReturn(fakeUser);
     Mockito.when(mockUserStore.getUser(fakeUserId)).thenReturn(fakeUser);
     Mockito.when(mockUserStore.newestUser()).thenReturn(fakeUser);
+    Mockito.when(mockMessageStore.mostActiveUser()).thenReturn(fakeUserId);
 
     AdminServlet.doGet(mockRequest, mockResponse);
 
@@ -96,6 +97,7 @@ public class AdminServletTest {
     Mockito.verify(mockRequest).setAttribute("numConversations", mockConversationStore.getNumConversations());
     Mockito.verify(mockRequest).setAttribute("numMessages", mockMessageStore.getNumMessages());
     Mockito.verify(mockRequest).setAttribute("newestUser", "marissa");
+    Mockito.verify(mockRequest).setAttribute("mostActiveUser", "marissa");
 
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }

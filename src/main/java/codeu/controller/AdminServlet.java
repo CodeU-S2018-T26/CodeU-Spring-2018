@@ -86,6 +86,9 @@ public class AdminServlet extends HttpServlet {
 
       String newestUser = userStore.newestUser().getName();
       request.setAttribute("newestUser", newestUser);
+
+      String mostActiveUser = userStore.getUser(messageStore.mostActiveUser()).getName();
+      request.setAttribute("mostActiveUser", mostActiveUser);
     }
     request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
   }
