@@ -19,6 +19,7 @@ import codeu.model.store.persistence.PersistentStorageAgent;
 
 import java.util.*;
 
+import static java.util.stream.Collectors.averagingInt;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
@@ -100,6 +101,15 @@ public class MessageStore {
       .collect(groupingBy(Message::getAuthorId, counting()));
 
     return Collections.max(messageCounts.entrySet(), Comparator.comparing(Map.Entry::getValue)).getKey();
+  }
+
+  /** returns the UUID of the user who has the highest average message length */
+  public UUID wordiestUser(){
+    /** Maps the users into UUID and average length of messages sent */
+    Map<UUID, Double> messageAverageLength = messages.stream()
+      .collect(groupingBy(Message::getAuthorId, averagingInt(Message::getMessageLength)));
+
+    return Collections.max(messageAverageLength.entrySet(), Comparator.comparing(Map.Entry::getValue)).getKey();
   }
 
   /** Sets the List of Messages stored by this MessageStore. */

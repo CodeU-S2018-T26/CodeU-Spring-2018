@@ -26,7 +26,7 @@ public class MessageStoreTest {
           UUID.randomUUID(),
           CONVERSATION_ID_ONE,
           USER_ID_ONE,
-          "message one",
+          "This is a long message",
           Instant.ofEpochMilli(1000));
   private final Message MESSAGE_TWO =
       new Message(
@@ -90,6 +90,11 @@ public class MessageStoreTest {
   @Test
   public void testMostActiveUser(){
     Assert.assertEquals(messageStore.mostActiveUser(), USER_ID_TWO);
+  }
+
+  @Test
+  public void testWordiestUser(){
+    Assert.assertEquals(messageStore.wordiestUser(), USER_ID_ONE);
   }
 
   private void assertEquals(Message expectedMessage, Message actualMessage) {
