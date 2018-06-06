@@ -36,6 +36,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Iterator;
+
+
 
 /** Servlet class responsible for the chat page. */
 public class ChatServlet extends HttpServlet {
@@ -49,6 +60,8 @@ public class ChatServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
+  private Map<String, String> validEmojis = new HashMap<>();
+
   /** Set up state for handling chat requests. */
   @Override
   public void init() throws ServletException {
@@ -56,6 +69,31 @@ public class ChatServlet extends HttpServlet {
     setConversationStore(ConversationStore.getInstance());
     setMessageStore(MessageStore.getInstance());
     setUserStore(UserStore.getInstance());
+
+    JSONParser parser = new JSONParser();
+    try{
+        Object obj = parser.parse(new FileReader("/Users/Raymond/Developer/CodeU/codeu_project_2018/src/main/resources/emoji/emojis.json"));
+        JSONObject jsonObject = (JSONObject) obj;
+        // loop array
+        JSONArray emojis = (JSONArray) jsonObject.get("emojis");
+        Iterator<JSONObject> iterator = emojis.iterator();
+        while (iterator.hasNext()) {
+            JSONObject emoji = iterator.next();
+            String shortname = (String) emoji.get("shortname");
+            String htmlCode = (String) emoji.get("html");
+            //System.out.println(shortname);
+            if (shortname != null && !shortname.isEmpty() && shortname.length() > 2){
+                //System.out.println(shortname.substring(1, shortname.length()));
+                validEmojis.put(shortname.substring(1, shortname.length()-1), htmlCode);
+            }
+        }
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    } catch (ParseException e) {
+        e.printStackTrace();
+    }
   }
 
   /**
@@ -168,9 +206,7 @@ public class ChatServlet extends HttpServlet {
     markToHtml.put("__", new String[]{"<strong>", "</strong>"});
     markToHtml.put("LINK", new String[]{"<a href=\"", "\" target=\"_blank\">","</a>"});
 
-    Map<String, String> validEmojis = new HashMap<>();
-
-    validEmojis.put("hamburger", "&#x1F354");
+    //validEmojis.put("hamburger", "&#x1F354");
 
 
     // tokenizes message into array list of strings
@@ -227,7 +263,6 @@ public class ChatServlet extends HttpServlet {
                     shortcode += tokenizedMessageContent.get(j);
                 }
             }
-            System.out.println(shortcode);
             if (validSyntax && validEmojis.containsKey(shortcode)){
                 tokenizedMessageContent.set(i, validEmojis.get(shortcode));
                 for (int k = j; k > i; k--){
