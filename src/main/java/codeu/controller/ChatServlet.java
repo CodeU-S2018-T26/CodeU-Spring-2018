@@ -155,6 +155,7 @@ public class ChatServlet extends HttpServlet {
     ArrayList<String> tokenizedMessageContent = new ArrayList();
     String parsedMessageContent = "";
     List<Character> validCharFlags = Arrays.asList('*', '_', '`');
+    String emojiFlag = ":";
     List<String> validStrFlags = Arrays.asList("*", "_", "`", "**", "__");
     List<String> linkPrefix = Arrays.asList("http://", "https://", "www.");
 
@@ -166,6 +167,11 @@ public class ChatServlet extends HttpServlet {
     markToHtml.put("**", new String[]{"<strong>", "</strong>"});
     markToHtml.put("__", new String[]{"<strong>", "</strong>"});
     markToHtml.put("LINK", new String[]{"<a href=\"", "\" target=\"_blank\">","</a>"});
+
+    Map<String, String> validEmojis = new HashMap<>();
+
+    validEmojis.put("hamburger", "&#x1F354");
+
 
     // tokenizes message into array list of strings
     for (int i = 0; i < cleanedMessageLength; i++) {
@@ -207,6 +213,28 @@ public class ChatServlet extends HttpServlet {
                     break;
                 }
             }
+        }
+        if (emojiFlag.equals(tokenizedMessageContent.get(i))){
+            String shortcode = "";
+            Boolean validSyntax = false;
+            int j;
+            for (j = i+1; j < tokenizedMessageContent.size(); j++){
+                if(emojiFlag.equals(tokenizedMessageContent.get(j))){
+                    validSyntax = true;
+                    break;
+                }
+                else{
+                    shortcode += tokenizedMessageContent.get(j);
+                }
+            }
+            System.out.println(shortcode);
+            if (validSyntax && validEmojis.containsKey(shortcode)){
+                tokenizedMessageContent.set(i, validEmojis.get(shortcode));
+                for (int k = j; k > i; k--){
+                    tokenizedMessageContent.remove(k);
+                }
+            }
+
         }
         if (linkPrefix.contains(tokenizedMessageContent.get(i))){
             tokenizedMessageContent.add(i, markToHtml.get("LINK")[0]);
