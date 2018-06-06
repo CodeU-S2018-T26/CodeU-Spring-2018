@@ -81,9 +81,7 @@ public class ChatServlet extends HttpServlet {
             JSONObject emoji = iterator.next();
             String shortname = (String) emoji.get("shortname");
             String htmlCode = (String) emoji.get("html");
-            //System.out.println(shortname);
             if (shortname != null && !shortname.isEmpty() && shortname.length() > 2){
-                //System.out.println(shortname.substring(1, shortname.length()));
                 validEmojis.put(shortname.substring(1, shortname.length()-1), htmlCode);
             }
         }
@@ -205,9 +203,6 @@ public class ChatServlet extends HttpServlet {
     markToHtml.put("**", new String[]{"<strong>", "</strong>"});
     markToHtml.put("__", new String[]{"<strong>", "</strong>"});
     markToHtml.put("LINK", new String[]{"<a href=\"", "\" target=\"_blank\">","</a>"});
-
-    //validEmojis.put("hamburger", "&#x1F354");
-
 
     // tokenizes message into array list of strings
     for (int i = 0; i < cleanedMessageLength; i++) {
