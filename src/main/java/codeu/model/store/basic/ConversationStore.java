@@ -58,7 +58,7 @@ public class ConversationStore {
   private PersistentStorageAgent persistentStorageAgent;
 
   /** The in-memory list of Conversations. */
-  private List<Conversation> conversations;
+  private static List<Conversation> conversations;
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private ConversationStore(PersistentStorageAgent persistentStorageAgent) {
@@ -67,7 +67,7 @@ public class ConversationStore {
   }
 
 /** Access the current set of conversations known to the application. */
-  public List<Conversation> getAllConversations() {
+  public static List<Conversation> getAllConversations() {
     return conversations;
   }
 

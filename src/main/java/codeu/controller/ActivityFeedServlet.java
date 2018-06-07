@@ -27,7 +27,7 @@ public class ActivityFeedServlet extends HttpServlet {
 	/** Store class that gives access to Users. */
 	private UserStore userStore;
 
-	ArrayList<Instant> arrInstants = new ArrayList<Instant>();
+	ArrayList<Instant> arrInstantsSorted = new ArrayList<Instant>();
 
 	/** Set up state for handling chat requests. */
 	@Override
@@ -76,21 +76,24 @@ public class ActivityFeedServlet extends HttpServlet {
 	HashMap<Instant, HashMap<UUID, String>> buildHashMap(List<Conversation> conversations, List<User> users,
 			List<Message> messages) {
 		HashMap<Instant, HashMap<UUID, String>> outerhm = new HashMap<Instant, HashMap<UUID, String>>();
+		if (users != null) {
 		for (User user : users) {
 			HashMap<UUID, String> innerhm = new HashMap<UUID, String>();
 			innerhm.put(user.getId(), "user");
 			outerhm.put(user.getCreationTime(), innerhm);
-		}
+		} }
+		if (conversations != null) {
 		for (Conversation conversation : conversations) {
 			HashMap<UUID, String> innerhm = new HashMap<UUID, String>();
 			innerhm.put(conversation.getId(), "conversation");
 			outerhm.put(conversation.getCreationTime(), innerhm);
-		}
+		} }
+		if (messages != null) {
 		for (Message message : messages) {
 			HashMap<UUID, String> innerhm = new HashMap<UUID, String>();
 			innerhm.put(message.getId(), "message");
 			outerhm.put(message.getCreationTime(), innerhm);
-		}
+		}}
 		return outerhm;
 	}
 
@@ -126,16 +129,24 @@ public class ActivityFeedServlet extends HttpServlet {
 	HashMap<Instant, HashMap<UUID, String>> sortHashMap(HashMap<Instant, HashMap<UUID, String>> hm) {
 		Instant earlier = null;
 		int size = hm.size();
-		arrInstants = new ArrayList<Instant>();
+		arrInstantsSorted = new ArrayList<Instant>();
 		HashMap<Instant, HashMap<UUID, String>> sortedhm = new HashMap<Instant, HashMap<UUID, String>>();
 		for (int i = 0; i < size; i++) {
 			earlier = findEarliestInstant(hm);
-			arrInstants.add(earlier);
+			arrInstantsSorted.add(earlier);
 			HashMap<UUID, String> innersm = hm.get(earlier);
 			sortedhm.put(earlier, innersm);
 			hm.remove(earlier);
 		}
 		return sortedhm;
+	}
+	
+	/*
+	 * For testing purposes
+	 */
+	ArrayList<Instant> getSortedInstants(){
+		return arrInstantsSorted;
+		
 	}
 
 	/**
@@ -148,12 +159,12 @@ public class ActivityFeedServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<User> users = UserStore.getAllUsers();
-		List<Conversation> conversations = conversationStore.getAllConversations();
+		List<Conversation> conversations = ConversationStore.getAllConversations();
 		List<Message> messages = MessageStore.getAllMessages();
 		HashMap<Instant, HashMap<UUID, String>> instantByInstance = buildHashMap(conversations, users, messages);
 		instantByInstance = sortHashMap(instantByInstance);
 		request.setAttribute("instantByInstance", instantByInstance);
-		request.setAttribute("arrInstants", arrInstants);
+		request.setAttribute("arrInstantsSorted", arrInstantsSorted);
 		request.getRequestDispatcher("/WEB-INF/view/activityfeed.jsp").forward(request, response);
 	}
 

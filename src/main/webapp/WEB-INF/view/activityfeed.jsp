@@ -47,11 +47,11 @@
 						.withZone(ZoneId.systemDefault());
 				HashMap<Instant, HashMap<UUID, String>> instantByInstance = (HashMap<Instant, HashMap<UUID, String>>) request
 						.getAttribute("instantByInstance");
-				ArrayList<Instant> arrInstants = (ArrayList<Instant>) request.getAttribute("arrInstants");
+				ArrayList<Instant> arrInstantsSorted = (ArrayList<Instant>) request.getAttribute("arrInstantsSorted");
 				if (instantByInstance == null) {
 					return;
 				} else {
-					for (Instant instant : arrInstants) {
+					for (Instant instant : arrInstantsSorted) {
 						String author;
 						Instant time;
 						String title;
