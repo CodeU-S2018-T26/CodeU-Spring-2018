@@ -73,15 +73,9 @@ public class ChatServlet extends HttpServlet {
 
     JSONParser parser = new JSONParser();
     try{
-        System.out.println("1");
-        //ClassLoader classLoader = getClass().getClassLoader();
-        System.out.println("2");
         File file = new File(getClass().getClassLoader().getResource("emoji/emojis.json").getFile());
-        System.out.println("3");
         Object obj = parser.parse(new FileReader(file));
-        System.out.println("4");
         JSONObject jsonObject = (JSONObject) obj;
-        System.out.println("5");
         // loop array
         JSONArray emojis = (JSONArray) jsonObject.get("emojis");
         Iterator<JSONObject> iterator = emojis.iterator();
@@ -154,6 +148,104 @@ public class ChatServlet extends HttpServlet {
     request.getRequestDispatcher("/WEB-INF/view/chat.jsp").forward(request, response);
   }
 
+
+  /**
+  Converts message string into ArrayList of meaningful tokens.
+  */
+  public ArrayList<String> tokenizeMessage(String cleanedMessageContent,
+                                           List<Character> validCharFlags,
+                                           List<String> validStrFlags,
+                                           List<String> linkPrefix){
+      ArrayList<String> tokenizedMessageContent = new ArrayList();
+      int cleanedMessageLength = cleanedMessageContent.length();
+      for (int i = 0; i < cleanedMessageLength; i++) {
+          if (validCharFlags.contains(cleanedMessageContent.charAt(i))){
+              if (i+1 < cleanedMessageLength && validStrFlags.contains("" + cleanedMessageContent.charAt(i) + cleanedMessageContent.charAt(i+1))){
+                  tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i)+cleanedMessageContent.charAt(i));
+                  i++;
+              }
+              else{
+                  tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
+              }
+          }
+          else{
+              boolean inLink = false;
+              for (String prefix: linkPrefix){
+                  if(i + prefix.length() < cleanedMessageLength && prefix.equals(cleanedMessageContent.substring(i, i+prefix.length()))) {
+                      tokenizedMessageContent.add(prefix);
+                      i += prefix.length()-1;
+                      inLink = true;
+                  }
+              }
+              if(!inLink){
+                  tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
+              }
+          }
+      }
+      return tokenizedMessageContent;
+  }
+
+  /**
+  Parses tokens and replaces supported flags with the correct HTML syntax.
+  */
+  public void parseMessage(ArrayList<String> tokenizedMessageContent,
+                           List<Character> validCharFlags,
+                           List<String> validStrFlags,
+                           List<String> linkPrefix,
+                           String emojiFlag,
+                           Map<String, String[]> markToHtml){
+      for (int i = 0; i < tokenizedMessageContent.size(); i++){
+          if (validStrFlags.contains(tokenizedMessageContent.get(i))){
+              for (int j = tokenizedMessageContent.size() - 1; j > i; j--){
+                  if(tokenizedMessageContent.get(i).equals(tokenizedMessageContent.get(j))){
+                      String mark = tokenizedMessageContent.get(i);
+                      tokenizedMessageContent.set(i, markToHtml.get(mark)[0]);
+                      tokenizedMessageContent.set(j, markToHtml.get(mark)[1]);
+                      break;
+                  }
+              }
+          }
+          if (emojiFlag.equals(tokenizedMessageContent.get(i))){
+              String shortcode = "";
+              Boolean validSyntax = false;
+              int j;
+              for (j = i+1; j < tokenizedMessageContent.size(); j++){
+                  if(emojiFlag.equals(tokenizedMessageContent.get(j))){
+                      validSyntax = true;
+                      break;
+                  }
+                  else{
+                      shortcode += tokenizedMessageContent.get(j);
+                  }
+              }
+              if (validSyntax && validEmojis.containsKey(shortcode)){
+                  tokenizedMessageContent.set(i, validEmojis.get(shortcode));
+                  for (int k = j; k > i; k--){
+                      tokenizedMessageContent.remove(k);
+                  }
+              }
+
+          }
+          if (linkPrefix.contains(tokenizedMessageContent.get(i))){
+              tokenizedMessageContent.add(i, markToHtml.get("LINK")[0]);
+              for (int j = i+1; j < tokenizedMessageContent.size(); j++){
+                  if (tokenizedMessageContent.get(j).equals(" ") || j == tokenizedMessageContent.size()-1){
+                      if (tokenizedMessageContent.get(j).equals(" ")){
+                          j--;
+                      }
+                      String linkContents = "";
+                      for (int k = i+1; k < j+1; k++){
+                          linkContents += tokenizedMessageContent.get(k);
+                      }
+                      tokenizedMessageContent.add(j+1, markToHtml.get("LINK")[1] + linkContents + markToHtml.get("LINK")[2]);
+                      i++;
+                      break;
+                  }
+              }
+          }
+      }
+  }
+
   /**
    * This function fires when a user submits the form on the chat page. It gets the logged-in
    * username from the session, the conversation title from the URL, and the chat message from the
@@ -194,14 +286,14 @@ public class ChatServlet extends HttpServlet {
     String cleanedMessageContent = Jsoup.clean(messageContent, Whitelist.none());
 
     int cleanedMessageLength = cleanedMessageContent.length();
-    boolean inItalics = false;
-    boolean inBold = false;
-    ArrayList<String> tokenizedMessageContent = new ArrayList();
-    String parsedMessageContent = "";
+
+    //character and string representations of supported markdown flags
     List<Character> validCharFlags = Arrays.asList('*', '_', '`');
-    String emojiFlag = ":";
     List<String> validStrFlags = Arrays.asList("*", "_", "`", "**", "__");
     List<String> linkPrefix = Arrays.asList("http://", "https://", "www.");
+
+    //use this to surround emoji shortcodes (:thumbsup:)
+    String emojiFlag = ":";
 
     Map<String, String[]> markToHtml = new HashMap<>();
 
@@ -213,87 +305,13 @@ public class ChatServlet extends HttpServlet {
     markToHtml.put("LINK", new String[]{"<a href=\"", "\" target=\"_blank\">","</a>"});
 
     // tokenizes message into array list of strings
-    for (int i = 0; i < cleanedMessageLength; i++) {
-
-        if (validCharFlags.contains(cleanedMessageContent.charAt(i))){
-            if (i+1 < cleanedMessageLength && validStrFlags.contains("" + cleanedMessageContent.charAt(i) + cleanedMessageContent.charAt(i+1))){
-                tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i)+cleanedMessageContent.charAt(i));
-                i++;
-            }
-            else{
-                tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
-            }
-        }
-        else{
-            boolean inLink = false;
-            for (String prefix: linkPrefix){
-                if(i + prefix.length() < cleanedMessageLength && prefix.equals(cleanedMessageContent.substring(i, i+prefix.length()))) {
-                    tokenizedMessageContent.add(prefix);
-                    i += prefix.length()-1;
-                    inLink = true;
-
-                }
-            }
-            if(!inLink){
-                tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i));
-            }
-        }
-
-    }
+    ArrayList<String> tokenizedMessageContent = tokenizeMessage(cleanedMessageContent, validCharFlags, validStrFlags, linkPrefix);
 
     // matches valid pairs of tokens and replaces with html syntax
-    for (int i = 0; i < tokenizedMessageContent.size(); i++){
-        if (validStrFlags.contains(tokenizedMessageContent.get(i))){
-            for (int j = tokenizedMessageContent.size() - 1; j > i; j--){
-                if(tokenizedMessageContent.get(i).equals(tokenizedMessageContent.get(j))){
-                    String mark = tokenizedMessageContent.get(i);
-                    tokenizedMessageContent.set(i, markToHtml.get(mark)[0]);
-                    tokenizedMessageContent.set(j, markToHtml.get(mark)[1]);
-                    break;
-                }
-            }
-        }
-        if (emojiFlag.equals(tokenizedMessageContent.get(i))){
-            String shortcode = "";
-            Boolean validSyntax = false;
-            int j;
-            for (j = i+1; j < tokenizedMessageContent.size(); j++){
-                if(emojiFlag.equals(tokenizedMessageContent.get(j))){
-                    validSyntax = true;
-                    break;
-                }
-                else{
-                    shortcode += tokenizedMessageContent.get(j);
-                }
-            }
-            if (validSyntax && validEmojis.containsKey(shortcode)){
-                tokenizedMessageContent.set(i, validEmojis.get(shortcode));
-                for (int k = j; k > i; k--){
-                    tokenizedMessageContent.remove(k);
-                }
-            }
-
-        }
-        if (linkPrefix.contains(tokenizedMessageContent.get(i))){
-            tokenizedMessageContent.add(i, markToHtml.get("LINK")[0]);
-            for (int j = i+1; j < tokenizedMessageContent.size(); j++){
-                if (tokenizedMessageContent.get(j).equals(" ") || j == tokenizedMessageContent.size()-1){
-                    if (tokenizedMessageContent.get(j).equals(" ")){
-                        j--;
-                    }
-                    String linkContents = "";
-                    for (int k = i+1; k < j+1; k++){
-                        linkContents += tokenizedMessageContent.get(k);
-                    }
-                    tokenizedMessageContent.add(j+1, markToHtml.get("LINK")[1] + linkContents + markToHtml.get("LINK")[2]);
-                    i++;
-                    break;
-                }
-            }
-        }
-    }
+    parseMessage(tokenizedMessageContent, validCharFlags, validStrFlags, linkPrefix, emojiFlag, markToHtml);
 
     // converts ArrayList to string
+    String parsedMessageContent = "";
     for (String token:tokenizedMessageContent){
         parsedMessageContent += token;
     }
