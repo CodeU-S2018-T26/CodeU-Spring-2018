@@ -212,6 +212,7 @@ public class ChatServlet extends HttpServlet {
               String shortcode = "";
               Boolean validSyntax = false;
               int j;
+              // finds the next emojiFlag, marking the end of the shortcode
               for (j = i+1; j < tokenizedMessageContent.size(); j++){
                   if(emojiFlag.equals(tokenizedMessageContent.get(j))){
                       validSyntax = true;
@@ -221,6 +222,8 @@ public class ChatServlet extends HttpServlet {
                       shortcode += tokenizedMessageContent.get(j);
                   }
               }
+              // if there was a closing emojiFlag and the shortcode is valid
+              // then replace the shortcode and flags with emoji html code
               if (validSyntax && validEmojis.containsKey(shortcode)){
                   tokenizedMessageContent.set(i, validEmojis.get(shortcode));
                   for (int k = j; k > i; k--){
@@ -230,6 +233,8 @@ public class ChatServlet extends HttpServlet {
 
           }
           if (linkPrefix.contains(tokenizedMessageContent.get(i))){
+              // if a link prefix is found, find the next ' ' space character
+              // marking the end of the link, and insert the proper html syntax
               tokenizedMessageContent.add(i, markToHtml.get("LINK")[0]);
               for (int j = i+1; j < tokenizedMessageContent.size(); j++){
                   if (tokenizedMessageContent.get(j).equals(" ") ||
@@ -320,7 +325,7 @@ public class ChatServlet extends HttpServlet {
     // converts ArrayList to string
     String parsedMessageContent = "";
     for (String token:tokenizedMessageContent){
-        parsedMessageContent += token;
+      parsedMessageContent += token;
     }
 
     Message message =
