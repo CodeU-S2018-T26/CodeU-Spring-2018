@@ -92,8 +92,7 @@ public class AdminServlet extends HttpServlet {
 
       String wordiestUser = userStore.getUser(messageStore.wordiestUser()).getName();
       request.setAttribute("wordiestUser", wordiestUser);
-
-      request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
     }
+      request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
   }
 }

@@ -134,7 +134,7 @@ public class UserStore {
 
   /** returns the newest user. */
   public User newestUser(){
-    return users.get(users.size()-1);
+    return users.stream().max(Comparator.comparing(User::getCreationTime)).get();
   }
 
   /**
