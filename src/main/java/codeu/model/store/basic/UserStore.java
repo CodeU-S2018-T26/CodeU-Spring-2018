@@ -57,6 +57,8 @@ public class UserStore {
   /** The in-memory list of Users. */
   private List<User> users;
 
+  private List<String> adminUsernames = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
+
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private UserStore(PersistentStorageAgent persistentStorageAgent) {
     this.persistentStorageAgent = persistentStorageAgent;
@@ -118,15 +120,21 @@ public class UserStore {
     return false;
   }
 
+  public boolean isUserAdmin(String username) {
+    if (adminUsernames.contains(username)){
+      return true;
+    }
+    return false;
+  }
+
   /** returns the number of users. */
   public int getNumUsers(){
     return users.size();
   }
 
-  /** returns the user who sent the most messages */
-  public User mostActiveUser(){
-    User user = users.stream().max(Comparator.comparing(u -> u.getNumMessages())).get();
-    return user;
+  /** returns the newest user. */
+  public User newestUser(){
+    return users.stream().max(Comparator.comparing(User::getCreationTime)).get();
   }
 
   /**

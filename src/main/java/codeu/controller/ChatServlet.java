@@ -241,15 +241,7 @@ public class ChatServlet extends HttpServlet {
             Instant.now());
 
     messageStore.addMessage(message);
-    updateAuthorNumMessages(message);
     // redirect to a GET request
     response.sendRedirect("/chat/" + conversationTitle);
-  }
-
-  /** Increments the number of messages sent by the author of this message. */
-  private void updateAuthorNumMessages(Message message){
-    User authorUser = userStore.getUser(message.getAuthorId());
-    authorUser.incrementNumMessages();
-    userStore.updateUser(authorUser);
   }
 }

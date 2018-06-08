@@ -63,6 +63,11 @@ public class Message {
     return content;
   }
 
+  /** Returns the length of this Message. */
+  public int getMessageLength(){
+    return content.length();
+  }
+
   /** Returns the creation time of this Message. */
   public Instant getCreationTime() {
     return creation;

@@ -18,25 +18,28 @@ public class MessageStoreTest {
   private PersistentStorageAgent mockPersistentStorageAgent;
 
   private final UUID CONVERSATION_ID_ONE = UUID.randomUUID();
+  private final UUID USER_ID_ONE = UUID.randomUUID();
+  private final UUID USER_ID_TWO = UUID.randomUUID();
+
   private final Message MESSAGE_ONE =
       new Message(
           UUID.randomUUID(),
           CONVERSATION_ID_ONE,
-          UUID.randomUUID(),
-          "message one",
+          USER_ID_ONE,
+          "This is a long message",
           Instant.ofEpochMilli(1000));
   private final Message MESSAGE_TWO =
       new Message(
           UUID.randomUUID(),
           CONVERSATION_ID_ONE,
-          UUID.randomUUID(),
+          USER_ID_TWO,
           "message two",
           Instant.ofEpochMilli(2000));
   private final Message MESSAGE_THREE =
       new Message(
           UUID.randomUUID(),
           UUID.randomUUID(),
-          UUID.randomUUID(),
+          USER_ID_TWO,
           "message three",
           Instant.ofEpochMilli(3000));
 
@@ -77,6 +80,21 @@ public class MessageStoreTest {
 
     assertEquals(inputMessage, resultMessage);
     Mockito.verify(mockPersistentStorageAgent).writeThrough(inputMessage);
+  }
+
+  @Test
+  public void testNumMessages(){
+    Assert.assertEquals(messageStore.getNumMessages(), 3);
+  }
+
+  @Test
+  public void testMostActiveUser(){
+    Assert.assertEquals(messageStore.mostActiveUser(), USER_ID_TWO);
+  }
+
+  @Test
+  public void testWordiestUser(){
+    Assert.assertEquals(messageStore.wordiestUser(), USER_ID_ONE);
   }
 
   private void assertEquals(Message expectedMessage, Message actualMessage) {
