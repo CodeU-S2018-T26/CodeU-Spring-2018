@@ -57,7 +57,7 @@ public class UserStore {
   /** The in-memory list of Users. */
   private List<User> users;
 
-  private List<String> admin_usernames = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
+  private List<String> adminUsernames = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private UserStore(PersistentStorageAgent persistentStorageAgent) {
@@ -121,7 +121,7 @@ public class UserStore {
   }
 
   public boolean isUserAdmin(String username) {
-    if (admin_usernames.contains(username)){
+    if (adminUsernames.contains(username)){
       return true;
     }
     return false;

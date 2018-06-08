@@ -74,7 +74,7 @@ public class AdminServlet extends HttpServlet {
       request.setAttribute("error", "Only admins can access this page.");
     }
 
-    else{
+    else {
       int numUsers = userStore.getNumUsers();
       request.setAttribute("numUsers", numUsers);
 
@@ -92,9 +92,8 @@ public class AdminServlet extends HttpServlet {
 
       String wordiestUser = userStore.getUser(messageStore.wordiestUser()).getName();
       request.setAttribute("wordiestUser", wordiestUser);
+
+      request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
     }
-    request.getRequestDispatcher("/WEB-INF/view/admin.jsp").forward(request, response);
   }
-
-
 }
