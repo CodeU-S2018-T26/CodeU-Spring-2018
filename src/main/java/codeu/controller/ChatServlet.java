@@ -160,8 +160,10 @@ public class ChatServlet extends HttpServlet {
       int cleanedMessageLength = cleanedMessageContent.length();
       for (int i = 0; i < cleanedMessageLength; i++) {
           if (validCharFlags.contains(cleanedMessageContent.charAt(i))){
-              if (i+1 < cleanedMessageLength && validStrFlags.contains("" + cleanedMessageContent.charAt(i) + cleanedMessageContent.charAt(i+1))){
-                  tokenizedMessageContent.add(""+cleanedMessageContent.charAt(i)+cleanedMessageContent.charAt(i));
+              if (i+1 < cleanedMessageLength && validStrFlags.contains("" +
+                      cleanedMessageContent.charAt(i) + cleanedMessageContent.charAt(i+1))){
+                  tokenizedMessageContent.add("" +
+                          cleanedMessageContent.charAt(i) + cleanedMessageContent.charAt(i));
                   i++;
               }
               else{
@@ -171,7 +173,8 @@ public class ChatServlet extends HttpServlet {
           else{
               boolean inLink = false;
               for (String prefix: linkPrefix){
-                  if(i + prefix.length() < cleanedMessageLength && prefix.equals(cleanedMessageContent.substring(i, i+prefix.length()))) {
+                  if(i + prefix.length() < cleanedMessageLength &&
+                        prefix.equals(cleanedMessageContent.substring(i, i+prefix.length()))) {
                       tokenizedMessageContent.add(prefix);
                       i += prefix.length()-1;
                       inLink = true;
@@ -229,7 +232,8 @@ public class ChatServlet extends HttpServlet {
           if (linkPrefix.contains(tokenizedMessageContent.get(i))){
               tokenizedMessageContent.add(i, markToHtml.get("LINK")[0]);
               for (int j = i+1; j < tokenizedMessageContent.size(); j++){
-                  if (tokenizedMessageContent.get(j).equals(" ") || j == tokenizedMessageContent.size()-1){
+                  if (tokenizedMessageContent.get(j).equals(" ") ||
+                          j == tokenizedMessageContent.size()-1){
                       if (tokenizedMessageContent.get(j).equals(" ")){
                           j--;
                       }
@@ -237,7 +241,8 @@ public class ChatServlet extends HttpServlet {
                       for (int k = i+1; k < j+1; k++){
                           linkContents += tokenizedMessageContent.get(k);
                       }
-                      tokenizedMessageContent.add(j+1, markToHtml.get("LINK")[1] + linkContents + markToHtml.get("LINK")[2]);
+                      tokenizedMessageContent.add(j+1, markToHtml.get("LINK")[1] +
+                              linkContents + markToHtml.get("LINK")[2]);
                       i++;
                       break;
                   }
@@ -305,10 +310,12 @@ public class ChatServlet extends HttpServlet {
     markToHtml.put("LINK", new String[]{"<a href=\"", "\" target=\"_blank\">","</a>"});
 
     // tokenizes message into array list of strings
-    ArrayList<String> tokenizedMessageContent = tokenizeMessage(cleanedMessageContent, validCharFlags, validStrFlags, linkPrefix);
+    ArrayList<String> tokenizedMessageContent = tokenizeMessage(cleanedMessageContent,
+            validCharFlags, validStrFlags, linkPrefix);
 
     // matches valid pairs of tokens and replaces with html syntax
-    parseMessage(tokenizedMessageContent, validCharFlags, validStrFlags, linkPrefix, emojiFlag, markToHtml);
+    parseMessage(tokenizedMessageContent, validCharFlags, validStrFlags,
+                 linkPrefix, emojiFlag, markToHtml);
 
     // converts ArrayList to string
     String parsedMessageContent = "";
