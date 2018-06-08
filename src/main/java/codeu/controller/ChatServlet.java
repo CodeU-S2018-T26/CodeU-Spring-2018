@@ -43,9 +43,10 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Iterator;
 
+import java.io.File;
+import java.lang.ClassLoader;
 
 
 /** Servlet class responsible for the chat page. */
@@ -72,8 +73,15 @@ public class ChatServlet extends HttpServlet {
 
     JSONParser parser = new JSONParser();
     try{
-        Object obj = parser.parse(new FileReader("/Users/Raymond/Developer/CodeU/codeu_project_2018/src/main/resources/emoji/emojis.json"));
+        System.out.println("1");
+        //ClassLoader classLoader = getClass().getClassLoader();
+        System.out.println("2");
+        File file = new File(getClass().getClassLoader().getResource("emoji/emojis.json").getFile());
+        System.out.println("3");
+        Object obj = parser.parse(new FileReader(file));
+        System.out.println("4");
         JSONObject jsonObject = (JSONObject) obj;
+        System.out.println("5");
         // loop array
         JSONArray emojis = (JSONArray) jsonObject.get("emojis");
         Iterator<JSONObject> iterator = emojis.iterator();
