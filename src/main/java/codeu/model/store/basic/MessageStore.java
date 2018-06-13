@@ -16,9 +16,18 @@ package codeu.model.store.basic;
 
 import codeu.model.data.Message;
 import codeu.model.store.persistence.PersistentStorageAgent;
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
+import java.util.Collections;
+import java.util.Comparator;
+
+import static java.util.stream.Collectors.averagingInt;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 
 /**
  * Store class that uses in-memory data structures to hold values and automatically loads from and
@@ -85,9 +94,27 @@ public class MessageStore {
     return messagesInConversation;
   }
 
-  /** returns the number of messages. **/
+  /** returns the number of messages. */
   public int getNumMessages(){
     return messages.size();
+  }
+
+  /** returns the UUID of the user who sent the most messages */
+  public UUID mostActiveUser(){
+    /* Maps the users into UUID and number of messages sent */
+    Map<UUID, Long> messageCounts = messages.stream()
+      .collect(groupingBy(Message::getAuthorId, counting()));
+
+    return Collections.max(messageCounts.entrySet(), Comparator.comparing(Map.Entry::getValue)).getKey();
+  }
+
+  /** returns the UUID of the user who has the highest average message length */
+  public UUID wordiestUser(){
+    /* Maps the users into UUID and average length of messages sent */
+    Map<UUID, Double> messageAverageLength = messages.stream()
+      .collect(groupingBy(Message::getAuthorId, averagingInt(Message::getMessageLength)));
+
+    return Collections.max(messageAverageLength.entrySet(), Comparator.comparing(Map.Entry::getValue)).getKey();
   }
 
   /** Sets the List of Messages stored by this MessageStore. */

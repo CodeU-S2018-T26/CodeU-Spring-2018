@@ -84,6 +84,7 @@ public class LoginServlet extends HttpServlet {
     }
 
     request.getSession().setAttribute("user", username);
+    request.getSession().setAttribute("isAdmin", userStore.isUserAdmin(username));
     response.sendRedirect("/conversations");
   }
 }
