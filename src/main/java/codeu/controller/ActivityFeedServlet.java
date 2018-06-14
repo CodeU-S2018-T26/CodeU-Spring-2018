@@ -25,7 +25,7 @@ public class ActivityFeedServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
-  ArrayList<Instant> arrInstantsSorted = new ArrayList<Instant>();
+  ArrayList<Instant> eventsInstantsSorted = new ArrayList<Instant>();
 
   /** Set up state for handling chat requests. */
   @Override
@@ -62,7 +62,8 @@ public class ActivityFeedServlet extends HttpServlet {
 
   /**
    * This function takes in a list of conversations,users and messages and returns a HashMap of
-   * Instants mapping to HashMaps of UUIDs mapping to a data store: User,Conversation or Message
+   * Instants mapping to HashMaps of UUIDs mapping to a data store string: User,Conversation or
+   * Message
    * 
    * @param conversations
    * @param users
@@ -125,25 +126,17 @@ public class ActivityFeedServlet extends HttpServlet {
   HashMap<Instant, HashMap<UUID, String>> sortHashMap(HashMap<Instant, HashMap<UUID, String>> hm) {
     Instant earlier = null;
     int size = hm.size();
-    arrInstantsSorted = new ArrayList<Instant>();
+    eventsInstantsSorted = new ArrayList<Instant>();
     HashMap<Instant, HashMap<UUID, String>> sortedhm =
         new HashMap<Instant, HashMap<UUID, String>>();
     for (int i = 0; i < size; i++) {
       earlier = findEarliestInstant(hm);
-      arrInstantsSorted.add(earlier);
+      eventsInstantsSorted.add(earlier);
       HashMap<UUID, String> innersm = hm.get(earlier);
       sortedhm.put(earlier, innersm);
       hm.remove(earlier);
     }
     return sortedhm;
-  }
-
-  /*
-   * For testing purposes
-   */
-  ArrayList<Instant> getSortedInstants() {
-    return arrInstantsSorted;
-
   }
 
   /**
@@ -159,11 +152,11 @@ public class ActivityFeedServlet extends HttpServlet {
     List<User> users = userStore.getAllUsers();
     List<Conversation> conversations = conversationStore.getAllConversations();
     List<Message> messages = messageStore.getAllMessages();
-    HashMap<Instant, HashMap<UUID, String>> instantByInstance =
+    HashMap<Instant, HashMap<UUID, String>> eventsMap =
         buildHashMap(conversations, users, messages);
-    instantByInstance = sortHashMap(instantByInstance);
-    request.setAttribute("instantByInstance", instantByInstance);
-    request.setAttribute("arrInstantsSorted", arrInstantsSorted);
+    eventsMap = sortHashMap(eventsMap);
+    request.setAttribute("eventsMap", eventsMap);
+    request.setAttribute("eventsInstantsSorted", eventsInstantsSorted);
     request.getRequestDispatcher("/WEB-INF/view/activityfeed.jsp").forward(request, response);
   }
 

@@ -124,7 +124,7 @@ public class ActivityFeedServletTest {
 
     Mockito.when(mockActivityfeedServlet.buildHashMap(fakeConversations, fakeUsers, fakeMessages))
         .thenReturn(fakeHashMap);
-    Mockito.when(mockActivityfeedServlet.getSortedInstants()).thenReturn(fakeInstantsSorted);
+    //Mockito.when(mockActivityfeedServlet.getSortedInstants()).thenReturn(fakeInstantsSorted);
 
     activityfeedServlet.doGet(mockRequest, mockResponse);
 

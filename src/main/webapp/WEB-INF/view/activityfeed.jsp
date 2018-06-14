@@ -45,18 +45,18 @@
 			<%
 			  DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 			      .withLocale(Locale.US).withZone(ZoneId.systemDefault());
-			  HashMap<Instant, HashMap<UUID, String>> instantByInstance =
-			      (HashMap<Instant, HashMap<UUID, String>>) request.getAttribute("instantByInstance");
-			  ArrayList<Instant> arrInstantsSorted =
-			      (ArrayList<Instant>) request.getAttribute("arrInstantsSorted");
-			  if (instantByInstance == null) {
+			  HashMap<Instant, HashMap<UUID, String>> eventsMap =
+			      (HashMap<Instant, HashMap<UUID, String>>) request.getAttribute("eventsMap");
+			  ArrayList<Instant> eventsInstantsSorted =
+			      (ArrayList<Instant>) request.getAttribute("eventsInstantsSorted");
+			  if (eventsMap == null) {
 			    return;
 			  } else {
-			    for (Instant instant : arrInstantsSorted) {
+			    for (Instant instant : eventsInstantsSorted) {
 			      String author;
 			      Instant time;
 			      String title;
-			      for (Map.Entry<Instant, HashMap<UUID, String>> m : instantByInstance.entrySet()) {
+			      for (Map.Entry<Instant, HashMap<UUID, String>> m : eventsMap.entrySet()) {
 			        if (m.getKey() == instant) {
 			          HashMap<UUID, String> innerm = m.getValue();
 			          for (Map.Entry<UUID, String> im : innerm.entrySet()) {
