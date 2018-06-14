@@ -43,57 +43,58 @@
 		<p>See what's happening!</p>
 		<ul>
 			<%
-				DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withLocale(Locale.US)
-						.withZone(ZoneId.systemDefault());
-				HashMap<Instant, HashMap<UUID, String>> instantByInstance = (HashMap<Instant, HashMap<UUID, String>>) request
-						.getAttribute("instantByInstance");
-				ArrayList<Instant> arrInstantsSorted = (ArrayList<Instant>) request.getAttribute("arrInstantsSorted");
-				if (instantByInstance == null) {
-					return;
-				} else {
-					for (Instant instant : arrInstantsSorted) {
-						String author;
-						Instant time;
-						String title;
-						for (Map.Entry<Instant, HashMap<UUID, String>> m : instantByInstance.entrySet()) {
-							if (m.getKey() == instant) {
-								HashMap<UUID, String> innerm = m.getValue();
-								for (Map.Entry<UUID, String> im : innerm.entrySet()) {
-									if (im.getValue() == "user") {
-										author = UserStore.getInstance().getUser(im.getKey()).getName();
+			  DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+			      .withLocale(Locale.US).withZone(ZoneId.systemDefault());
+			  HashMap<Instant, HashMap<UUID, String>> instantByInstance =
+			      (HashMap<Instant, HashMap<UUID, String>>) request.getAttribute("instantByInstance");
+			  ArrayList<Instant> arrInstantsSorted =
+			      (ArrayList<Instant>) request.getAttribute("arrInstantsSorted");
+			  if (instantByInstance == null) {
+			    return;
+			  } else {
+			    for (Instant instant : arrInstantsSorted) {
+			      String author;
+			      Instant time;
+			      String title;
+			      for (Map.Entry<Instant, HashMap<UUID, String>> m : instantByInstance.entrySet()) {
+			        if (m.getKey() == instant) {
+			          HashMap<UUID, String> innerm = m.getValue();
+			          for (Map.Entry<UUID, String> im : innerm.entrySet()) {
+			            if (im.getValue() == "user") {
+			              author = UserStore.getInstance().getUser(im.getKey()).getName();
 			%>
 			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
 				joined!</li>
 			<%
-				} else if (im.getValue() == "conversation") {
-										Conversation conversation = ConversationStore.getInstance()
-												.getConversation(im.getKey());
-										author = UserStore.getInstance().getUser(conversation.getOwnerId()).getName();
-										title = conversation.getTitle();
+			  } else if (im.getValue() == "conversation") {
+			              Conversation conversation =
+			                  ConversationStore.getInstance().getConversation(im.getKey());
+			              author = UserStore.getInstance().getUser(conversation.getOwnerId()).getName();
+			              title = conversation.getTitle();
 			%>
 			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
 				created a new conversation: <a href="/chat/<%=title%>"><%=title%></a></li>
 			<%
-				} else if (im.getValue() == "message") {
-										Message message = MessageStore.getInstance().getMessage(im.getKey());
-										author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
-										String conversationTitle = ConversationStore.getInstance()
-												.getConversation(message.getConversationId()).getTitle();
+			  } else if (im.getValue() == "message") {
+			              Message message = MessageStore.getInstance().getMessage(im.getKey());
+			              author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
+			              String conversationTitle = ConversationStore.getInstance()
+			                  .getConversation(message.getConversationId()).getTitle();
 			%>
 			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%> sent a
 				message in <a href="/chat/<%=conversationTitle%>"><%=conversationTitle%></a>:
 				"<%=message.getContent()%>"</li>
 			<%
-				}
+			  }
 			%>
 
 			<%
-				}
-							}
-						}
-					}
+			  }
+			        }
+			      }
+			    }
 
-				}
+			  }
 			%>
 		</ul>
 	</div>

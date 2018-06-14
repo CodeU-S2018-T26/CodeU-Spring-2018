@@ -158,9 +158,9 @@ public class ActivityFeedServlet extends HttpServlet {
 	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<User> users = UserStore.getAllUsers();
-		List<Conversation> conversations = ConversationStore.getAllConversations();
-		List<Message> messages = MessageStore.getAllMessages();
+		List<User> users = userStore.getAllUsers();
+		List<Conversation> conversations = conversationStore.getAllConversations();
+		List<Message> messages = messageStore.getAllMessages();
 		HashMap<Instant, HashMap<UUID, String>> instantByInstance = buildHashMap(conversations, users, messages);
 		instantByInstance = sortHashMap(instantByInstance);
 		request.setAttribute("instantByInstance", instantByInstance);

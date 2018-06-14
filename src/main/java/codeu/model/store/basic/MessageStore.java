@@ -93,7 +93,7 @@ public class MessageStore {
   }
   
   /** Access the current set of messages known to the application. */
-  public static List<Message> getAllMessages() {
+  public List<Message> getAllMessages() {
     return messages;
   }
   
