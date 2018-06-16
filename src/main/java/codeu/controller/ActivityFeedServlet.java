@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import codeu.model.data.Conversation;
+import codeu.model.data.Event;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
@@ -58,26 +59,6 @@ public class ActivityFeedServlet extends HttpServlet {
     this.userStore = userStore;
   }
 
-
-
-
-  /**
-   * This function takes in a HashMap and finds the earliest Instant using the isBefore function
-   * 
-   * @param hm
-   * @return the earliest instant
-   */
-
-
-  /**
-   * This function takes in a HashMap and sorts the instants from latest to oldest Stores Instants
-   * in correct order in an ArrayList
-   * 
-   * @param hm
-   * @return a sorted HashMap by Instants
-   */
-
-
   /**
    * This function fires when a user requests the /activity URL. It simply forwards the request to
    * activity.jsp.
@@ -89,8 +70,7 @@ public class ActivityFeedServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     ArrayList<Instant> eventsInstantsSorted = new ArrayList<Instant>();
-    HashMap<Instant, HashMap<UUID, String>> eventsMap =
-        new HashMap<Instant, HashMap<UUID, String>>();
+    HashMap<Instant, Event> eventsMap = new HashMap<Instant, Event>();
 
     List<User> users = userStore.getAllUsers();
     List<Conversation> conversations = conversationStore.getAllConversations();

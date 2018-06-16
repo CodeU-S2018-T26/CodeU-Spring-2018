@@ -16,5 +16,6 @@ public class EventTest {
 
     Assert.assertEquals(id, event.getId());
     Assert.assertEquals(type, event.getEventType());
+
   }
 }

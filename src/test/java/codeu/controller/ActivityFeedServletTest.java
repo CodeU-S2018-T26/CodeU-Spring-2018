@@ -16,6 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import codeu.model.data.Conversation;
+import codeu.model.data.Event;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
@@ -100,7 +101,6 @@ public class ActivityFeedServletTest {
     fakeEventsInstantsSorted.add(fakeConversationInstant);
     fakeEventsInstantsSorted.add(fakeUser2Instant);
     fakeEventsInstantsSorted.add(fakeMessageInstant);
-
 
     // Mocking ...
     Mockito.when(mockUserStore.getAllUsers()).thenReturn(fakeUsers);

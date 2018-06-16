@@ -15,6 +15,7 @@
 package codeu.model.store.basic;
 
 import codeu.model.data.Conversation;
+import codeu.model.data.Event;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
@@ -65,8 +66,7 @@ public class UserStore {
 
   /** The in-memory list of Instants of Events. */
   ArrayList<Instant> eventsInstantsSorted = new ArrayList<Instant>();
-  HashMap<Instant, HashMap<UUID, String>> builtEventsMap =
-      new HashMap<Instant, HashMap<UUID, String>>();
+  HashMap<Instant, Event> builtEventsMap = new HashMap<Instant, Event>();
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private UserStore(PersistentStorageAgent persistentStorageAgent) {
@@ -142,13 +142,19 @@ public class UserStore {
     return users;
   }
 
-  Instant findEarliestInstant(HashMap<Instant, HashMap<UUID, String>> hm) {
+  /**
+   * This function takes in the EventsMap and finds the earliest Instant from its keys
+   * 
+   * @param hm
+   * @return the earliest instant
+   */
+  Instant findEarliestInstant(HashMap<Instant, Event> hm) {
     Instant earliestInstant = null;
-    for (Map.Entry<Instant, HashMap<UUID, String>> m : hm.entrySet()) {
+    for (Map.Entry<Instant, Event> m : hm.entrySet()) {
       earliestInstant = m.getKey();
       break;
     }
-    for (Map.Entry<Instant, HashMap<UUID, String>> m : hm.entrySet()) {
+    for (Map.Entry<Instant, Event> m : hm.entrySet()) {
       Instant toCmpInstant = m.getKey();
       if (earliestInstant.isBefore(toCmpInstant)) {
         earliestInstant = toCmpInstant;
@@ -159,56 +165,58 @@ public class UserStore {
 
   /**
    * This function takes in lists of conversations,users and messages and returns a HashMap of
-   * Instants mapping to an inner HashMap of UUIDs mapping to a data store string: User,Conversation
-   * or Message
+   * Instants mapping to an Event Object
    * 
    * @param conversations
    * @param users
    * @param messages
-   * @return built HashMap for each Event
+   * @return eventsMap
    */
-  public HashMap<Instant, HashMap<UUID, String>> buildEventsMap(List<User> users,
-      List<Conversation> conversations, List<Message> messages) {
-    builtEventsMap = new HashMap<Instant, HashMap<UUID, String>>();
+  public HashMap<Instant, Event> buildEventsMap(List<User> users, List<Conversation> conversations,
+      List<Message> messages) {
+    builtEventsMap = new HashMap<Instant, Event>();
 
     for (User user : users) {
-      HashMap<UUID, String> innerhm = new HashMap<UUID, String>();
-      innerhm.put(user.getId(), "user");
-      builtEventsMap.put(user.getCreationTime(), innerhm);
-
+      Event event = new Event(user.getId(), "user");
+      builtEventsMap.put(user.getCreationTime(), event);
     }
 
     for (Conversation conversation : conversations) {
-      HashMap<UUID, String> innerhm = new HashMap<UUID, String>();
-      innerhm.put(conversation.getId(), "conversation");
-      builtEventsMap.put(conversation.getCreationTime(), innerhm);
+      Event event = new Event(conversation.getId(), "conversation");
+      builtEventsMap.put(conversation.getCreationTime(), event);
 
     }
     for (Message message : messages) {
-      HashMap<UUID, String> innerhm = new HashMap<UUID, String>();
-      innerhm.put(message.getId(), "message");
-      builtEventsMap.put(message.getCreationTime(), innerhm);
+      Event event = new Event(message.getId(), "message");
+      builtEventsMap.put(message.getCreationTime(), event);
     }
     return builtEventsMap;
   }
 
-  public HashMap<Instant, HashMap<UUID, String>> sortEventsMap(
-      HashMap<Instant, HashMap<UUID, String>> hm) {
+  /**
+   * This function takes in a HashMap and sorts the instants from latest to oldest
+   * 
+   * Stores sorted Instants in an ArrayList
+   * 
+   * @param eventsMap
+   * @return sortedEventsMap
+   */
+  public HashMap<Instant, Event> sortEventsMap(HashMap<Instant, Event> eventsMap) {
     Instant earlier = null;
-    int size = hm.size();
+    int size = eventsMap.size();
     eventsInstantsSorted = new ArrayList<Instant>();
-    HashMap<Instant, HashMap<UUID, String>> sortedhm =
-        new HashMap<Instant, HashMap<UUID, String>>();
+    HashMap<Instant, Event> sortedEventsMap = new HashMap<Instant, Event>();
     for (int i = 0; i < size; i++) {
-      earlier = findEarliestInstant(hm);
+      earlier = findEarliestInstant(eventsMap);
       eventsInstantsSorted.add(earlier);
-      HashMap<UUID, String> innersm = hm.get(earlier);
-      sortedhm.put(earlier, innersm);
-      hm.remove(earlier);
+      Event event = eventsMap.get(earlier);
+      sortedEventsMap.put(earlier, event);
+      eventsMap.remove(earlier);
     }
-    return sortedhm;
+    return sortedEventsMap;
   }
 
+  /** Access the current set of events known to the application. */
   public ArrayList<Instant> getAllEventsInstants() {
     return eventsInstantsSorted;
   }

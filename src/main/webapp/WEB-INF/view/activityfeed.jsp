@@ -20,6 +20,7 @@
 <%@ page import="codeu.model.data.Conversation"%>
 <%@ page import="codeu.model.data.User"%>
 <%@ page import="codeu.model.data.Message"%>
+<%@ page import="codeu.model.data.Event"%>
 <%@ page import="codeu.model.store.basic.UserStore"%>
 <%@ page import="java.time.format.FormatStyle"%>
 <%@ page import="codeu.model.store.basic.ConversationStore"%>
@@ -45,8 +46,8 @@
 			<%
 			  DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 			      .withLocale(Locale.US).withZone(ZoneId.systemDefault());
-			  HashMap<Instant, HashMap<UUID, String>> eventsMap =
-			      (HashMap<Instant, HashMap<UUID, String>>) request.getAttribute("eventsMap");
+			  HashMap<Instant, Event> eventsMap =
+			      (HashMap<Instant, Event>) request.getAttribute("eventsMap");
 			  ArrayList<Instant> eventsInstantsSorted =
 			      (ArrayList<Instant>) request.getAttribute("eventsInstantsSorted");
 			  if (eventsMap == null) {
@@ -56,30 +57,29 @@
 			      String author;
 			      Instant time;
 			      String title;
-			      for (Map.Entry<Instant, HashMap<UUID, String>> m : eventsMap.entrySet()) {
+			      for (Map.Entry<Instant, Event> m : eventsMap.entrySet()) {
 			        if (m.getKey() == instant) {
-			          HashMap<UUID, String> innerm = m.getValue();
-			          for (Map.Entry<UUID, String> im : innerm.entrySet()) {
-			            if (im.getValue() == "user") {
-			              author = UserStore.getInstance().getUser(im.getKey()).getName();
+			          Event event = m.getValue();
+			          if (event.getEventType() == "user") {
+			            author = UserStore.getInstance().getUser(event.getId()).getName();
 			%>
 			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
 				joined!</li>
 			<%
-			  } else if (im.getValue() == "conversation") {
-			              Conversation conversation =
-			                  ConversationStore.getInstance().getConversation(im.getKey());
-			              author = UserStore.getInstance().getUser(conversation.getOwnerId()).getName();
-			              title = conversation.getTitle();
+			  } else if (event.getEventType() == "conversation") {
+			            Conversation conversation =
+			                ConversationStore.getInstance().getConversation(event.getId());
+			            author = UserStore.getInstance().getUser(conversation.getOwnerId()).getName();
+			            title = conversation.getTitle();
 			%>
 			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
 				created a new conversation: <a href="/chat/<%=title%>"><%=title%></a></li>
 			<%
-			  } else if (im.getValue() == "message") {
-			              Message message = MessageStore.getInstance().getMessage(im.getKey());
-			              author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
-			              String conversationTitle = ConversationStore.getInstance()
-			                  .getConversation(message.getConversationId()).getTitle();
+			  } else if (event.getEventType() == "message") {
+			            Message message = MessageStore.getInstance().getMessage(event.getId());
+			            author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
+			            String conversationTitle = ConversationStore.getInstance()
+			                .getConversation(message.getConversationId()).getTitle();
 			%>
 			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%> sent a
 				message in <a href="/chat/<%=conversationTitle%>"><%=conversationTitle%></a>:
@@ -90,10 +90,8 @@
 
 			<%
 			  }
-			        }
 			      }
 			    }
-
 			  }
 			%>
 		</ul>
