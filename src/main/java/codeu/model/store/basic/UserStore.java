@@ -17,6 +17,7 @@ package codeu.model.store.basic;
 import codeu.model.data.Conversation;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +58,11 @@ public class UserStore {
   private PersistentStorageAgent persistentStorageAgent;
 
   /** The in-memory list of Users. */
-  private static List<User> users;
+  private List<User> users;
+  
+  /** The in-memory list of Instants of Events. */
+  private ArrayList<Instant> eventsSortedByInstants;
+
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private UserStore(PersistentStorageAgent persistentStorageAgent) {
@@ -131,6 +136,14 @@ public class UserStore {
   /** Access the current set of users known to the application. */
   public List<User> getAllUsers() {
     return users;
+  }
+
+  public void setEventsInstants(ArrayList<Instant> instants) {
+    this.eventsSortedByInstants = instants;
+  }
+  
+  public ArrayList<Instant> getAllEventsInstants() {
+    return eventsSortedByInstants;
   }
 
 }

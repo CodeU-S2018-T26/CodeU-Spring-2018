@@ -60,7 +60,6 @@ public class ConversationStore {
 
   /** The in-memory list of Conversations. */
   private List<Conversation> conversations;
-  private ArrayList<Instant> eventsSortedByInstants;
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private ConversationStore(PersistentStorageAgent persistentStorageAgent) {

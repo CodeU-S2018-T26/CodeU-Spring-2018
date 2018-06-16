@@ -155,8 +155,12 @@ public class ActivityFeedServlet extends HttpServlet {
     HashMap<Instant, HashMap<UUID, String>> eventsMap =
         buildHashMap(conversations, users, messages);
     eventsMap = sortHashMap(eventsMap);
-    request.setAttribute("eventsMap", eventsMap);
-    request.setAttribute("eventsInstantsSorted", eventsInstantsSorted);
+    userStore.setEventsInstants(eventsInstantsSorted);
+    request.setAttribute("users", users);
+    request.setAttribute("conversations", conversations);
+    request.setAttribute("messages", messages);
+    //request.setAttribute("eventsInstantsSorted", eventsInstantsSorted);
+    //request.setAttribute("eventsMap", eventsMap);
     request.getRequestDispatcher("/WEB-INF/view/activityfeed.jsp").forward(request, response);
   }
 
