@@ -94,40 +94,20 @@ public class ActivityFeedServletTest {
     fakeMessages.add(fakeMessage);
 
 
-    // Building Fake HashMap ...
-    HashMap<Instant, HashMap<UUID, String>> fakeHashMap =
-        new HashMap<Instant, HashMap<UUID, String>>();
-    HashMap<UUID, String> fakeInnerHashMap = new HashMap<UUID, String>();
-    fakeInnerHashMap.put(fakeUser1Id, "user");
-    fakeHashMap.put(fakeUser1Instant, fakeInnerHashMap);
-    fakeInnerHashMap = new HashMap<UUID, String>();
-    fakeInnerHashMap.put(fakeUser2Id, "user");
-    fakeHashMap.put(fakeUser2Instant, fakeInnerHashMap);
-    fakeInnerHashMap = new HashMap<UUID, String>();
-    fakeInnerHashMap.put(fakeConversationId, "conversation");
-    fakeHashMap.put(fakeConversationInstant, fakeInnerHashMap);
-    fakeInnerHashMap = new HashMap<UUID, String>();
-    fakeInnerHashMap.put(fakeMessageId, "message");
-    fakeHashMap.put(fakeMessageInstant, fakeInnerHashMap);
-
     // Building Fake Array of Sorted Instants ...
-    ArrayList<Instant> fakeInstantsSorted = new ArrayList<Instant>();
-    fakeInstantsSorted.add(fakeUser1Instant);
-    fakeInstantsSorted.add(fakeConversationInstant);
-    fakeInstantsSorted.add(fakeUser2Instant);
-    fakeInstantsSorted.add(fakeMessageInstant);
+    ArrayList<Instant> fakeEventsInstantsSorted = new ArrayList<Instant>();
+    fakeEventsInstantsSorted.add(fakeUser1Instant);
+    fakeEventsInstantsSorted.add(fakeConversationInstant);
+    fakeEventsInstantsSorted.add(fakeUser2Instant);
+    fakeEventsInstantsSorted.add(fakeMessageInstant);
 
 
+    // Mocking ...
     Mockito.when(mockUserStore.getAllUsers()).thenReturn(fakeUsers);
     Mockito.when(mockConversationStore.getAllConversations()).thenReturn(fakeConversations);
     Mockito.when(mockMessageStore.getAllMessages()).thenReturn(fakeMessages);
 
-    // Add Fake Array to one of the mock data store
-    // mockUserStore.setEventsInstants(fakeInstantsSorted);
-
-    // Mockito.when(mockUserStore.getAllEventsInstants())
-    // .thenReturn(fakeHashMap);
-    // Mockito.when(mockUserStore.getAllEventsInstants()).thenReturn(fakeInstantsSorted);
+    Mockito.when(mockUserStore.getAllEventsInstants()).thenReturn(fakeEventsInstantsSorted);
 
     activityfeedServlet.doGet(mockRequest, mockResponse);
 
@@ -135,12 +115,7 @@ public class ActivityFeedServletTest {
     Mockito.verify(mockRequest).setAttribute("conversations", fakeConversations);
     Mockito.verify(mockRequest).setAttribute("messages", fakeMessages);
 
-
-    // Mockito.verify(mockRequest).setAttribute("eventsInstantsSorted", fakeInstantsSorted);
-
-    // Mockito.verify(mockRequest).setAttribute("eventsMap", fakeHashMap);
-
-
+    Mockito.verify(mockRequest).setAttribute("eventsInstantsSorted", fakeEventsInstantsSorted);
 
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }

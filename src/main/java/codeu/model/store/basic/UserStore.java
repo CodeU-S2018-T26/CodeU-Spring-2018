@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,11 +15,14 @@
 package codeu.model.store.basic;
 
 import codeu.model.data.Conversation;
+import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -59,10 +62,11 @@ public class UserStore {
 
   /** The in-memory list of Users. */
   private List<User> users;
-  
-  /** The in-memory list of Instants of Events. */
-  private ArrayList<Instant> eventsSortedByInstants;
 
+  /** The in-memory list of Instants of Events. */
+  ArrayList<Instant> eventsInstantsSorted = new ArrayList<Instant>();
+  HashMap<Instant, HashMap<UUID, String>> builtEventsMap =
+      new HashMap<Instant, HashMap<UUID, String>>();
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private UserStore(PersistentStorageAgent persistentStorageAgent) {
@@ -132,18 +136,81 @@ public class UserStore {
   public void setUsers(List<User> users) {
     this.users = users;
   }
-  
+
   /** Access the current set of users known to the application. */
   public List<User> getAllUsers() {
     return users;
   }
 
-  public void setEventsInstants(ArrayList<Instant> instants) {
-    this.eventsSortedByInstants = instants;
+  Instant findEarliestInstant(HashMap<Instant, HashMap<UUID, String>> hm) {
+    Instant earliestInstant = null;
+    for (Map.Entry<Instant, HashMap<UUID, String>> m : hm.entrySet()) {
+      earliestInstant = m.getKey();
+      break;
+    }
+    for (Map.Entry<Instant, HashMap<UUID, String>> m : hm.entrySet()) {
+      Instant toCmpInstant = m.getKey();
+      if (earliestInstant.isBefore(toCmpInstant)) {
+        earliestInstant = toCmpInstant;
+      }
+    }
+    return earliestInstant;
   }
-  
+
+  /**
+   * This function takes in lists of conversations,users and messages and returns a HashMap of
+   * Instants mapping to an inner HashMap of UUIDs mapping to a data store string: User,Conversation
+   * or Message
+   * 
+   * @param conversations
+   * @param users
+   * @param messages
+   * @return built HashMap for each Event
+   */
+  public HashMap<Instant, HashMap<UUID, String>> buildEventsMap(List<User> users,
+      List<Conversation> conversations, List<Message> messages) {
+    builtEventsMap = new HashMap<Instant, HashMap<UUID, String>>();
+
+    for (User user : users) {
+      HashMap<UUID, String> innerhm = new HashMap<UUID, String>();
+      innerhm.put(user.getId(), "user");
+      builtEventsMap.put(user.getCreationTime(), innerhm);
+
+    }
+
+    for (Conversation conversation : conversations) {
+      HashMap<UUID, String> innerhm = new HashMap<UUID, String>();
+      innerhm.put(conversation.getId(), "conversation");
+      builtEventsMap.put(conversation.getCreationTime(), innerhm);
+
+    }
+    for (Message message : messages) {
+      HashMap<UUID, String> innerhm = new HashMap<UUID, String>();
+      innerhm.put(message.getId(), "message");
+      builtEventsMap.put(message.getCreationTime(), innerhm);
+    }
+    return builtEventsMap;
+  }
+
+  public HashMap<Instant, HashMap<UUID, String>> sortEventsMap(
+      HashMap<Instant, HashMap<UUID, String>> hm) {
+    Instant earlier = null;
+    int size = hm.size();
+    eventsInstantsSorted = new ArrayList<Instant>();
+    HashMap<Instant, HashMap<UUID, String>> sortedhm =
+        new HashMap<Instant, HashMap<UUID, String>>();
+    for (int i = 0; i < size; i++) {
+      earlier = findEarliestInstant(hm);
+      eventsInstantsSorted.add(earlier);
+      HashMap<UUID, String> innersm = hm.get(earlier);
+      sortedhm.put(earlier, innersm);
+      hm.remove(earlier);
+    }
+    return sortedhm;
+  }
+
   public ArrayList<Instant> getAllEventsInstants() {
-    return eventsSortedByInstants;
+    return eventsInstantsSorted;
   }
 
 }
