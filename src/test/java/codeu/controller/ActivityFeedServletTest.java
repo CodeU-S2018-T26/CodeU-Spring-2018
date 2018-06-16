@@ -64,7 +64,7 @@ public class ActivityFeedServletTest {
 
   @Test
   public void testDoGet() throws IOException, ServletException {
-    
+
     // Initializing Fake DataStore ...
     UUID fakeUser1Id = UUID.randomUUID();
     Instant fakeUser1Instant = Instant.now();
@@ -116,21 +116,18 @@ public class ActivityFeedServletTest {
     fakeInstantsSorted.add(fakeConversationInstant);
     fakeInstantsSorted.add(fakeUser2Instant);
     fakeInstantsSorted.add(fakeMessageInstant);
-    
-    
-    Mockito.when(mockUserStore.getAllUsers())
-    .thenReturn(fakeUsers);
-    Mockito.when(mockConversationStore.getAllConversations())
-    .thenReturn(fakeConversations);
-    Mockito.when(mockMessageStore.getAllMessages())
-    .thenReturn(fakeMessages);
-    
-    // Add Fake Array to one of the mock data store
-  //  mockUserStore.setEventsInstants(fakeInstantsSorted);
 
-    //Mockito.when(mockUserStore.getAllEventsInstants())
-        //.thenReturn(fakeHashMap);
-    //Mockito.when(mockUserStore.getAllEventsInstants()).thenReturn(fakeInstantsSorted);
+
+    Mockito.when(mockUserStore.getAllUsers()).thenReturn(fakeUsers);
+    Mockito.when(mockConversationStore.getAllConversations()).thenReturn(fakeConversations);
+    Mockito.when(mockMessageStore.getAllMessages()).thenReturn(fakeMessages);
+
+    // Add Fake Array to one of the mock data store
+    // mockUserStore.setEventsInstants(fakeInstantsSorted);
+
+    // Mockito.when(mockUserStore.getAllEventsInstants())
+    // .thenReturn(fakeHashMap);
+    // Mockito.when(mockUserStore.getAllEventsInstants()).thenReturn(fakeInstantsSorted);
 
     activityfeedServlet.doGet(mockRequest, mockResponse);
 
@@ -139,12 +136,12 @@ public class ActivityFeedServletTest {
     Mockito.verify(mockRequest).setAttribute("messages", fakeMessages);
 
 
-    //Mockito.verify(mockRequest).setAttribute("eventsInstantsSorted", fakeInstantsSorted);
+    // Mockito.verify(mockRequest).setAttribute("eventsInstantsSorted", fakeInstantsSorted);
 
-    //Mockito.verify(mockRequest).setAttribute("eventsMap", fakeHashMap);
+    // Mockito.verify(mockRequest).setAttribute("eventsMap", fakeHashMap);
 
 
-    
+
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
 

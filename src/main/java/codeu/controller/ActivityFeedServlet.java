@@ -152,6 +152,7 @@ public class ActivityFeedServlet extends HttpServlet {
     List<User> users = userStore.getAllUsers();
     List<Conversation> conversations = conversationStore.getAllConversations();
     List<Message> messages = messageStore.getAllMessages();
+
     HashMap<Instant, HashMap<UUID, String>> eventsMap =
         buildHashMap(conversations, users, messages);
     eventsMap = sortHashMap(eventsMap);
@@ -159,8 +160,8 @@ public class ActivityFeedServlet extends HttpServlet {
     request.setAttribute("users", users);
     request.setAttribute("conversations", conversations);
     request.setAttribute("messages", messages);
-    //request.setAttribute("eventsInstantsSorted", eventsInstantsSorted);
-    //request.setAttribute("eventsMap", eventsMap);
+    // request.setAttribute("eventsInstantsSorted", eventsInstantsSorted);
+    // request.setAttribute("eventsMap", eventsMap);
     request.getRequestDispatcher("/WEB-INF/view/activityfeed.jsp").forward(request, response);
   }
 
