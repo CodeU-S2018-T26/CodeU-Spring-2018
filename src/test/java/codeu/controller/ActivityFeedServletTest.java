@@ -29,7 +29,6 @@ public class ActivityFeedServletTest {
   private HttpServletResponse mockResponse;
   private HttpSession mockSession;
   private RequestDispatcher mockRequestDispatcher;
-  private ActivityFeedServlet mockActivityfeedServlet;
   private ConversationStore mockConversationStore;
   private MessageStore mockMessageStore;
   private UserStore mockUserStore;
@@ -102,6 +101,7 @@ public class ActivityFeedServletTest {
     fakeEventsInstantsSorted.add(fakeUser2Instant);
     fakeEventsInstantsSorted.add(fakeMessageInstant);
 
+
     // Mocking ...
     Mockito.when(mockUserStore.getAllUsers()).thenReturn(fakeUsers);
     Mockito.when(mockConversationStore.getAllConversations()).thenReturn(fakeConversations);
@@ -111,6 +111,8 @@ public class ActivityFeedServletTest {
 
     activityfeedServlet.doGet(mockRequest, mockResponse);
 
+
+    // Testing ...
     Mockito.verify(mockRequest).setAttribute("users", fakeUsers);
     Mockito.verify(mockRequest).setAttribute("conversations", fakeConversations);
     Mockito.verify(mockRequest).setAttribute("messages", fakeMessages);

@@ -16,9 +16,8 @@ public class ConversationStoreTest {
   private ConversationStore conversationStore;
   private PersistentStorageAgent mockPersistentStorageAgent;
 
-  private final Conversation CONVERSATION_ONE =
-      new Conversation(
-          UUID.randomUUID(), UUID.randomUUID(), "conversation_one", Instant.ofEpochMilli(1000));
+  private final Conversation CONVERSATION_ONE = new Conversation(UUID.randomUUID(),
+      UUID.randomUUID(), "conversation_one", Instant.ofEpochMilli(1000));
 
   @Before
   public void setup() {
@@ -76,7 +75,7 @@ public class ConversationStoreTest {
     Assert.assertEquals(expectedConversation.getId(), actualConversation.getId());
     Assert.assertEquals(expectedConversation.getOwnerId(), actualConversation.getOwnerId());
     Assert.assertEquals(expectedConversation.getTitle(), actualConversation.getTitle());
-    Assert.assertEquals(
-        expectedConversation.getCreationTime(), actualConversation.getCreationTime());
+    Assert.assertEquals(expectedConversation.getCreationTime(),
+        actualConversation.getCreationTime());
   }
 }

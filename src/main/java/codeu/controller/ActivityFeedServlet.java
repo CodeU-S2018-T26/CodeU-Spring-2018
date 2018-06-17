@@ -87,6 +87,7 @@ public class ActivityFeedServlet extends HttpServlet {
     request.setAttribute("eventsInstantsSorted", eventsInstantsSorted);
     request.setAttribute("eventsMap", eventsMap);
 
+
     request.getRequestDispatcher("/WEB-INF/view/activityfeed.jsp").forward(request, response);
   }
 

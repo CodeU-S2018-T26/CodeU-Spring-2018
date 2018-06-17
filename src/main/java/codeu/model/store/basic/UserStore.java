@@ -64,9 +64,9 @@ public class UserStore {
   /** The in-memory list of Users. */
   private List<User> users;
 
-  /** The in-memory list of Instants of Events. */
+  /** The in-memory eventsMap and list of Instants of Events. */
   ArrayList<Instant> eventsInstantsSorted = new ArrayList<Instant>();
-  HashMap<Instant, Event> builtEventsMap = new HashMap<Instant, Event>();
+  HashMap<Instant, Event> eventsMap = new HashMap<Instant, Event>();
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private UserStore(PersistentStorageAgent persistentStorageAgent) {
@@ -143,12 +143,12 @@ public class UserStore {
   }
 
   /**
-   * This function takes in the EventsMap and finds the earliest Instant from its keys
+   * This function takes in the EventsMap and finds the latest Instant from its keys
    * 
    * @param hm
    * @return the earliest instant
    */
-  Instant findEarliestInstant(HashMap<Instant, Event> hm) {
+  Instant findLatestInstant(HashMap<Instant, Event> hm) {
     Instant earliestInstant = null;
     for (Map.Entry<Instant, Event> m : hm.entrySet()) {
       earliestInstant = m.getKey();
@@ -174,23 +174,22 @@ public class UserStore {
    */
   public HashMap<Instant, Event> buildEventsMap(List<User> users, List<Conversation> conversations,
       List<Message> messages) {
-    builtEventsMap = new HashMap<Instant, Event>();
-
+    eventsMap = new HashMap<Instant, Event>();
     for (User user : users) {
       Event event = new Event(user.getId(), "user");
-      builtEventsMap.put(user.getCreationTime(), event);
+      eventsMap.put(user.getCreationTime(), event);
     }
 
     for (Conversation conversation : conversations) {
       Event event = new Event(conversation.getId(), "conversation");
-      builtEventsMap.put(conversation.getCreationTime(), event);
+      eventsMap.put(conversation.getCreationTime(), event);
 
     }
     for (Message message : messages) {
       Event event = new Event(message.getId(), "message");
-      builtEventsMap.put(message.getCreationTime(), event);
+      eventsMap.put(message.getCreationTime(), event);
     }
-    return builtEventsMap;
+    return eventsMap;
   }
 
   /**
@@ -207,7 +206,7 @@ public class UserStore {
     eventsInstantsSorted = new ArrayList<Instant>();
     HashMap<Instant, Event> sortedEventsMap = new HashMap<Instant, Event>();
     for (int i = 0; i < size; i++) {
-      earlier = findEarliestInstant(eventsMap);
+      earlier = findLatestInstant(eventsMap);
       eventsInstantsSorted.add(earlier);
       Event event = eventsMap.get(earlier);
       sortedEventsMap.put(earlier, event);
@@ -219,6 +218,11 @@ public class UserStore {
   /** Access the current set of events known to the application. */
   public ArrayList<Instant> getAllEventsInstants() {
     return eventsInstantsSorted;
+  }
+
+  /** Access the current eventsMap. */
+  public HashMap<Instant, Event> getEventsMap() {
+    return eventsMap;
   }
 
 }
