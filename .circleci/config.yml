@@ -1,0 +1,43 @@
+version: 2
+jobs:
+  java8-mvn-integration-test:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - deps-{{ checksum "pom.xml" }}
+          - deps-
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: deps-{{ checksum "pom.xml" }}
+      - run: mvn integration-test
+
+  java9-mvn-integration-test:
+    docker:
+      - image: circleci/openjdk:9-jdk
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - deps-{{ checksum "pom.xml" }}
+          - deps-
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: deps-{{ checksum "pom.xml" }}
+      - run: mvn integration-test
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - java8-mvn-integration-test
+      - java9-mvn-integration-test

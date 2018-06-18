@@ -15,8 +15,7 @@
   <a href="/conversations">Conversations</a>
   <% if (request.getSession().getAttribute("user") != null) { %>
   <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
-  <%final List<String> ADMIN_USERNAMES = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
-    if(ADMIN_USERNAMES.contains(request.getSession().getAttribute("user"))){%>
+  <%if((boolean) request.getSession().getAttribute("isAdmin") == true){%>
   <a href = "/admin">Admin</a><%}
   } else { %>
   <a href="/login">Login</a>
@@ -31,6 +30,12 @@
   <% }
   else { %>
     <h1>ADMIN PAGE!!!</h1>
+    <h3> Number of Users: <%= request.getAttribute("numUsers") %></h3>
+    <h3> Number of Conversations: <%= request.getAttribute("numConversations") %></h3>
+    <h3> Number of Messages: <%= request.getAttribute("numMessages") %></h3>
+    <h3> Newest User: <%= request.getAttribute("newestUser") %></h3>
+    <h3> Most Active User: <%= request.getAttribute("mostActiveUser") %></h3>
+    <h3> Wordiest User: <%= request.getAttribute("wordiestUser") %></h3>
   <%}%>
 
 </body>

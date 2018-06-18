@@ -20,11 +20,7 @@ import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Store class that uses in-memory data structures to hold values and automatically loads from and
@@ -67,6 +63,7 @@ public class UserStore {
   /** The in-memory eventsMap and list of Instants of Events. */
   ArrayList<Instant> eventsInstantsSorted = new ArrayList<Instant>();
   HashMap<Instant, Event> eventsMap = new HashMap<Instant, Event>();
+  private List<String> adminUsernames = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private UserStore(PersistentStorageAgent persistentStorageAgent) {
@@ -127,6 +124,23 @@ public class UserStore {
       }
     }
     return false;
+  }
+
+  public boolean isUserAdmin(String username) {
+    if (adminUsernames.contains(username)){
+      return true;
+    }
+    return false;
+  }
+
+  /** returns the number of users. */
+  public int getNumUsers(){
+    return users.size();
+  }
+
+  /** returns the newest user. */
+  public User newestUser(){
+    return users.stream().max(Comparator.comparing(User::getCreationTime)).get();
   }
 
   /**
