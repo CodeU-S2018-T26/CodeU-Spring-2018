@@ -59,7 +59,7 @@ public class MessageStore {
   private PersistentStorageAgent persistentStorageAgent;
 
   /** The in-memory list of Messages. */
-  private static List<Message> messages;
+  private List<Message> messages;
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private MessageStore(PersistentStorageAgent persistentStorageAgent) {
