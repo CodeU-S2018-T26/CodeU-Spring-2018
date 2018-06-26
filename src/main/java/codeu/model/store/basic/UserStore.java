@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,12 @@
 
 package codeu.model.store.basic;
 
+import codeu.model.data.Conversation;
+import codeu.model.data.Event;
+import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
-
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -57,6 +60,9 @@ public class UserStore {
   /** The in-memory list of Users. */
   private List<User> users;
 
+  /** The in-memory eventsMap and list of Instants of Events. */
+  ArrayList<Instant> eventsInstantsSorted = new ArrayList<Instant>();
+  HashMap<Instant, Event> eventsMap = new HashMap<Instant, Event>();
   private List<String> adminUsernames = Arrays.asList("ayliana", "Marouane", "jeremy", "marissa", "raymond");
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
@@ -144,5 +150,94 @@ public class UserStore {
   public void setUsers(List<User> users) {
     this.users = users;
   }
+
+  /** Access the current set of users known to the application. */
+  public List<User> getAllUsers() {
+    return users;
+  }
+
+  /**
+   * This function takes in the EventsMap and finds the latest Instant from its keys
+   * 
+   * @param hm
+   * @return the earliest instant
+   */
+  Instant findLatestInstant(HashMap<Instant, Event> hm) {
+    Instant earliestInstant = null;
+    for (Map.Entry<Instant, Event> m : hm.entrySet()) {
+      earliestInstant = m.getKey();
+      break;
+    }
+    for (Map.Entry<Instant, Event> m : hm.entrySet()) {
+      Instant toCmpInstant = m.getKey();
+      if (earliestInstant.isBefore(toCmpInstant)) {
+        earliestInstant = toCmpInstant;
+      }
+    }
+    return earliestInstant;
+  }
+
+  /**
+   * This function takes in lists of conversations,users and messages and returns a HashMap of
+   * Instants mapping to an Event Object
+   * 
+   * @param conversations
+   * @param users
+   * @param messages
+   * @return eventsMap
+   */
+  public HashMap<Instant, Event> buildEventsMap(List<User> users, List<Conversation> conversations,
+      List<Message> messages) {
+    eventsMap = new HashMap<Instant, Event>();
+    for (User user : users) {
+      Event event = new Event(user.getId(), "user");
+      eventsMap.put(user.getCreationTime(), event);
+    }
+
+    for (Conversation conversation : conversations) {
+      Event event = new Event(conversation.getId(), "conversation");
+      eventsMap.put(conversation.getCreationTime(), event);
+
+    }
+    for (Message message : messages) {
+      Event event = new Event(message.getId(), "message");
+      eventsMap.put(message.getCreationTime(), event);
+    }
+    return eventsMap;
+  }
+
+  /**
+   * This function takes in a HashMap and sorts the instants from latest to oldest
+   * 
+   * Stores sorted Instants in an ArrayList
+   * 
+   * @param eventsMap
+   * @return sortedEventsMap
+   */
+  public HashMap<Instant, Event> sortEventsMap(HashMap<Instant, Event> eventsMap) {
+    Instant earlier = null;
+    int size = eventsMap.size();
+    eventsInstantsSorted = new ArrayList<Instant>();
+    HashMap<Instant, Event> sortedEventsMap = new HashMap<Instant, Event>();
+    for (int i = 0; i < size; i++) {
+      earlier = findLatestInstant(eventsMap);
+      eventsInstantsSorted.add(earlier);
+      Event event = eventsMap.get(earlier);
+      sortedEventsMap.put(earlier, event);
+      eventsMap.remove(earlier);
+    }
+    return sortedEventsMap;
+  }
+
+  /** Access the current set of events known to the application. */
+  public ArrayList<Instant> getAllEventsInstants() {
+    return eventsInstantsSorted;
+  }
+
+  /** Access the current eventsMap. */
+  public HashMap<Instant, Event> getEventsMap() {
+    return eventsMap;
+  }
+
 }
 
