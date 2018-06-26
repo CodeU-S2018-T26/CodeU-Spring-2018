@@ -336,6 +336,8 @@ public class ChatServlet extends HttpServlet {
             parsedMessageContent,
             Instant.now());
 
+    SendNotification.sendMsg();
+
     messageStore.addMessage(message);
     // redirect to a GET request
     response.sendRedirect("/chat/" + conversationTitle);

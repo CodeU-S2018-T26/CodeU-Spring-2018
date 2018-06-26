@@ -19,8 +19,12 @@
 <head>
   <title>CodeU Chat App</title>
   <link rel="stylesheet" href="/css/main.css">
-  <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+  <%-- for testing --%>
+  <meta http-equiv="Cache-control" content="no-cache">
+
+  <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-messaging.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-database.js"></script>
   <script>
       // Initialize Firebase
       var config = {
