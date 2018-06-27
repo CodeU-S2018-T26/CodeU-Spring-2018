@@ -56,3 +56,11 @@ input {
 button {
   font-size: 18px;
 }
+
+#feed {
+  margin-left: auto;
+  margin-right: auto;
+  width: 800px;
+  overflow: scroll;
+  height: 1200px;
+}

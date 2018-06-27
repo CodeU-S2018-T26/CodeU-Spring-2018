@@ -42,58 +42,61 @@
 		<h1>Activity</h1>
 
 		<p>See what's happening!</p>
-		<ul>
-			<%
-			  DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-			      .withLocale(Locale.US).withZone(ZoneId.systemDefault());
-			  HashMap<Instant, Event> eventsMap =
-			      (HashMap<Instant, Event>) request.getAttribute("eventsMap");
-			  ArrayList<Instant> eventsInstantsSorted =
-			      (ArrayList<Instant>) request.getAttribute("eventsInstantsSorted");
-			  if (eventsMap == null) {
-			    return;
-			  } else {
-			    for (Instant instant : eventsInstantsSorted) {
-			      String author;
-			      Instant time;
-			      String title;
-			      for (Map.Entry<Instant, Event> m : eventsMap.entrySet()) {
-			        if (m.getKey() == instant) {
-			          Event event = m.getValue();
-			          if (event.getEventType() == "user") {
-			            author = UserStore.getInstance().getUser(event.getId()).getName();
-			%>
-			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
-				joined!</li>
-			<%
-			  } else if (event.getEventType() == "conversation") {
-			            Conversation conversation =
-			                ConversationStore.getInstance().getConversation(event.getId());
-			            author = UserStore.getInstance().getUser(conversation.getOwnerId()).getName();
-			            title = conversation.getTitle();
-			%>
-			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
-				created a new conversation: <a href="/chat/<%=title%>"><%=title%></a></li>
-			<%
-			  } else if (event.getEventType() == "message") {
-			            Message message = MessageStore.getInstance().getMessage(event.getId());
-			            author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
-			            String conversationTitle = ConversationStore.getInstance()
-			                .getConversation(message.getConversationId()).getTitle();
-			%>
-			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%> sent a
-				message in <a href="/chat/<%=conversationTitle%>"><%=conversationTitle%></a>:
-				"<%=message.getContent()%>"</li>
-			<%
-			  }
-			%>
+		<div id="feed">
+			<ul>
+				<%
+				  DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+				      .withLocale(Locale.US).withZone(ZoneId.systemDefault());
+				  HashMap<Instant, Event> eventsMap =
+				      (HashMap<Instant, Event>) request.getAttribute("eventsMap");
+				  ArrayList<Instant> eventsInstantsSorted =
+				      (ArrayList<Instant>) request.getAttribute("eventsInstantsSorted");
+				  if (eventsMap == null) {
+				    return;
+				  } else {
+				    for (Instant instant : eventsInstantsSorted) {
+				      String author;
+				      Instant time;
+				      String title;
+				      for (Map.Entry<Instant, Event> m : eventsMap.entrySet()) {
+				        if (m.getKey() == instant) {
+				          Event event = m.getValue();
+				          if (event.getEventType() == "user") {
+				            author = UserStore.getInstance().getUser(event.getId()).getName();
+				%>
+				<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
+					joined!</li>
+				<%
+				  } else if (event.getEventType() == "conversation") {
+				            Conversation conversation =
+				                ConversationStore.getInstance().getConversation(event.getId());
+				            author = UserStore.getInstance().getUser(conversation.getOwnerId()).getName();
+				            title = conversation.getTitle();
+				%>
+				<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
+					created a new conversation: <a href="/chat/<%=title%>"><%=title%></a></li>
+				<%
+				  } else if (event.getEventType() == "message") {
+				            Message message = MessageStore.getInstance().getMessage(event.getId());
+				            author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
+				            String conversationTitle = ConversationStore.getInstance()
+				                .getConversation(message.getConversationId()).getTitle();
+				%>
+				<li><b><%=formatter.format(m.getKey())%></b>: <%=author%> sent
+					a message in <a href="/chat/<%=conversationTitle%>"><%=conversationTitle%></a>:
+					"<%=message.getContent()%>"</li>
+				<%
+				  }
+				%>
 
-			<%
-			  }
-			      }
-			    }
-			  }
-			%>
+				<%
+				  }
+				      }
+				    }
+				  }
+				%>
+			
+		</div>
 		</ul>
 	</div>
 </body>
