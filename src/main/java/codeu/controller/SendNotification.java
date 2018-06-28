@@ -9,11 +9,12 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class SendNotification{
 
-  public static void sendMsg() throws IOException
+  public void sendMsg(String messageContent) throws IOException
   {
     String url = "https://fcm.googleapis.com/fcm/send";
     String API_ACCESS_KEY="AAAAQ8CY2j0:APA91bHKNT-HNdbxyO-eD671RuQlkZOgMS7VTz66uwtxVr8kDfUDcGCLojY1hgRsXK9IfyE1LmTYarOO6gq_4CThif_6bjgmvh6JIikM28HZTAQs-u7jtEkEUokDHrpWvZ9jsI6Bmfyl";
-    String registrationIds="cQL5eOLym-0:APA91bHXAoSpRFN0spvpS4dOpfDc0iisZv2i5NeA50iUCqSlERo4ZKFcCk5XMFD3It3qQD-0oH_FdtAhaCre6sJJQKJ_fRgbwhBmS4o9GBnkgvLowmFQICEu-vFopR6CVI8-PY8ACX_0";
+    //hard coded for prototype
+    String registrationIds="f8UTjXXWES4:APA91bGoOfAAhkzN2uQLhCOf0Mxy9AIBFC_AG8km0_1mSAGCiHcAvyzPtKTjqSWKaYdkld7-aNwO7cCgu7Eya6sMeVZF4plMdpxikoh9Vd8pDg9Yd1lycVQp2VParHriMrIDGk_96IzM";
 
     URL obj = new URL(url);
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -22,15 +23,16 @@ public class SendNotification{
     con.setRequestProperty("Content-Type", "application/json");
     con.setRequestProperty("Authorization", "key="+API_ACCESS_KEY);
 
-    JSONObject msg=new JSONObject();
-    msg.put("message","test");
+    //customize notification
+    JSONObject data=new JSONObject();
+    data.put("title", "CodeU Chat App");
+    data.put("body",messageContent);
 
     JSONObject parent=new JSONObject();
 
     parent.put("to", registrationIds);
-    parent.put("data", msg);
+    parent.put("data", data);
 
-    con.setDoOutput(true);
     con.setDoOutput(true);
 
     OutputStreamWriter os = new OutputStreamWriter(con.getOutputStream());

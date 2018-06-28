@@ -1,11 +1,10 @@
 messaging = firebase.messaging();
 messaging.usePublicVapidKey("BLIwYdJwu8oCxTYQttElp90iDYg5ooy6tzLvx1g2YznQY2JTIQubixoO_stuyADW-wot5Jk8EKYV995C_OPLn3M");
 Notification.requestPermission(function(status) {
-    console.log('Notification permission status>:', status);
+    console.log('Notification permission status<:', status);
 });
 
-// Get Instance ID token. Initially this makes a network call, once retrieved
-// subsequent calls to getToken will return from cache.
+// Get Instance ID token.
 messaging.getToken().then(function(currentToken) {
     if (currentToken) {
         console.log(messaging.getToken());
