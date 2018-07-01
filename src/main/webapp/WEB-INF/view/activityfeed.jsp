@@ -32,22 +32,22 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-  <style>
-    #feed {
-      background-color: white;
-      height: 500px;
-      overflow-y: scroll
-    }
-  </style>
+<style>
+#feed {
+	background-color: white;
+	height: 500px;
+	overflow-y: scroll
+}
+</style>
 
-  <script>
+<script>
     // scroll the chat div to the bottom
     function scrollChat() {
       var eventDiv = document.getElementById('feed');
       eventDiv.scrollTop = eventDiv.scrollHeight;
     };
   </script>
-  
+
 </head>
 
 <body onload="scrollChat()">
