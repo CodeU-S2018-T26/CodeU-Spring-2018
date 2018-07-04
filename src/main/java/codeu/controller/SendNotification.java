@@ -1,4 +1,5 @@
 package codeu.controller;
+import codeu.model.store.persistence.PersistentDataStore;
 import org.json.simple.JSONObject;
 
 import java.io.*;
@@ -12,9 +13,10 @@ public class SendNotification{
   public void sendMsg(String messageContent) throws IOException
   {
     String url = "https://fcm.googleapis.com/fcm/send";
-    String API_ACCESS_KEY="AAAAQ8CY2j0:APA91bHKNT-HNdbxyO-eD671RuQlkZOgMS7VTz66uwtxVr8kDfUDcGCLojY1hgRsXK9IfyE1LmTYarOO6gq_4CThif_6bjgmvh6JIikM28HZTAQs-u7jtEkEUokDHrpWvZ9jsI6Bmfyl";
+    String API_ACCESS_KEY= PersistentDataStore.getFirebaseKey();
+
     //hard coded for prototype
-    String registrationIds="f8UTjXXWES4:APA91bGoOfAAhkzN2uQLhCOf0Mxy9AIBFC_AG8km0_1mSAGCiHcAvyzPtKTjqSWKaYdkld7-aNwO7cCgu7Eya6sMeVZF4plMdpxikoh9Vd8pDg9Yd1lycVQp2VParHriMrIDGk_96IzM";
+    String registrationIds="dyE91zYSwQY:APA91bGwEMZ__rHyLBfHhQWbp5_E6loByepDD9q1xFq3u9lbf3wpcUL1atF4qTCiRY9WQC79HlhGb6A8r85FETYRh7FMrdEYysUon7j1dolr88z-1ocuN-OWljMaRbLC2hvDTff2t9he";
 
     URL obj = new URL(url);
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
