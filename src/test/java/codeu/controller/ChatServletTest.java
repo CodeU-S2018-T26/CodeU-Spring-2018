@@ -34,6 +34,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class ChatServletTest {
@@ -46,9 +47,10 @@ public class ChatServletTest {
   private ConversationStore mockConversationStore;
   private MessageStore mockMessageStore;
   private UserStore mockUserStore;
+  private SendNotification mockSendNotification;
 
   @Before
-  public void setup() {
+  public void setup() throws IOException{
     chatServlet = new ChatServlet();
 
     mockRequest = Mockito.mock(HttpServletRequest.class);
@@ -68,6 +70,12 @@ public class ChatServletTest {
 
     mockUserStore = Mockito.mock(UserStore.class);
     chatServlet.setUserStore(mockUserStore);
+
+    mockSendNotification = Mockito.mock(SendNotification.class);
+    chatServlet.setSendNotification(mockSendNotification);
+
+    Mockito.doNothing().when(mockSendNotification).sendMsg(Mockito.any(String.class));
+
   }
 
   @Test

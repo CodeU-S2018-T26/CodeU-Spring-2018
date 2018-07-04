@@ -40,6 +40,9 @@ public class PersistentDataStore {
   // Handle to Google AppEngine's Datastore service.
   private DatastoreService datastore;
 
+  // API Key for Firebase
+  private static String API_ACCESS_KEY="AAAAQ8CY2j0:APA91bHKNT-HNdbxyO-eD671RuQlkZOgMS7VTz66uwtxVr8kDfUDcGCLojY1hgRsXK9IfyE1LmTYarOO6gq_4CThif_6bjgmvh6JIikM28HZTAQs-u7jtEkEUokDHrpWvZ9jsI6Bmfyl";
+
   /**
    * Constructs a new PersistentDataStore and sets up its state to begin loading objects from the
    * Datastore service.
@@ -179,6 +182,10 @@ public class PersistentDataStore {
     conversationEntity.setProperty("title", conversation.getTitle());
     conversationEntity.setProperty("creation_time", conversation.getCreationTime().toString());
     datastore.put(conversationEntity);
+  }
+
+  public static String getFirebaseKey(){
+    return API_ACCESS_KEY;
   }
 }
 

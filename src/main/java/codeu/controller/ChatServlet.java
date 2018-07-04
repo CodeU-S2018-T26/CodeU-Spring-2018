@@ -63,6 +63,8 @@ public class ChatServlet extends HttpServlet {
 
   private Map<String, String> validEmojis = new HashMap<>();
 
+  private SendNotification sendNotification;
+
   /** Set up state for handling chat requests. */
   @Override
   public void init() throws ServletException {
@@ -70,6 +72,7 @@ public class ChatServlet extends HttpServlet {
     setConversationStore(ConversationStore.getInstance());
     setMessageStore(MessageStore.getInstance());
     setUserStore(UserStore.getInstance());
+    setSendNotification(new SendNotification());
 
     JSONParser parser = new JSONParser();
     try{
@@ -119,6 +122,8 @@ public class ChatServlet extends HttpServlet {
   void setUserStore(UserStore userStore) {
     this.userStore = userStore;
   }
+
+  void setSendNotification(SendNotification sendNotification){this.sendNotification = sendNotification;}
 
   /**
    * This function fires when a user navigates to the chat page. It gets the conversation title from
@@ -335,6 +340,9 @@ public class ChatServlet extends HttpServlet {
             user.getId(),
             parsedMessageContent,
             Instant.now());
+
+    //send notification
+    sendNotification.sendMsg(parsedMessageContent);
 
     messageStore.addMessage(message);
     // redirect to a GET request
