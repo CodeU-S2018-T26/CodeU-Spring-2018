@@ -6,6 +6,7 @@ import codeu.model.data.User;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import java.time.Instant;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 import org.junit.After;
@@ -145,5 +146,29 @@ public class PersistentDataStoreTest {
     Assert.assertEquals(authorTwo, resultMessageTwo.getAuthorId());
     Assert.assertEquals(contentTwo, resultMessageTwo.getContent());
     Assert.assertEquals(creationTwo, resultMessageTwo.getCreationTime());
+  }
+
+  @Test
+  public void testSaveAndLoadNotificationTokens() throws PersistentDataStoreException {
+    UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+    String tokenOne = "ABcdEF12_345";
+
+    UUID idTwo = UUID.fromString("10000001-2222-3333-4444-555555555555");
+    String tokenTwo = "GHIJKL67_890";
+    String passwordHashTwo = "$2a$10$ttaMOMMGLKxBBuTN06VPvu.jVKif.IczxZcXfLcqEcFi1lq.sLb6i";
+
+    // save
+    persistentDataStore.writeThrough(idOne, tokenOne);
+    persistentDataStore.writeThrough(idTwo, tokenTwo);
+
+    // load
+    Hashtable<UUID, String> resultNotificationTokens = persistentDataStore.loadNotificationTokens();
+
+    // confirm that what we saved matches what we loaded
+    Assert.assertTrue(resultNotificationTokens.containsKey(idOne));
+    Assert.assertEquals(tokenOne, resultNotificationTokens.get(idOne));
+
+    Assert.assertTrue(resultNotificationTokens.containsKey(idTwo));
+    Assert.assertEquals(tokenTwo, resultNotificationTokens.get(idTwo));
   }
 }

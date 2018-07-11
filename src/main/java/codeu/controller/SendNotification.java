@@ -10,13 +10,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class SendNotification{
 
-  public void sendMsg(String messageContent) throws IOException
+  public void sendMsg(String messageContent, String token) throws IOException
   {
     String url = "https://fcm.googleapis.com/fcm/send";
     String API_ACCESS_KEY= PersistentDataStore.getFirebaseKey();
-
-    //hard coded for prototype
-    String registrationIds="dyE91zYSwQY:APA91bGwEMZ__rHyLBfHhQWbp5_E6loByepDD9q1xFq3u9lbf3wpcUL1atF4qTCiRY9WQC79HlhGb6A8r85FETYRh7FMrdEYysUon7j1dolr88z-1ocuN-OWljMaRbLC2hvDTff2t9he";
 
     URL obj = new URL(url);
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -32,7 +29,7 @@ public class SendNotification{
 
     JSONObject parent=new JSONObject();
 
-    parent.put("to", registrationIds);
+    parent.put("to", token);
     parent.put("data", data);
 
     con.setDoOutput(true);

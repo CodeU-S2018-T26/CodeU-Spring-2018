@@ -22,6 +22,8 @@
 <head>
   <title>Conversations</title>
   <link rel="stylesheet" href="/css/main.css">
+  <link rel="import" href="/index.jsp">
+</head>
 </head>
 <body>
 
@@ -45,7 +47,9 @@
     <% } %>
 
     <% if(request.getSession().getAttribute("user") != null){ %>
-      <h1>New Conversation</h1>
+      <script type="text/javascript" src="/js/main.js"></script>
+
+    <h1>New Conversation</h1>
       <form action="/conversations" method="POST">
           <div class="form-group">
             <label class="form-control-label">Title:</label>

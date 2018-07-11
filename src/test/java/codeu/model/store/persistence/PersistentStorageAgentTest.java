@@ -45,6 +45,12 @@ public class PersistentStorageAgentTest {
   }
 
   @Test
+  public void testLoadNotificationTokens() throws PersistentDataStoreException {
+    persistentStorageAgent.loadNotificationTokens();
+    Mockito.verify(mockPersistentDataStore).loadNotificationTokens();
+  }
+
+  @Test
   public void testWriteThroughUser() {
     User user =
         new User(
@@ -71,5 +77,13 @@ public class PersistentStorageAgentTest {
             UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), "test content", Instant.now());
     persistentStorageAgent.writeThrough(message);
     Mockito.verify(mockPersistentDataStore).writeThrough(message);
+  }
+
+  @Test
+  public void testWriteThroughNotificationToken() {
+    UUID idOne = UUID.fromString("10000000-2222-3333-4444-555555555555");
+    String tokenOne = "ABCDEFG";
+    persistentStorageAgent.writeThrough(idOne, tokenOne);
+    Mockito.verify(mockPersistentDataStore).writeThrough(idOne, tokenOne);
   }
 }

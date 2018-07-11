@@ -19,6 +19,7 @@ import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.NotificationTokenStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
@@ -61,6 +62,9 @@ public class ChatServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
+  /** Store class that gives access to Notification Tokens. */
+  private NotificationTokenStore notificationTokenStore;
+
   private Map<String, String> validEmojis = new HashMap<>();
 
   private SendNotification sendNotification;
@@ -72,6 +76,7 @@ public class ChatServlet extends HttpServlet {
     setConversationStore(ConversationStore.getInstance());
     setMessageStore(MessageStore.getInstance());
     setUserStore(UserStore.getInstance());
+    setNotificationTokenStore(NotificationTokenStore.getInstance());
     setSendNotification(new SendNotification());
 
     JSONParser parser = new JSONParser();
@@ -123,7 +128,16 @@ public class ChatServlet extends HttpServlet {
     this.userStore = userStore;
   }
 
+  /**
+   * Sets the NotificationTokenStore used by this servlet. This function provides a common setup method for use
+   * by the test framework or the servlet's init() function.
+   */
+  void setNotificationTokenStore(NotificationTokenStore notificationTokenStore) {
+    this.notificationTokenStore = notificationTokenStore;
+  }
+
   void setSendNotification(SendNotification sendNotification){this.sendNotification = sendNotification;}
+
 
   /**
    * This function fires when a user navigates to the chat page. It gets the conversation title from
@@ -342,7 +356,7 @@ public class ChatServlet extends HttpServlet {
             Instant.now());
 
     //send notification
-    sendNotification.sendMsg(parsedMessageContent);
+    sendNotification.sendMsg(parsedMessageContent, notificationTokenStore.getNotificationToken(user.getId()));
 
     messageStore.addMessage(message);
     // redirect to a GET request
