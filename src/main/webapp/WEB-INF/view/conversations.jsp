@@ -90,9 +90,9 @@
 			  for (Conversation conversation : conversations) {
 			%>
 			<li><a href="/chat/<%=conversation.getTitle()%>"> <%=conversation.getTitle()%></a>
-				<div class="container">
-					<button class="btn followButton">Follow</button>
-				</div></li>
+				       <form method='POST'>
+					       <input align="right" onclick=change() type="button" value=Following name ="Following" id ="following"/> 
+					    </form>
 			<%
 			  }
 			%>
@@ -103,4 +103,15 @@
 		<hr />
 	</div>
 </body>
+<script>
+	function change()
+	{
+	    var element = document.getElementById("following");
+	    if (element.value=="Following") {
+	    	element.value = "Follow";
+	    	element.name = "Follow";
+	    }
+	    else element.value = "Following";
+	}
+</script>
 </html>
