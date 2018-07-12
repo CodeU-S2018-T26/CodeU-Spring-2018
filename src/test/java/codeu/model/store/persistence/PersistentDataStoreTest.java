@@ -155,7 +155,6 @@ public class PersistentDataStoreTest {
 
     UUID idTwo = UUID.fromString("10000001-2222-3333-4444-555555555555");
     String tokenTwo = "GHIJKL67_890";
-    String passwordHashTwo = "$2a$10$ttaMOMMGLKxBBuTN06VPvu.jVKif.IczxZcXfLcqEcFi1lq.sLb6i";
 
     // save
     persistentDataStore.writeThrough(idOne, tokenOne);

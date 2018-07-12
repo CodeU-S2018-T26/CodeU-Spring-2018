@@ -7,9 +7,8 @@ var xhttp = new XMLHttpRequest();
 // Get Instance ID token.
 messaging.getToken().then(function(currentToken) {
     if (currentToken) {
-        console.log(currentToken);
+        console.log("Token retrieved");
         url = "/login?token=" + currentToken+"&t="+Math.random();
-        console.log(url);
         xhttp.open("GET", url, true);
         xhttp.send();
 

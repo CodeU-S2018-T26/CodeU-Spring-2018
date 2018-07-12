@@ -74,8 +74,8 @@ public class NotificationTokenStore {
   }
 
   /** Access the current set of NotificationTokens known to the application. */
-  public Hashtable<UUID, String> getAllNotificationTokens() {
-    return notificationTokens;
+  public Collection<String> getAllNotificationTokens() {
+    return new ArrayList<>(notificationTokens.values());
   }
 
 }

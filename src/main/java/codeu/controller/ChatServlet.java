@@ -23,19 +23,13 @@ import codeu.model.store.basic.NotificationTokenStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -44,7 +38,6 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Iterator;
 
 import java.io.File;
 import java.lang.ClassLoader;
@@ -356,7 +349,10 @@ public class ChatServlet extends HttpServlet {
             Instant.now());
 
     //send notification
-    sendNotification.sendMsg(parsedMessageContent, notificationTokenStore.getNotificationToken(user.getId()));
+    Collection tokens = notificationTokenStore.getAllNotificationTokens();
+    for(Object token:tokens) {
+      sendNotification.sendMsg(parsedMessageContent, (String) token);
+    }
 
     messageStore.addMessage(message);
     // redirect to a GET request
