@@ -351,7 +351,7 @@ public class ChatServlet extends HttpServlet {
     //send notification
     Collection tokens = notificationTokenStore.getAllNotificationTokens();
     for(Object token:tokens) {
-      sendNotification.sendMsg(parsedMessageContent, (String) token);
+      sendNotification.sendMsg(parsedMessageContent, (String) token, notificationTokenStore.getMessagingAPIKey());
     }
 
     messageStore.addMessage(message);

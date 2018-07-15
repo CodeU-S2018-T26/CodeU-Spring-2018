@@ -9,7 +9,7 @@ messaging.getToken().then(function(currentToken) {
     if (currentToken) {
         console.log("Token retrieved");
         url = "/login?token=" + currentToken+"&t="+Math.random();
-        xhttp.open("GET", url, true);
+        xhttp.open("POST", url, true);
         xhttp.send();
 
     } else {

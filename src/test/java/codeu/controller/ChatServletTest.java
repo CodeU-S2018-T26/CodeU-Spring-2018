@@ -79,7 +79,7 @@ public class ChatServletTest {
     mockSendNotification = Mockito.mock(SendNotification.class);
     chatServlet.setSendNotification(mockSendNotification);
 
-    Mockito.doNothing().when(mockSendNotification).sendMsg(Mockito.any(String.class), Mockito.any(String.class));
+    Mockito.doNothing().when(mockSendNotification).sendMsg(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class));
 
   }
 

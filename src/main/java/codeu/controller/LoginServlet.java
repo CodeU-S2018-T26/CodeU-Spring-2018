@@ -71,17 +71,7 @@ public class LoginServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-    String token = request.getParameter("token");
-    if (token == null) {
-      request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
-    }
-
-    //Takes care of notification token storage
-    else {
-      String username = (String) request.getSession().getAttribute("user");
-      UUID id = userStore.getUser(username).getId();
-      notificationTokenStore.addNotificationToken(id, token);
-    }
+    request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
   }
 
 
@@ -93,6 +83,16 @@ public class LoginServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
+
+    String token = request.getParameter("token");
+    if (token != null) {
+      //Takes care of notification token storage
+      String username = (String) request.getSession().getAttribute("user");
+      UUID id = userStore.getUser(username).getId();
+      notificationTokenStore.addNotificationToken(id, token);
+      return;
+    }
+
     String username = request.getParameter("username");
     String password = request.getParameter("password");
 
@@ -111,7 +111,6 @@ public class LoginServlet extends HttpServlet {
     }
 
     request.getSession().setAttribute("user", username);
-    System.out.println("User attribute was set");
     request.getSession().setAttribute("isAdmin", userStore.isUserAdmin(username));
     response.sendRedirect("/conversations");
   }

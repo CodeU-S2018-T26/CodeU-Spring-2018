@@ -38,6 +38,9 @@ public class ServerStartupListener implements ServletContextListener {
       Hashtable<UUID,String> notificationTokens = PersistentStorageAgent.getInstance().loadNotificationTokens();
       NotificationTokenStore.getInstance().setNotificationTokens(notificationTokens);
 
+      String messagingAPIKey = PersistentStorageAgent.getInstance().loadMessagingAPIKey();
+      NotificationTokenStore.getInstance().setMessagingAPIKey(messagingAPIKey);
+
     } catch (PersistentDataStoreException e) {
       System.err.println("Server didn't start correctly. An error occurred during Datastore load!");
       System.err.println("This is usually caused by loading data that's in an invalid format.");

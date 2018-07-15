@@ -41,8 +41,8 @@ public class PersistentDataStore {
   // Handle to Google AppEngine's Datastore service.
   private DatastoreService datastore;
 
-  // API Key for Firebase
-  private static String API_ACCESS_KEY="AAAAQ8CY2j0:APA91bGOgQlivDmrkUFqN92TGTuVyooVXFPzggOAjPF79njQDhIE-JcT8UnEUBUJahlv_mcVNj-Yo2N6MTwvZkuIvqIq8vP_kMLT7HlZmyGPcLRLRAYSBfMUgz5D2PVzqXVaYG3Ff5zBmHomQXgAnsh_uqoWZG9Vzw";
+  // Notification token datastore storage
+  private static final String CHAT_NOTIFICATIONS_TABLE = "chat-notification-tokens";
 
   /**
    * Constructs a new PersistentDataStore and sets up its state to begin loading objects from the
@@ -165,7 +165,7 @@ public class PersistentDataStore {
     Hashtable<UUID, String> notificationTokens = new Hashtable<>();
 
     // Retrieve all users from the datastore.
-    Query query = new Query("chat-notification-tokens");
+    Query query = new Query(CHAT_NOTIFICATIONS_TABLE);
     PreparedQuery results = datastore.prepare(query);
 
     for (Entity entity : results.asIterable()) {
@@ -182,6 +182,33 @@ public class PersistentDataStore {
     }
 
     return notificationTokens;
+  }
+
+  /**
+   * Loads the Messaging API Key from the Datastore service and returns it in a string.
+   *
+   * @throws PersistentDataStoreException if an error was detected during the load from the
+   *     Datastore service
+   */
+  public String loadMessagingAPIKey() throws PersistentDataStoreException {
+    // Retrieve all users from the datastore.
+    Query query = new Query("api-keys");
+    PreparedQuery results = datastore.prepare(query);
+
+    String key = "";
+    for (Entity entity : results.asIterable()) {
+      try {
+        String type = (String) entity.getProperty("type");
+        key = (String) entity.getProperty("key");
+      } catch (Exception e) {
+        // In a production environment, errors should be very rare. Errors which may
+        // occur include network errors, Datastore service errors, authorization errors,
+        // database entity definition mismatches, or service mismatches.
+        throw new PersistentDataStoreException(e);
+      }
+    }
+
+    return key;
   }
 
   /** Write a User object to the Datastore service. */
@@ -217,14 +244,10 @@ public class PersistentDataStore {
 
   /** Write a NotificationToken object to the Datastore service. */
   public void writeThrough(UUID id, String token) {
-    Entity notificationTokenEntity = new Entity("chat-notification-tokens", id.toString());
+    Entity notificationTokenEntity = new Entity(CHAT_NOTIFICATIONS_TABLE, id.toString());
     notificationTokenEntity.setProperty("uuid", id.toString());
     notificationTokenEntity.setProperty("token", token);
     datastore.put(notificationTokenEntity);
-  }
-
-  public static String getFirebaseKey(){
-    return API_ACCESS_KEY;
   }
 }
 

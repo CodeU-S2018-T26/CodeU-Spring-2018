@@ -93,13 +93,23 @@ public class PersistentStorageAgent {
   }
 
   /**
-   * Retrieve NotificationTokens from the Datastore service. The returned list may be empty.
+   * Retrieve Notification Tokens from the Datastore service. The returned list may be empty.
    *
    * @throws PersistentDataStoreException if an error was detected during the load from the
    *     Datastore service
    */
   public Hashtable<UUID,String> loadNotificationTokens() throws  PersistentDataStoreException{
     return persistentDataStore.loadNotificationTokens();
+  }
+
+  /**
+   * Retrieve Messaging API Key from the Datastore service.
+   *
+   * @throws PersistentDataStoreException if an error was detected during the load from the
+   *     Datastore service
+   */
+  public String loadMessagingAPIKey() throws PersistentDataStoreException{
+    return persistentDataStore.loadMessagingAPIKey();
   }
 
   /** Write a User object to the Datastore service. */

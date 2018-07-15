@@ -1,19 +1,18 @@
 package codeu.controller;
-import codeu.model.store.persistence.PersistentDataStore;
 import org.json.simple.JSONObject;
 
 import java.io.*;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import javax.net.ssl.HttpsURLConnection;
+
 
 public class SendNotification{
 
-  public void sendMsg(String messageContent, String token) throws IOException
+  public void sendMsg(String messageContent, String token, String APIKey) throws IOException
   {
     String url = "https://fcm.googleapis.com/fcm/send";
-    String API_ACCESS_KEY= PersistentDataStore.getFirebaseKey();
+    String API_ACCESS_KEY= APIKey;
 
     URL obj = new URL(url);
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();

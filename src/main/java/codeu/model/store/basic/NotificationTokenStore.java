@@ -10,6 +10,8 @@ public class NotificationTokenStore {
   /** Singleton instance of NotificationTokenStore. */
   private static NotificationTokenStore instance;
 
+  private String messagingAPIKey;
+
   /**
    * Returns the singleton instance of NotificationTokenStore that should be shared between all servlet classes.
    * Do not call this function from a test; use getTestInstance() instead.
@@ -76,6 +78,14 @@ public class NotificationTokenStore {
   /** Access the current set of NotificationTokens known to the application. */
   public Collection<String> getAllNotificationTokens() {
     return new ArrayList<>(notificationTokens.values());
+  }
+
+  public void setMessagingAPIKey(String key){
+    this.messagingAPIKey = key;
+  }
+
+  public String getMessagingAPIKey(){
+    return messagingAPIKey;
   }
 
 }

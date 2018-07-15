@@ -51,6 +51,12 @@ public class PersistentStorageAgentTest {
   }
 
   @Test
+  public void testLoadMessagingAPIKey() throws PersistentDataStoreException {
+    persistentStorageAgent.loadMessagingAPIKey();
+    Mockito.verify(mockPersistentDataStore).loadMessagingAPIKey();
+  }
+
+  @Test
   public void testWriteThroughUser() {
     User user =
         new User(
