@@ -90,10 +90,12 @@
 			  for (Conversation conversation : conversations) {
 			%>
 			<li><a href="/chat/<%=conversation.getTitle()%>"> <%=conversation.getTitle()%></a>
-				       <form method='POST'>
-					       <input align="right" onclick=change() type="button" value=Following name ="Following" id ="following"/> 
-					    </form>
-			<%
+				<form method='post'>
+					<input type="hidden" value=<%=conversation.getTitle()%>
+						name="hiddenConversationTitle" /> <input align="right"
+						onclick=change() type="submit" value=Following name="Following"
+						id="following" />
+				</form> <%
 			  }
 			%>
 		</ul>

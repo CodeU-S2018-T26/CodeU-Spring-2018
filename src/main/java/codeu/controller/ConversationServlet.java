@@ -84,6 +84,7 @@ public class ConversationServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
 
+    boolean skip = false;
     String username = (String) request.getSession().getAttribute("user");
     if (username == null) {
       // user is not logged in, don't let them create a conversation
@@ -100,35 +101,41 @@ public class ConversationServlet extends HttpServlet {
     }
 
     String conversationTitle = request.getParameter("conversationTitle");
-    if (!conversationTitle.matches("[\\w*]*")) {
-      request.setAttribute("error", "Please enter only letters and numbers.");
-      request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
-      return;
+    if (conversationTitle == null) {
+      skip = true;
+      conversationTitle = request.getParameter("hiddenConversationTitle");
     }
+    if (!skip) {
+      if (!conversationTitle.matches("[\\w*]*")) {
+        request.setAttribute("error", "Please enter only letters and numbers.");
+        request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
+        return;
+      }
 
-    if (conversationStore.isTitleTaken(conversationTitle)) {
-      // conversation title is already taken, just go into that conversation instead of creating a
-      // new one
+      if (conversationStore.isTitleTaken(conversationTitle)) {
+        // conversation title is already taken, just go into that conversation instead of creating a
+        // new one
+        response.sendRedirect("/chat/" + conversationTitle);
+        return;
+      }
+
+      Conversation conversation =
+          new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now());
+
+      conversationStore.addConversation(conversation);
       response.sendRedirect("/chat/" + conversationTitle);
-      return;
     }
-
-    Conversation conversation =
-        new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now());
-
-    conversationStore.addConversation(conversation);
-    response.sendRedirect("/chat/" + conversationTitle);
-
-    String convTest = request.getParameter("Following");
-    System.out.println("User entered conv name: " + conversationTitle);
-    if (convTest == null) {
-      System.out.println("it's null rn");
-    } else if (convTest.equals("Following")) {
-      System.out.print("Following rn");
-      // if conversationStore.getConversationWithTitle(convTest)
-    } else if (convTest.equals("Follow")) {
-      System.out.println("Deleting rn");
-      conversationStore.deleteConversation(conversationStore.getConversationWithTitle(convTest));
+    else
+    {
+      String convTest = request.getParameter("Following");
+      System.out.println("User entered conversation name: " + conversationTitle);
+      if (convTest == null) {
+        System.out.println("Following button is unclicked!");
+      } else if (convTest != null) {
+        System.out.println("Following button is clicked, delete conversation from store!");
+        conversationStore
+            .deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
+      }
     }
   }
 }
