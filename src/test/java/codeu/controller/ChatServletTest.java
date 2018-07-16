@@ -19,6 +19,7 @@ import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.NotificationTokenStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
@@ -47,6 +48,7 @@ public class ChatServletTest {
   private ConversationStore mockConversationStore;
   private MessageStore mockMessageStore;
   private UserStore mockUserStore;
+  private NotificationTokenStore notificationTokenStore;
   private SendNotification mockSendNotification;
 
   @Before
@@ -71,10 +73,13 @@ public class ChatServletTest {
     mockUserStore = Mockito.mock(UserStore.class);
     chatServlet.setUserStore(mockUserStore);
 
+    notificationTokenStore = Mockito.mock(NotificationTokenStore.class);
+    chatServlet.setNotificationTokenStore(notificationTokenStore);
+
     mockSendNotification = Mockito.mock(SendNotification.class);
     chatServlet.setSendNotification(mockSendNotification);
 
-    Mockito.doNothing().when(mockSendNotification).sendMsg(Mockito.any(String.class));
+    Mockito.doNothing().when(mockSendNotification).sendMsg(Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class));
 
   }
 

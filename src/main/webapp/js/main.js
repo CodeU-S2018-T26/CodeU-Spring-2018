@@ -3,11 +3,15 @@ messaging.usePublicVapidKey("BLIwYdJwu8oCxTYQttElp90iDYg5ooy6tzLvx1g2YznQY2JTIQu
 Notification.requestPermission(function(status) {
     console.log('Notification permission status<:', status);
 });
-
+var xhttp = new XMLHttpRequest();
 // Get Instance ID token.
 messaging.getToken().then(function(currentToken) {
     if (currentToken) {
-        console.log(messaging.getToken());
+        console.log("Token retrieved");
+        url = "/login?token=" + currentToken+"&t="+Math.random();
+        xhttp.open("POST", url, true);
+        xhttp.send();
+
     } else {
         // Show permission request.
         console.log('No Instance ID token available. Request permission to generate one.');
