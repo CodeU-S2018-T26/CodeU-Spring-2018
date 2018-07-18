@@ -42,13 +42,16 @@ import java.io.FileReader;
 import java.io.File;
 import java.lang.ClassLoader;
 
-import java.awt.image.BufferedImage;
+// import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
 import java.io.InputStream;
 
-
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import org.apache.commons.io.IOUtils;
+import com.google.appengine.api.datastore.Blob;
 
 /** Servlet class responsible for the chat page. */
 @MultipartConfig
@@ -348,31 +351,47 @@ public class ChatServlet extends HttpServlet {
     for (String token:tokenizedMessageContent){
       parsedMessageContent += token;
     }
-    Part filePart = null;
-    String fileName = null;
-    InputStream fileContent = null;
+
+    Message message;
+
+    // Part filePart = null;
+    // String fileName = null;
+    // InputStream fileContent = null;
+    // BufferedImage image = null;
 
     if(request.getPart("image") != null){
-      filePart = request.getPart("image"); // Retrieves <input type="file" name="file">
-      fileName = filePart.getSubmittedFileName(); // MSIE fix.
-      fileContent = filePart.getInputStream();
+      Part filePart = request.getPart("image"); // Retrieves <input type="file" name="file">
+      String fileName = filePart.getSubmittedFileName(); // MSIE fix.
+      InputStream fileContent = filePart.getInputStream();
+
+      // ImagesService imagesService = ImagesServiceFactory.getImagesService();
+
+
+      Blob image = new Blob(IOUtils.toByteArray(fileContent));
+
+      message =
+          new Message(
+              UUID.randomUUID(),
+              conversation.getId(),
+              user.getId(),
+              parsedMessageContent,
+              Instant.now(),
+              image);
+    }
+    else{
+      message =
+          new Message(
+              UUID.randomUUID(),
+              conversation.getId(),
+              user.getId(),
+              parsedMessageContent,
+              Instant.now());
     }
 
-    System.out.println(fileName);
-    System.out.println(fileContent);
     // BufferedImage image = null;
-    // request.getAttribute("file");
     // if (request.getParameter("file") != null){
     //   image = request.getParameter("file");
     // }
-
-    Message message =
-        new Message(
-            UUID.randomUUID(),
-            conversation.getId(),
-            user.getId(),
-            parsedMessageContent,
-            Instant.now());
 
     //send notification
     Collection tokens = notificationTokenStore.getAllNotificationTokens();

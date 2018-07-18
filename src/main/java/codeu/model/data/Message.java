@@ -17,10 +17,14 @@ package codeu.model.data;
 import java.time.Instant;
 import java.util.UUID;
 
-import java.awt.image.BufferedImage;
+// import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.datastore.Blob;
+
 
 /** Class representing a message. Messages are sent by a User in a Conversation. */
 public class Message {
@@ -30,7 +34,7 @@ public class Message {
   private final UUID author;
   private final String content;
   private final Instant creation;
-  private final BufferedImage image;
+  private final Blob image;
 
   /**
    * Constructs a new Message.
@@ -42,7 +46,7 @@ public class Message {
    * @param creation the creation time of this Message
    * @param image an image to send with this message
    */
-  public Message(UUID id, UUID conversation, UUID author, String content, Instant creation, BufferedImage image) {
+  public Message(UUID id, UUID conversation, UUID author, String content, Instant creation, Blob image) {
     this.id = id;
     this.conversation = conversation;
     this.author = author;
@@ -92,7 +96,7 @@ public class Message {
   }
 
   /** Returns image associated with this Message */
-  public BufferedImage getImage(){
+  public Blob getImage(){
     return image;
   }
 

@@ -36,6 +36,9 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.datastore.Blob;
+
 /**
  * This class handles all interactions with Google App Engine's Datastore service. On startup it
  * sets the state of the applications's data objects from the current contents of its Datastore. It
@@ -146,7 +149,7 @@ public class PersistentDataStore {
         UUID authorUuid = UUID.fromString((String) entity.getProperty("author_uuid"));
         Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
         String content = (String) entity.getProperty("content");
-        BufferedImage image = (BufferedImage) entity.getProperty("image");
+        Blob image = (Blob) entity.getProperty("image");
 
         Message message = new Message(uuid, conversationUuid, authorUuid, content, creationTime, image);
         messages.add(message);
