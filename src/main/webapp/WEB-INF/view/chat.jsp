@@ -74,7 +74,12 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
         String author = UserStore.getInstance()
           .getUser(message.getAuthorId()).getName();
     %>
-      <li><strong><%= author %>:</strong> <%= message.getContent() %></li>
+      <li><strong><%= author %>:</strong> <%= message.getContent() %> </li>
+
+    <%if (message.imageExists()) { %>
+         <li><%= message.getImage() %></li>
+    <%} %>
+
     <%
       }
     %>
@@ -84,11 +89,17 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     <hr/>
 
     <% if (request.getSession().getAttribute("user") != null) { %>
-    <form action="/chat/<%= conversation.getTitle() %>" method="POST">
+    <form action="/chat/<%= conversation.getTitle() %>" enctype="multipart/form-data" method="POST">
         <input type="text" name="message">
+        <input type="file" accept="image/*" name="image">
         <br/>
         <button type="submit">Send</button>
     </form>
+    <%-- <form method='post' enctype='multipart/form-data' action='/file-upload'>
+        <input type='file' name='thumbnail' />
+        <input type='hidden' name='base64data' />
+        <input type='submit' formenctype='application/x-www-form-urlencoded' />
+    </form> --%>
     <% } else { %>
       <p><a href="/login">Login</a> to send a message.</p>
     <% } %>

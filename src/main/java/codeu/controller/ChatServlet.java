@@ -42,8 +42,16 @@ import java.io.FileReader;
 import java.io.File;
 import java.lang.ClassLoader;
 
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.*;
+import java.io.InputStream;
+
+
 
 /** Servlet class responsible for the chat page. */
+@MultipartConfig
 public class ChatServlet extends HttpServlet {
 
   /** Store class that gives access to Conversations. */
@@ -304,6 +312,7 @@ public class ChatServlet extends HttpServlet {
 
     String messageContent = request.getParameter("message");
 
+
     // this removes any HTML from the message content
     String cleanedMessageContent = Jsoup.clean(messageContent, Whitelist.none());
 
@@ -339,6 +348,23 @@ public class ChatServlet extends HttpServlet {
     for (String token:tokenizedMessageContent){
       parsedMessageContent += token;
     }
+    Part filePart = null;
+    String fileName = null;
+    InputStream fileContent = null;
+
+    if(request.getPart("image") != null){
+      filePart = request.getPart("image"); // Retrieves <input type="file" name="file">
+      fileName = filePart.getSubmittedFileName(); // MSIE fix.
+      fileContent = filePart.getInputStream();
+    }
+
+    System.out.println(fileName);
+    System.out.println(fileContent);
+    // BufferedImage image = null;
+    // request.getAttribute("file");
+    // if (request.getParameter("file") != null){
+    //   image = request.getParameter("file");
+    // }
 
     Message message =
         new Message(

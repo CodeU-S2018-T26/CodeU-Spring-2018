@@ -31,6 +31,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
 /**
  * This class handles all interactions with Google App Engine's Datastore service. On startup it
  * sets the state of the applications's data objects from the current contents of its Datastore. It
@@ -141,7 +146,9 @@ public class PersistentDataStore {
         UUID authorUuid = UUID.fromString((String) entity.getProperty("author_uuid"));
         Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
         String content = (String) entity.getProperty("content");
-        Message message = new Message(uuid, conversationUuid, authorUuid, content, creationTime);
+        BufferedImage image = (BufferedImage) entity.getProperty("image");
+
+        Message message = new Message(uuid, conversationUuid, authorUuid, content, creationTime, image);
         messages.add(message);
       } catch (Exception e) {
         // In a production environment, errors should be very rare. Errors which may
@@ -229,6 +236,7 @@ public class PersistentDataStore {
     messageEntity.setProperty("author_uuid", message.getAuthorId().toString());
     messageEntity.setProperty("content", message.getContent());
     messageEntity.setProperty("creation_time", message.getCreationTime().toString());
+    messageEntity.setProperty("image", message.getImage());
     datastore.put(messageEntity);
   }
 
@@ -250,4 +258,3 @@ public class PersistentDataStore {
     datastore.put(notificationTokenEntity);
   }
 }
-
