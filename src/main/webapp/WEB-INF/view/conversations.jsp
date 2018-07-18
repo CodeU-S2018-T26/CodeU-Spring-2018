@@ -92,8 +92,7 @@
 			<li><a href="/chat/<%=conversation.getTitle()%>"> <%=conversation.getTitle()%></a>
 				<form method='post'>
 					<input type="hidden" value=<%=conversation.getTitle()%>
-						name="hiddenConversationTitle" /> <input align="right"
-						onclick=change() type="submit" value=Following name="Following"
+						name="hiddenConversationTitle" /> <input align="right" type="submit" value=Unfollow name="Following"
 						id="following" />
 				</form> <%
 			  }
@@ -105,15 +104,4 @@
 		<hr />
 	</div>
 </body>
-<script>
-	function change()
-	{
-	    var element = document.getElementById("following");
-	    if (element.value=="Following") {
-	    	element.value = "Follow";
-	    	element.name = "Follow";
-	    }
-	    else element.value = "Following";
-	}
-</script>
 </html>

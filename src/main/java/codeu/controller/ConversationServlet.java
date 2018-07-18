@@ -132,10 +132,12 @@ public class ConversationServlet extends HttpServlet {
       if (convTest == null) {
         System.out.println("Following button is unclicked!");
       } else if (convTest != null) {
+        convTest = "Follow";
         System.out.println("Following button is clicked, delete conversation from store!");
-        conversationStore
-            .deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
+        //conversationStore
+            //.deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
       }
     }
+    response.sendRedirect("#");
   }
 }
