@@ -122,8 +122,4 @@ public class ConversationStore {
     }
     return null;
   }
-  
-  public void deleteConversation(Conversation conversation) {
-    conversations.remove(conversation);
-  }
 }

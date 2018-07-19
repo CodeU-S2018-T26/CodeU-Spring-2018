@@ -15,6 +15,7 @@
 package codeu.model.data;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 /** Class representing a registered user. */
@@ -23,6 +24,7 @@ public class User {
   private final String name;
   private final String passwordHash;
   private final Instant creation;
+  private List<Conversation> conversations;
 
   /**
    * Constructs a new User.
@@ -57,5 +59,20 @@ public class User {
   /** Returns the creation time of this User. */
   public Instant getCreationTime() {
     return creation;
+  }
+  
+  /** Set the current conversations that the user has followed. */
+  public void addConversation(Conversation conversation) {
+    conversations.add(conversation);
+  }
+  
+  /** Access the current conversations that the user has followed. */
+  public List<Conversation> getConversations() {
+    return conversations;
+  }
+  
+  /** Delete conversation from current set of conversations being followed. */
+  public void deleteConversation(Conversation conversation) {
+    conversations.remove(conversation);
   }
 }
