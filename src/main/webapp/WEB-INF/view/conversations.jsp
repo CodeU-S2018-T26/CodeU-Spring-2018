@@ -100,7 +100,7 @@
 						User currentUser = UserStore.getInstance().getUser(username);
 						if (currentUser.isConversationUnfollowed(conversation)){
 						  %>
-						  	<input align="right" type="button" value=Follow name="Unfollowing" id="unfollowing" />
+						  	<input align="right" type="submit" value=Follow name="Unfollowing" id="unfollowing" />
 						  <%
 						} else {
 						%>

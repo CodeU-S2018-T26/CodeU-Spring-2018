@@ -127,12 +127,11 @@ public class ConversationServlet extends HttpServlet {
     }
     else
     {
-      String convTest = request.getParameter("Following");
-      System.out.println("User entered conversation name: " + conversationTitle);
-      if (convTest == null) {
-        System.out.println("Following button is unclicked!");
-      } else if (convTest != null) {
-        convTest = "Follow";
+      String unfollowClick = request.getParameter("Following");
+      //System.out.println("User entered conversation name: " + conversationTitle);
+      if (unfollowClick == null) {
+        System.out.println("Unfollowing button is unclicked!");
+      } else if (unfollowClick != null) {
         //System.out.println("Following button is clicked!");
         User currentUser = UserStore.getInstance().getUser(username);
         currentUser.addConversation(conversationStore.getConversationWithTitle(conversationTitle));
@@ -140,6 +139,13 @@ public class ConversationServlet extends HttpServlet {
         //conversationStore
             //.deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
       }
+      String followClick = request.getParameter("Unfollowing");
+      if (followClick == null) {
+        System.out.println("Following button is unclicked!");
+      } else if (followClick != null) {
+        User currentUser = UserStore.getInstance().getUser(username);
+        currentUser.deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
+      }    
     }
     response.sendRedirect("#");
   }

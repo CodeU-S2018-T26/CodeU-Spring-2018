@@ -81,7 +81,7 @@ public class User {
   
   /** Delete conversation from current set of conversations being followed. */
   public void deleteConversation(Conversation conversation) {
-    conversations.remove(conversation);
+    unfollowedConversations.remove(conversation);
   }
   
   /** Checks if the input conversation is being followed by the user. */
