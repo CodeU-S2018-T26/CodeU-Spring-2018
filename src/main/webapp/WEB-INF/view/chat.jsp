@@ -18,6 +18,12 @@
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.store.basic.UserStore" %>
 <%@ page import="java.util.Arrays" %>
+
+<%@ page import="com.google.appengine.api.datastore.Blob"%>
+<%-- <%@ page import="java.awt.image.BufferedImage"%> --%>
+<%-- <%@ page import="org.apache.commons.io.IOUtils"%> --%>
+<%-- <%@ page import="java.io.ByteArrayOutputStream"%> --%>
+
 <%
 Conversation conversation = (Conversation) request.getAttribute("conversation");
 List<Message> messages = (List<Message>) request.getAttribute("messages");
@@ -77,7 +83,17 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
       <li><strong><%= author %>:</strong> <%= message.getContent() %> </li>
 
     <%if (message.imageExists()) { %>
-         <li><%= message.getImage() %></li>
+         <%-- <li><img src="data:image/png;base64,'.base64_encode($message.getImage()).'"/></li> --%>
+         <%-- <li><img src="img?entity_id={{ message.key }}" /></li> --%>
+         <%
+
+         Blob blob = message.getImage();
+         String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(blob.getBytes());
+
+         %>
+
+         <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found" />
+
     <%} %>
 
     <%
