@@ -124,28 +124,27 @@ public class ConversationServlet extends HttpServlet {
 
       conversationStore.addConversation(conversation);
       response.sendRedirect("/chat/" + conversationTitle);
-    }
-    else
-    {
+    } else {
       String unfollowClick = request.getParameter("Following");
-      //System.out.println("User entered conversation name: " + conversationTitle);
+      // System.out.println("User entered conversation name: " + conversationTitle);
       if (unfollowClick == null) {
         System.out.println("Unfollowing button is unclicked!");
       } else if (unfollowClick != null) {
-        //System.out.println("Following button is clicked!");
+        // System.out.println("Following button is clicked!");
         User currentUser = UserStore.getInstance().getUser(username);
         currentUser.addConversation(conversationStore.getConversationWithTitle(conversationTitle));
-        //currentUser.deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
-        //conversationStore
-            //.deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
+        // currentUser.deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
+        // conversationStore
+        // .deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
       }
       String followClick = request.getParameter("Unfollowing");
       if (followClick == null) {
         System.out.println("Following button is unclicked!");
       } else if (followClick != null) {
         User currentUser = UserStore.getInstance().getUser(username);
-        currentUser.deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
-      }    
+        currentUser
+            .deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
+      }
     }
     response.sendRedirect("#");
   }

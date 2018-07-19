@@ -94,21 +94,23 @@
 			<li><a href="/chat/<%=conversation.getTitle()%>"> <%=conversation.getTitle()%></a>
 				<form method='post'>
 					<input type="hidden" value=<%=conversation.getTitle()%>
-						name="hiddenConversationTitle" /> 
-						<%
-						String username = (String) request.getSession().getAttribute("user");
-						User currentUser = UserStore.getInstance().getUser(username);
-						if (currentUser.isConversationUnfollowed(conversation)){
-						  %>
-						  	<input align="right" type="submit" value=Follow name="Unfollowing" id="unfollowing" />
-						  <%
-						} else {
-						%>
-						<input align="right" type="submit" value=Unfollow name="Following" id="following" />
+						name="hiddenConversationTitle" />
+					<%
+					  String username = (String) request.getSession().getAttribute("user");
+					      User currentUser = UserStore.getInstance().getUser(username);
+					      if (currentUser.isConversationUnfollowed(conversation)) {
+					%>
+					<input align="right" type="submit" value=Follow name="Unfollowing"
+						id="unfollowing" />
+					<%
+					  } else {
+					%>
+					<input align="right" type="submit" value=Unfollow name="Following"
+						id="following" />
 				</form> <%
-						}
-			  }
-			%>
+   }
+     }
+ %>
 		</ul>
 		<%
 		  }
