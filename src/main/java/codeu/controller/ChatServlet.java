@@ -52,6 +52,7 @@ import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import org.apache.commons.io.IOUtils;
 import com.google.appengine.api.datastore.Blob;
+import javax.servlet.http.Part;
 
 /** Servlet class responsible for the chat page. */
 @MultipartConfig
@@ -354,18 +355,11 @@ public class ChatServlet extends HttpServlet {
 
     Message message;
 
-    // Part filePart = null;
-    // String fileName = null;
-    // InputStream fileContent = null;
-    // BufferedImage image = null;
-
-    if(request.getPart("image") != null){
-      Part filePart = request.getPart("image"); // Retrieves <input type="file" name="file">
-      String fileName = filePart.getSubmittedFileName(); // MSIE fix.
+    Part filePart = request.getPart("image"); // Retrieves <input type="file" name="file">
+    if(filePart != null && !filePart.getSubmittedFileName().equals("")){
       InputStream fileContent = filePart.getInputStream();
 
       // ImagesService imagesService = ImagesServiceFactory.getImagesService();
-
 
       Blob image = new Blob(IOUtils.toByteArray(fileContent));
 
@@ -387,11 +381,6 @@ public class ChatServlet extends HttpServlet {
               parsedMessageContent,
               Instant.now());
     }
-
-    // BufferedImage image = null;
-    // if (request.getParameter("file") != null){
-    //   image = request.getParameter("file");
-    // }
 
     //send notification
     Collection tokens = notificationTokenStore.getAllNotificationTokens();

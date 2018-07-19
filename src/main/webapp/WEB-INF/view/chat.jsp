@@ -75,26 +75,20 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
     <div id="chat">
       <ul>
-    <%
-      for (Message message : messages) {
-        String author = UserStore.getInstance()
-          .getUser(message.getAuthorId()).getName();
-    %>
-      <li><strong><%= author %>:</strong> <%= message.getContent() %> </li>
+      <%
+        for (Message message : messages) {
+          String author = UserStore.getInstance()
+            .getUser(message.getAuthorId()).getName();
+      %>
+        <li><strong><%= author %>:</strong> <%= message.getContent() %> </li>
+        <%if (message.imageExists()) {
+             Blob blob = message.getImage();
+             String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(blob.getBytes());
+             %>
 
-    <%if (message.imageExists()) { %>
-         <%-- <li><img src="data:image/png;base64,'.base64_encode($message.getImage()).'"/></li> --%>
-         <%-- <li><img src="img?entity_id={{ message.key }}" /></li> --%>
-         <%
+             <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found" />
 
-         Blob blob = message.getImage();
-         String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(blob.getBytes());
-
-         %>
-
-         <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found" />
-
-    <%} %>
+      <%} %>
 
     <%
       }

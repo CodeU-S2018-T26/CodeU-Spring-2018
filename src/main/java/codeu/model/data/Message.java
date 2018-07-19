@@ -97,11 +97,11 @@ public class Message {
 
   /** Returns image associated with this Message */
   public Blob getImage(){
-    return image;
+    return this.image;
   }
 
   public boolean imageExists(){
-    if (image != null){
+    if (this.image != null){
       return true;
     }
     else{
