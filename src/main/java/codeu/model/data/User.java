@@ -15,8 +15,10 @@
 package codeu.model.data;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import codeu.model.store.basic.ConversationStore;
 
 /** Class representing a registered user. */
 public class User {
@@ -24,7 +26,8 @@ public class User {
   private final String name;
   private final String passwordHash;
   private final Instant creation;
-  private List<Conversation> conversations;
+  private List<Conversation> conversations = ConversationStore.getInstance().getAllConversations();
+  private List<Conversation> unfollowedConversations = new ArrayList<Conversation>();
 
   /**
    * Constructs a new User.
@@ -63,7 +66,7 @@ public class User {
   
   /** Set the current conversations that the user has followed. */
   public void addConversation(Conversation conversation) {
-    conversations.add(conversation);
+    unfollowedConversations.add(conversation);
   }
   
   /** Access the current conversations that the user has followed. */
@@ -71,8 +74,34 @@ public class User {
     return conversations;
   }
   
+  /** Access the current conversations that the user has unfollowed. */
+  public List<Conversation> getUnfollowedConversations() {
+    return unfollowedConversations;
+  }
+  
   /** Delete conversation from current set of conversations being followed. */
   public void deleteConversation(Conversation conversation) {
     conversations.remove(conversation);
+  }
+  
+  /** Checks if the input conversation is being followed by the user. */
+  public boolean isConversationFollowed(Conversation conv) {
+    for (Conversation conversation : conversations) {
+      if ( conversation == conv)
+        return true;
+    }
+    return false;
+  }
+  
+  /** Checks if the input conversation is being unfollowed by the user. */
+  public boolean isConversationUnfollowed(Conversation conv) {
+    if (unfollowedConversations.isEmpty())
+      return false;
+    
+    for (Conversation conversation : unfollowedConversations) {
+      if ( conversation == conv)
+        return true;
+    }
+    return false;
   }
 }
