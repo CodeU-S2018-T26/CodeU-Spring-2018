@@ -19,6 +19,24 @@
 <head>
   <title>CodeU Chat App</title>
   <link rel="stylesheet" href="/css/main.css">
+  <%-- for testing --%>
+  <meta http-equiv="Cache-control" content="no-cache">
+
+  <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-messaging.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-database.js"></script>
+  <script>
+      // Initialize Firebase
+      var config = {
+          apiKey: "AIzaSyDW8JwUxULiEp0YMb0HCQMHps5rXNamyRQ",
+          authDomain: "projecteam26.firebaseapp.com",
+          databaseURL: "https://projecteam26.firebaseio.com",
+          projectId: "projecteam26",
+          storageBucket: "projecteam26.appspot.com",
+          messagingSenderId: "290994051645"
+      };
+      firebase.initializeApp(config);
+  </script>
 </head>
 <body>
 

@@ -19,22 +19,17 @@ import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
+import codeu.model.store.basic.NotificationTokenStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -43,7 +38,6 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Iterator;
 
 import java.io.File;
 import java.lang.ClassLoader;
@@ -61,7 +55,12 @@ public class ChatServlet extends HttpServlet {
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
+  /** Store class that gives access to Notification Tokens. */
+  private NotificationTokenStore notificationTokenStore;
+
   private Map<String, String> validEmojis = new HashMap<>();
+
+  private SendNotification sendNotification;
 
   /** Set up state for handling chat requests. */
   @Override
@@ -70,6 +69,8 @@ public class ChatServlet extends HttpServlet {
     setConversationStore(ConversationStore.getInstance());
     setMessageStore(MessageStore.getInstance());
     setUserStore(UserStore.getInstance());
+    setNotificationTokenStore(NotificationTokenStore.getInstance());
+    setSendNotification(new SendNotification());
 
     JSONParser parser = new JSONParser();
     try{
@@ -119,6 +120,17 @@ public class ChatServlet extends HttpServlet {
   void setUserStore(UserStore userStore) {
     this.userStore = userStore;
   }
+
+  /**
+   * Sets the NotificationTokenStore used by this servlet. This function provides a common setup method for use
+   * by the test framework or the servlet's init() function.
+   */
+  void setNotificationTokenStore(NotificationTokenStore notificationTokenStore) {
+    this.notificationTokenStore = notificationTokenStore;
+  }
+
+  void setSendNotification(SendNotification sendNotification){this.sendNotification = sendNotification;}
+
 
   /**
    * This function fires when a user navigates to the chat page. It gets the conversation title from
@@ -335,6 +347,12 @@ public class ChatServlet extends HttpServlet {
             user.getId(),
             parsedMessageContent,
             Instant.now());
+
+    //send notification
+    Collection tokens = notificationTokenStore.getAllNotificationTokens();
+    for(Object token:tokens) {
+      sendNotification.sendMsg(parsedMessageContent, (String) token, notificationTokenStore.getMessagingAPIKey());
+    }
 
     messageStore.addMessage(message);
     // redirect to a GET request
