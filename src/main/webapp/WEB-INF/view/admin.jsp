@@ -21,6 +21,7 @@
   <a href="/login">Login</a>
   <% } %>
   <a href="/about.jsp">About</a>
+  <a href="/activity">Feed</a>
 </nav>
 
   <% String username = (String)request.getSession().getAttribute("user");

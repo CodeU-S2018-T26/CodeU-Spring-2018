@@ -47,6 +47,7 @@
 		  }
 		%>
 		<a href="/about.jsp">About</a>
+		<a href="/activity">Feed</a>
 	</nav>
 
 	<div id="container">

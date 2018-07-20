@@ -58,7 +58,7 @@
 	</nav>
 
 	<div id="container">
-		<h1>Activity</h1>
+		<h1>Your activity feed</h1>
 
 		<p>See what's happening!</p>
 		<div id="feed">

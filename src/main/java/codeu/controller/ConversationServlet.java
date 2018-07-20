@@ -133,9 +133,6 @@ public class ConversationServlet extends HttpServlet {
         // System.out.println("Following button is clicked!");
         User currentUser = UserStore.getInstance().getUser(username);
         currentUser.addConversation(conversationStore.getConversationWithTitle(conversationTitle));
-        // currentUser.deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
-        // conversationStore
-        // .deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
       }
       String followClick = request.getParameter("Unfollowing");
       if (followClick == null) {
