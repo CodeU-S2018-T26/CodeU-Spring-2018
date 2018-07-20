@@ -14,13 +14,19 @@
 
 package codeu.model.store.basic;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import codeu.model.data.Conversation;
 import codeu.model.data.Event;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
-import java.time.Instant;
-import java.util.*;
 
 /**
  * Store class that uses in-memory data structures to hold values and automatically loads from and

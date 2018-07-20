@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -67,7 +67,7 @@ public class ConversationStore {
     conversations = new ArrayList<>();
   }
 
-/** Access the current set of conversations known to the application. */
+  /** Access the current set of conversations known to the application. */
   public List<Conversation> getAllConversations() {
     return conversations;
   }
@@ -108,7 +108,7 @@ public class ConversationStore {
   public void setConversations(List<Conversation> conversations) {
     this.conversations = conversations;
   }
-  
+
   /**
    * Access the Conversation object with the given UUID.
    *
@@ -122,5 +122,4 @@ public class ConversationStore {
     }
     return null;
   }
-  
 }

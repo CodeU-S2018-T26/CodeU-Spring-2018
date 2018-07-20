@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -84,6 +84,7 @@ public class ConversationServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
 
+    boolean skip = false;
     String username = (String) request.getSession().getAttribute("user");
     if (username == null) {
       // user is not logged in, don't let them create a conversation
@@ -100,23 +101,48 @@ public class ConversationServlet extends HttpServlet {
     }
 
     String conversationTitle = request.getParameter("conversationTitle");
-    if (!conversationTitle.matches("[\\w*]*")) {
-      request.setAttribute("error", "Please enter only letters and numbers.");
-      request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
-      return;
+    if (conversationTitle == null) {
+      skip = true;
+      conversationTitle = request.getParameter("hiddenConversationTitle");
     }
+    if (!skip) {
+      if (!conversationTitle.matches("[\\w*]*")) {
+        request.setAttribute("error", "Please enter only letters and numbers.");
+        request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
+        return;
+      }
 
-    if (conversationStore.isTitleTaken(conversationTitle)) {
-      // conversation title is already taken, just go into that conversation instead of creating a
-      // new one
+      if (conversationStore.isTitleTaken(conversationTitle)) {
+        // conversation title is already taken, just go into that conversation instead of creating a
+        // new one
+        response.sendRedirect("/chat/" + conversationTitle);
+        return;
+      }
+
+      Conversation conversation =
+          new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now());
+
+      conversationStore.addConversation(conversation);
       response.sendRedirect("/chat/" + conversationTitle);
-      return;
+    } else {
+      String unfollowClick = request.getParameter("Following");
+      // System.out.println("User entered conversation name: " + conversationTitle);
+      if (unfollowClick == null) {
+        System.out.println("Unfollowing button is unclicked!");
+      } else if (unfollowClick != null) {
+        // System.out.println("Following button is clicked!");
+        User currentUser = UserStore.getInstance().getUser(username);
+        currentUser.addConversation(conversationStore.getConversationWithTitle(conversationTitle));
+      }
+      String followClick = request.getParameter("Unfollowing");
+      if (followClick == null) {
+        System.out.println("Following button is unclicked!");
+      } else if (followClick != null) {
+        User currentUser = UserStore.getInstance().getUser(username);
+        currentUser
+            .deleteConversation(conversationStore.getConversationWithTitle(conversationTitle));
+      }
     }
-
-    Conversation conversation =
-        new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now());
-
-    conversationStore.addConversation(conversation);
-    response.sendRedirect("/chat/" + conversationTitle);
+    response.sendRedirect("#");
   }
 }
