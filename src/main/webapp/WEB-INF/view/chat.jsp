@@ -31,7 +31,11 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
   <style>
     #chat {
-      background-color: white;
+      background-color:#2d2d2d;
+      border: 5px solid #00CED1;
+      border-radius: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
       height: 500px;
       overflow-y: scroll
     }
