@@ -53,11 +53,18 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     function displayShortcodeEntry() {
       var checkBox = document.getElementById("emoji-checkbox");
     // Get the output text
-      var textBox = document.getElementById("shortcode");
+      var messageTextBox = document.getElementById("text");
+      var shortcodeTextBox = document.getElementById("shortcode");
+      var emojiPrompt = document.getElementById("emoji-prompt");
       if(checkBox.checked==true){
-        textBox.style.display = "block";
+        shortcodeTextBox.style.display = "inline";
+        messageTextBox.style.display = "none";
+        emojiPrompt.style.display = "none";
       } else {
-        textBox.style.display = "none";
+        shortcodeTextBox.style.display = "none";
+        messageTextBox.style.display = "inline";
+        emojiPrompt.style.display = "inline";
+
       }
     };
   </script>
@@ -111,10 +118,11 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
     <% if (request.getSession().getAttribute("user") != null) { %>
     <form action="/chat/<%= conversation.getTitle() %>" enctype="multipart/form-data" method="POST">
-        <input type="text" name="message">
+        <input type="text" style="display:inline" name="message" placeholder="message">
         <input type="file" accept="image/*" name="image">
-        <input type="checkbox" id="emoji-checkbox" name="emoji-checkbox">
-        <input type="text" style="display:none" id="shortcode" name="shortcode">
+        <input type="checkbox" id="emoji-checkbox" name="emoji-checkbox" onclick="displayShortcodeEntry()">
+        <p id="emoji-prompt" style="display:inline"> Upload custom emoji?</p>
+        <input type="text" style="display:none" id="shortcode" name="shortcode" placeholder="emoji name">
         <br/>
         <button type="submit">Send</button>
     </form>

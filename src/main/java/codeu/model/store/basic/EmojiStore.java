@@ -40,8 +40,8 @@ public class EmojiStore {
    */
   private PersistentStorageAgent persistentStorageAgent;
 
-  /** The in-memory list of Users. */
-  private Hashtable<UUID, String> emojis;
+  /** The in-memory table of emojis. */
+  private Hashtable<String, Blob> emojis;
 
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
@@ -52,12 +52,16 @@ public class EmojiStore {
 
 
   /**
-   * Access the Notification Token with the given UUID.
+   * Access the Emoji with the given shortcode.
    *
    * @return null if the Shortcode does not have a corresponding emoji.
    */
-  public String getEmoji(String shortcode) {
+  public Blob getEmoji(String shortcode) {
     return emojis.get(shortcode);
+  }
+
+  public Hashtable<String, Blob> getEmojiTable(){
+    return emojis;
   }
 
   /**
@@ -67,7 +71,7 @@ public class EmojiStore {
    */
   public void addEmoji(String shortcode, Blob image) {
     emojis.put(shortcode, image);
-    persistentStorageAgent.writeThrough(id, token);
+    persistentStorageAgent.writeThrough(shortcode, image);
   }
 
   /**
@@ -79,7 +83,7 @@ public class EmojiStore {
   }
 
   /** Access the current set of Emojis known to the application. */
-  public Collection<String> getAllEmojis() {
+  public Collection<Blob> getAllEmojis() {
     return new ArrayList<>(emojis.values());
   }
 
