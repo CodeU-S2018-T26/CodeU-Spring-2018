@@ -29,9 +29,28 @@
 <html>
 <head>
 <title>Activity Feed</title>
+
 <link rel="stylesheet" href="/css/main.css">
+
+<style>
+#feed {
+	background-color: white;
+	height: 500px;
+	overflow-y: scroll
+}
+</style>
+
+<script>
+	// scroll the chat div to the bottom
+	function scrollChat() {
+		var eventDiv = document.getElementById('feed');
+		eventDiv.scrollTop = eventDiv.scrollHeight;
+	};
+</script>
+
 </head>
-<body>
+
+<body onload="scrollChat()">
 
 	<nav>
 		<a id="navTitle" href="/">CodeU Chat App</a> <a href="/conversations">Conversations</a>
@@ -39,61 +58,74 @@
 	</nav>
 
 	<div id="container">
-		<h1>Activity</h1>
+		<h1>Your activity feed</h1>
 
 		<p>See what's happening!</p>
-		<ul>
-			<%
-			  DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-			      .withLocale(Locale.US).withZone(ZoneId.systemDefault());
-			  HashMap<Instant, Event> eventsMap =
-			      (HashMap<Instant, Event>) request.getAttribute("eventsMap");
-			  ArrayList<Instant> eventsInstantsSorted =
-			      (ArrayList<Instant>) request.getAttribute("eventsInstantsSorted");
-			  if (eventsMap == null) {
-			    return;
-			  } else {
-			    for (Instant instant : eventsInstantsSorted) {
-			      String author;
-			      Instant time;
-			      String title;
-			      for (Map.Entry<Instant, Event> m : eventsMap.entrySet()) {
-			        if (m.getKey() == instant) {
-			          Event event = m.getValue();
-			          if (event.getEventType() == "user") {
-			            author = UserStore.getInstance().getUser(event.getId()).getName();
-			%>
-			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
-				joined!</li>
-			<%
-			  } else if (event.getEventType() == "conversation") {
-			            Conversation conversation =
-			                ConversationStore.getInstance().getConversation(event.getId());
-			            author = UserStore.getInstance().getUser(conversation.getOwnerId()).getName();
-			            title = conversation.getTitle();
-			%>
-			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
-				created a new conversation: <a href="/chat/<%=title%>"><%=title%></a></li>
-			<%
-			  } else if (event.getEventType() == "message") {
-			            Message message = MessageStore.getInstance().getMessage(event.getId());
-			            author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
-			            String conversationTitle = ConversationStore.getInstance()
-			                .getConversation(message.getConversationId()).getTitle();
-			%>
-			<li><b><%=formatter.format(m.getKey())%></b>: <%=author%> sent a
-				message in <a href="/chat/<%=conversationTitle%>"><%=conversationTitle%></a>:
-				"<%=message.getContent()%>"</li>
-			<%
-			  }
-			%>
+		<div id="feed">
+			<ul>
+				<%
+				  DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+				      .withLocale(Locale.US).withZone(ZoneId.systemDefault());
+				  HashMap<Instant, Event> eventsMap =
+				      (HashMap<Instant, Event>) request.getAttribute("eventsMap");
+				  ArrayList<Instant> eventsInstantsSorted =
+				      (ArrayList<Instant>) request.getAttribute("eventsInstantsSorted");
+				  if (eventsMap == null) {
+				    return;
+				  } else {
+				    for (Instant instant : eventsInstantsSorted) {
+				      String author;
+				      Instant time;
+				      String title;
+				      User currentUser;
+				      Conversation currentConversation;
+				      for (Map.Entry<Instant, Event> m : eventsMap.entrySet()) {
+				        if (m.getKey() == instant) {
+				          Event event = m.getValue();
+				          if (event.getEventType() == "user") {
+				            author = UserStore.getInstance().getUser(event.getId()).getName();
+				%>
+				<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
+					joined!</li>
+				<%
+				  } else if (event.getEventType() == "conversation") {
+				            Conversation conversation =
+				                ConversationStore.getInstance().getConversation(event.getId());
+				            currentUser = UserStore.getInstance().getUser(conversation.getOwnerId());
+				            if (currentUser.isConversationUnfollowed(conversation) == false) {
+				              author = UserStore.getInstance().getUser(conversation.getOwnerId()).getName();
+				              title = conversation.getTitle();
+				%>
+				<li><b><%=formatter.format(m.getKey())%></b>: <%=author%>
+					created a new conversation: <a href="/chat/<%=title%>"><%=title%></a></li>
+				<%
+				  }
+				          } else if (event.getEventType() == "message") {
+				            Message message = MessageStore.getInstance().getMessage(event.getId());
+				            currentUser = UserStore.getInstance().getUser(message.getAuthorId());
+				            currentConversation =
+				                ConversationStore.getInstance().getConversation(message.getConversationId());
+				            if (currentUser.isConversationUnfollowed(currentConversation) == false) {
+				              author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
+				              String conversationTitle = ConversationStore.getInstance()
+				                  .getConversation(message.getConversationId()).getTitle();
+				%>
+				<li><b><%=formatter.format(m.getKey())%></b>: <%=author%> sent
+					a message in <a href="/chat/<%=conversationTitle%>"><%=conversationTitle%></a>:
+					"<%=message.getContent()%>"</li>
+				<%
+				  }
+				          }
+				%>
 
-			<%
-			  }
-			      }
-			    }
-			  }
-			%>
+				<%
+				  }
+				      }
+				    }
+				  }
+				%>
+			
+		</div>
 		</ul>
 	</div>
 </body>

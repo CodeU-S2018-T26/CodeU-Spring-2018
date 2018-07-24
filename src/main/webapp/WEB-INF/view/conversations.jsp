@@ -13,38 +13,54 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 --%>
-<%@ page import="java.util.List" %>
-<%@ page import="codeu.model.data.Conversation" %>
-<%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.List"%>
+<%@ page import="codeu.model.data.Conversation"%>
+<%@ page import="codeu.model.data.User"%>
+<%@ page import="codeu.model.store.basic.UserStore"%>
+<%@ page import="java.util.Arrays"%>
 
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Conversations</title>
+<title>Conversations</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="import" href="/index.jsp">
 </head>
-</head>
 <body>
 
-  <nav>
-    <a id="navTitle" href="/">CodeU Chat App</a>
-    <a href="/conversations">Conversations</a>
-    <% if(request.getSession().getAttribute("user") != null){ %>
-      <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
-    <%if((boolean) request.getSession().getAttribute("isAdmin") == true){%>
-    <a href = "/admin">Admin</a><%}
-    } else{ %>
-      <a href="/login">Login</a>
-    <% } %>
-    <a href="/about.jsp">About</a>
-  </nav>
+	<nav>
+		<a id="navTitle" href="/">CodeU Chat App</a> <a href="/conversations">Conversations</a>
+		<%
+		  if (request.getSession().getAttribute("user") != null) {
+		%>
+		<a>Hello <%=request.getSession().getAttribute("user")%>!
+		</a>
+		<%
+		  if ((boolean) request.getSession().getAttribute("isAdmin") == true) {
+		%>
+		<a href="/admin">Admin</a>
+		<%
+		  }
+		  } else {
+		%>
+		<a href="/login">Login</a>
+		<%
+		  }
+		%>
+		<a href="/about.jsp">About</a>
+		<a href="/activity">Feed</a>
+	</nav>
 
-  <div id="container">
+	<div id="container">
 
-    <% if(request.getAttribute("error") != null){ %>
-        <h2 style="color:red"><%= request.getAttribute("error") %></h2>
-    <% } %>
+		<%
+		  if (request.getAttribute("error") != null) {
+		%>
+		<h2 style="color: red"><%=request.getAttribute("error")%></h2>
+		<%
+		  }
+		%>
+
 
     <% if(request.getSession().getAttribute("user") != null){ %>
       <script type="text/javascript" src="/js/main.js"></script>
@@ -56,38 +72,54 @@
           <input type="text" name="conversationTitle">
         </div>
 
-        <button type="submit">Create</button>
-      </form>
 
-      <hr/>
-    <% } %>
+			<button type="submit">Create</button>
+		</form>
 
-    <h1>Conversations</h1>
+		<hr />
+		<%
+		  }
+		%>
 
-    <%
-    List<Conversation> conversations =
-      (List<Conversation>) request.getAttribute("conversations");
-    if(conversations == null || conversations.isEmpty()){
-    %>
-      <p>Create a conversation to get started.</p>
-    <%
-    }
-    else{
-    %>
-      <ul class="mdl-list">
-    <%
-      for(Conversation conversation : conversations){
-    %>
-      <li><a href="/chat/<%= conversation.getTitle() %>">
-        <%= conversation.getTitle() %></a></li>
-    <%
-      }
-    %>
-      </ul>
-    <%
-    }
-    %>
-    <hr/>
-  </div>
+		<h1>Conversations</h1>
+
+		<%
+		  List<Conversation> conversations = (List<Conversation>) request.getAttribute("conversations");
+		  if (conversations == null || conversations.isEmpty()) {
+		%>
+		<p>Create a conversation to get started.</p>
+		<%
+		  } else {
+		%>
+		<ul class="mdl-list">
+			<%
+			  for (Conversation conversation : conversations) {
+			%>
+			<li><a href="/chat/<%=conversation.getTitle()%>"> <%=conversation.getTitle()%></a>
+				<form method='post'>
+					<input type="hidden" value=<%=conversation.getTitle()%>
+						name="hiddenConversationTitle" />
+					<%
+					  String username = (String) request.getSession().getAttribute("user");
+					      User currentUser = UserStore.getInstance().getUser(username);
+					      if (currentUser.isConversationUnfollowed(conversation)) {
+					%>
+					<input align="right" type="submit" value=Follow name="Unfollowing"
+						id="unfollowing" />
+					<%
+					  } else {
+					%>
+					<input align="right" type="submit" value=Unfollow name="Following"
+						id="following" />
+				</form> <%
+   }
+     }
+ %>
+		</ul>
+		<%
+		  }
+		%>
+		<hr />
+	</div>
 </body>
 </html>
