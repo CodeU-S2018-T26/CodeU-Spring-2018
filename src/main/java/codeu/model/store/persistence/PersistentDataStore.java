@@ -221,6 +221,37 @@ public class PersistentDataStore {
     return key;
   }
 
+  /**
+   * Loads all NotificationTokens from the Datastore service and returns them in a HashTable.
+   *
+   * @throws PersistentDataStoreException if an error was detected during the load from the
+   *     Datastore service
+   */
+  public Hashtable<String, Blob> loadEmojis() throws PersistentDataStoreException {
+
+    Hashtable<String, Blob> emojis = new Hashtable<>();
+
+    // Retrieve all users from the datastore.
+    Query query = new Query("custom-emojis");
+    PreparedQuery results = datastore.prepare(query);
+
+    for (Entity entity : results.asIterable()) {
+      try {
+        String shortcode = (String) entity.getProperty("shortcode");
+        Blob image = (Blob) entity.getProperty("image");
+        emojis.put(shortcode, image);
+      } catch (Exception e) {
+        // In a production environment, errors should be very rare. Errors which may
+        // occur include network errors, Datastore service errors, authorization errors,
+        // database entity definition mismatches, or service mismatches.
+        throw new PersistentDataStoreException(e);
+      }
+    }
+
+    return emojis;
+  }
+
+
   /** Write a User object to the Datastore service. */
   public void writeThrough(User user) {
     Entity userEntity = new Entity("chat-users", user.getId().toString());
@@ -259,5 +290,13 @@ public class PersistentDataStore {
     notificationTokenEntity.setProperty("uuid", id.toString());
     notificationTokenEntity.setProperty("token", token);
     datastore.put(notificationTokenEntity);
+  }
+
+  /** Write custom emoji to Datastore service. */
+  public void writeThrough(String shortcode, Blob image){
+    Entity customEmojiEntity = new Entity("custom-emojis");
+    customEmojiEntity.setProperty("shortcode", shortcode);
+    customEmojiEntity.setProperty("image", image);
+    datastore.put(customEmojiEntity);
   }
 }

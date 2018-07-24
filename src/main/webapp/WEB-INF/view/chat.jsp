@@ -49,6 +49,17 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
       var chatDiv = document.getElementById('chat');
       chatDiv.scrollTop = chatDiv.scrollHeight;
     };
+
+    function displayShortcodeEntry() {
+      var checkBox = document.getElementById("emoji-checkbox");
+    // Get the output text
+      var textBox = document.getElementById("shortcode");
+      if(checkBox.checked==true){
+        textBox.style.display = "block";
+      } else {
+        textBox.style.display = "none";
+      }
+    };
   </script>
 </head>
 <body onload="scrollChat()">
@@ -102,6 +113,8 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     <form action="/chat/<%= conversation.getTitle() %>" enctype="multipart/form-data" method="POST">
         <input type="text" name="message">
         <input type="file" accept="image/*" name="image">
+        <input type="checkbox" id="emoji-checkbox" name="emoji-checkbox">
+        <input type="text" style="display:none" id="shortcode" name="shortcode">
         <br/>
         <button type="submit">Send</button>
     </form>

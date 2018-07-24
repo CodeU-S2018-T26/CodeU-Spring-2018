@@ -18,6 +18,7 @@ import codeu.model.data.Conversation;
 import codeu.model.data.Message;
 import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentDataStore;
+import com.google.appengine.api.datastore.Blob;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -103,6 +104,15 @@ public class PersistentStorageAgent {
   }
 
   /**
+   * Retrieve Custom Emojis from the Datastore service. The returned list may be empty.
+   *
+   * @throws PersistentDataStoreException if an error was detected during the load from the
+   *     Datastore service
+   */
+  public Hashtable<String,Blob> loadEmojis() throws  PersistentDataStoreException{
+    return persistentDataStore.loadEmojis();
+  }
+  /**
    * Retrieve Messaging API Key from the Datastore service.
    *
    * @throws PersistentDataStoreException if an error was detected during the load from the
@@ -130,5 +140,9 @@ public class PersistentStorageAgent {
   /** Write an id and corresponding Notification Token to the Datastore service. */
   public void writeThrough(UUID id, String token) {
     persistentDataStore.writeThrough(id, token);
+  }
+
+  public void writeThrough(String shortcode, Blob image){
+    persistentDataStore.writeThrough(shortcode, image);
   }
 }
