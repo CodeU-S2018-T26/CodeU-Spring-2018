@@ -43,14 +43,11 @@ import java.io.FileReader;
 import java.io.File;
 import java.lang.ClassLoader;
 
-// import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
 import java.io.InputStream;
 
-// import com.google.appengine.api.images.Image;
-// import com.google.appengine.api.images.ImagesServiceFactory;
 import org.apache.commons.io.IOUtils;
 import com.google.appengine.api.datastore.Blob;
 import javax.servlet.http.Part;

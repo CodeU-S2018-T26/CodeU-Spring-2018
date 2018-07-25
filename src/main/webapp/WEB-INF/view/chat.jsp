@@ -128,11 +128,6 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
         <br/>
         <button type="submit">Send</button>
     </form>
-    <%-- <form method='post' enctype='multipart/form-data' action='/file-upload'>
-        <input type='file' name='thumbnail' />
-        <input type='hidden' name='base64data' />
-        <input type='submit' formenctype='application/x-www-form-urlencoded' />
-    </form> --%>
     <% } else { %>
       <p><a href="/login">Login</a> to send a message.</p>
     <% } %>
