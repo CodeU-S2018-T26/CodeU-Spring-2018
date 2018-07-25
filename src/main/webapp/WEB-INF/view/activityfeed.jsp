@@ -53,7 +53,7 @@
 <body onload="scrollChat()">
 
 	<nav>
-		<a id="navTitle" href="/">JRAAM Chat</a> <a href="/conversations">Conversations</a>
+		<a id="navTitle" href="/">JRAMM Chat</a> <a href="/conversations">Conversations</a>
 		<a href="/about.jsp">About</a>
 	</nav>
 

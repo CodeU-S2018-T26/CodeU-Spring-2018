@@ -11,7 +11,7 @@
 <body>
 
 <nav>
-  <a id="navTitle" href="/">JRAAM Chat</a>
+  <a id="navTitle" href="/">JRAMM Chat</a>
   <a href="/conversations">Conversations</a>
   <% if (request.getSession().getAttribute("user") != null) { %>
   <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
