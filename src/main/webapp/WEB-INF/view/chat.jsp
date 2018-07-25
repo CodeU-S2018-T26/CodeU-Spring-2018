@@ -123,7 +123,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
         <input type="text" style="display:inline" name="message" placeholder="message">
         <input type="file" accept="image/*" name="image">
         <input type="checkbox" id="emoji-checkbox" name="emoji-checkbox" onclick="displayShortcodeEntry()">
-        <p id="emoji-prompt" style="display:inline"> Upload custom emoji?</p>
+        <p id="emoji-prompt" style="display:inline; font-size:14px"> Upload custom emoji?</p>
         <input type="text" style="display:none" id="shortcode" name="shortcode" placeholder="emoji name">
         <br/>
         <button type="submit">Send</button>
