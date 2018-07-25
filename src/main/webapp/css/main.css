@@ -19,12 +19,11 @@ body {
   line-height: 1.6;
   font-size: 20px;
   line-height: 1.6;
-  color: #00CED1;
-  background-color: #2d2d2d;
+  background-color: #FFF0F5;
 }
 
 a:visited{
-  color: white;
+  color: #228B22;
 }
 
 nav {
@@ -48,7 +47,7 @@ nav a {
   margin-right: auto;
   width: 800px;
   color: #00CED1;
-  background: #2d2d2d;
+  background: #FFF0F5;
 }
 
 h1 {
@@ -61,4 +60,25 @@ input {
 
 button {
   font-size: 18px;
+}
+
+#submit {
+    background-color: #ccc;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+    color: #fff;
+    font-family: 'Oswald';
+    font-size: 20px;
+    text-decoration: none;
+    cursor: pointer;
+    border:none;
+}
+
+
+
+#submit:hover {
+    border: none;
+    background:red;
+    box-shadow: 0px 0px 1px #777;
 }
