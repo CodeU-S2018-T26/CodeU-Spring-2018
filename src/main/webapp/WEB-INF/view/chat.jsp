@@ -20,9 +20,6 @@
 <%@ page import="java.util.Arrays" %>
 
 <%@ page import="com.google.appengine.api.datastore.Blob"%>
-<%-- <%@ page import="java.awt.image.BufferedImage"%> --%>
-<%-- <%@ page import="org.apache.commons.io.IOUtils"%> --%>
-<%-- <%@ page import="java.io.ByteArrayOutputStream"%> --%>
 
 <%
 Conversation conversation = (Conversation) request.getAttribute("conversation");

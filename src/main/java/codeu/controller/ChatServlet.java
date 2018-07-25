@@ -89,6 +89,7 @@ public class ChatServlet extends HttpServlet {
     setNotificationTokenStore(NotificationTokenStore.getInstance());
     setSendNotification(new SendNotification());
     setEmojiStore(EmojiStore.getInstance());
+    currentCustomEmoji = null;
 
     JSONParser parser = new JSONParser();
     try{
