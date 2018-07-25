@@ -49,11 +49,12 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
 import java.io.InputStream;
 
-import com.google.appengine.api.images.Image;
-import com.google.appengine.api.images.ImagesServiceFactory;
+// import com.google.appengine.api.images.Image;
+// import com.google.appengine.api.images.ImagesServiceFactory;
 import org.apache.commons.io.IOUtils;
 import com.google.appengine.api.datastore.Blob;
 import javax.servlet.http.Part;
+import com.google.appengine.api.images.*;
 
 /** Servlet class responsible for the chat page. */
 @MultipartConfig
@@ -386,7 +387,13 @@ public class ChatServlet extends HttpServlet {
 
     if(checkboxOut.equals("on") && filePart != null && !filePart.getSubmittedFileName().equals("") && shortcode != null && !shortcode.equals("")){  //user wants their uploaded image to be an emoji
       InputStream fileContent = filePart.getInputStream();
-      Blob image = new Blob(IOUtils.toByteArray(fileContent));
+
+      ImagesService imagesService = ImagesServiceFactory.getImagesService();
+      Image originalImage = ImagesServiceFactory.makeImage(IOUtils.toByteArray(fileContent));
+      Transform resize = ImagesServiceFactory.makeResize(70, 70);
+      Image resizedImage = imagesService.applyTransform(resize, originalImage);
+
+      Blob image = new Blob(resizedImage.getImageData());
       emojiStore.addEmoji(shortcode, image);
       messageToSend = false;
       message = //not needed, but gets rid of compiler error "might not be initialized"
@@ -400,9 +407,12 @@ public class ChatServlet extends HttpServlet {
     else if(filePart != null && !filePart.getSubmittedFileName().equals("")){
       InputStream fileContent = filePart.getInputStream();
 
-      // ImagesService imagesService = ImagesServiceFactory.getImagesService();
+      ImagesService imagesService = ImagesServiceFactory.getImagesService();
+      Image originalImage = ImagesServiceFactory.makeImage(IOUtils.toByteArray(fileContent));
+      Transform resize = ImagesServiceFactory.makeResize(350, 600);
+      Image resizedImage = imagesService.applyTransform(resize, originalImage);
 
-      Blob image = new Blob(IOUtils.toByteArray(fileContent));
+      Blob image = new Blob(resizedImage.getImageData());
 
       message =
           new Message(
