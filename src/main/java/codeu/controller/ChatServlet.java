@@ -21,6 +21,7 @@ import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.NotificationTokenStore;
 import codeu.model.store.basic.UserStore;
+import codeu.model.store.basic.EmojiStore;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
@@ -42,8 +43,20 @@ import java.io.FileReader;
 import java.io.File;
 import java.lang.ClassLoader;
 
+// import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.*;
+import java.io.InputStream;
+
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import org.apache.commons.io.IOUtils;
+import com.google.appengine.api.datastore.Blob;
+import javax.servlet.http.Part;
 
 /** Servlet class responsible for the chat page. */
+@MultipartConfig
 public class ChatServlet extends HttpServlet {
 
   /** Store class that gives access to Conversations. */
@@ -62,6 +75,10 @@ public class ChatServlet extends HttpServlet {
 
   private SendNotification sendNotification;
 
+  private EmojiStore emojiStore;
+
+  private Blob currentCustomEmoji;
+
   /** Set up state for handling chat requests. */
   @Override
   public void init() throws ServletException {
@@ -71,6 +88,8 @@ public class ChatServlet extends HttpServlet {
     setUserStore(UserStore.getInstance());
     setNotificationTokenStore(NotificationTokenStore.getInstance());
     setSendNotification(new SendNotification());
+    setEmojiStore(EmojiStore.getInstance());
+    currentCustomEmoji = null;
 
     JSONParser parser = new JSONParser();
     try{
@@ -131,6 +150,10 @@ public class ChatServlet extends HttpServlet {
 
   void setSendNotification(SendNotification sendNotification){this.sendNotification = sendNotification;}
 
+
+  void setEmojiStore(EmojiStore emojiStore){
+    this.emojiStore = emojiStore;
+  }
 
   /**
    * This function fires when a user navigates to the chat page. It gets the conversation title from
@@ -209,6 +232,12 @@ public class ChatServlet extends HttpServlet {
                            List<String> linkPrefix,
                            String emojiFlag,
                            Map<String, String[]> markToHtml){
+
+      Hashtable<String, Blob> customEmojis = new Hashtable<String, Blob>();
+      if (emojiStore != null){
+        customEmojis = emojiStore.getEmojiTable();
+      }
+
       for (int i = 0; i < tokenizedMessageContent.size(); i++){
           if (validStrFlags.contains(tokenizedMessageContent.get(i))){
               for (int j = tokenizedMessageContent.size() - 1; j > i; j--){
@@ -236,7 +265,10 @@ public class ChatServlet extends HttpServlet {
               }
               // if there was a closing emojiFlag and the shortcode is valid
               // then replace the shortcode and flags with emoji html code
-              if (validSyntax && validEmojis.containsKey(shortcode)){
+              if(validSyntax && customEmojis.containsKey(shortcode)){
+                this.currentCustomEmoji = customEmojis.get(shortcode);
+              }
+              else if (validSyntax && validEmojis.containsKey(shortcode)){
                   tokenizedMessageContent.set(i, validEmojis.get(shortcode));
                   for (int k = j; k > i; k--){
                       tokenizedMessageContent.remove(k);
@@ -304,6 +336,7 @@ public class ChatServlet extends HttpServlet {
 
     String messageContent = request.getParameter("message");
 
+
     // this removes any HTML from the message content
     String cleanedMessageContent = Jsoup.clean(messageContent, Whitelist.none());
 
@@ -340,21 +373,76 @@ public class ChatServlet extends HttpServlet {
       parsedMessageContent += token;
     }
 
-    Message message =
-        new Message(
-            UUID.randomUUID(),
-            conversation.getId(),
-            user.getId(),
-            parsedMessageContent,
-            Instant.now());
+    Message message;
 
-    //send notification
-    Collection tokens = notificationTokenStore.getAllNotificationTokens();
-    for(Object token:tokens) {
-      sendNotification.sendMsg(parsedMessageContent, (String) token, notificationTokenStore.getMessagingAPIKey());
+    Part filePart = request.getPart("image"); // Retrieves <input type="file" name="image">
+    String checkboxOut = request.getParameter("emoji-checkbox");
+    String shortcode = request.getParameter("shortcode");
+    boolean messageToSend = true;
+
+    if (checkboxOut == null){
+      checkboxOut = "off";
     }
 
-    messageStore.addMessage(message);
+    if(checkboxOut.equals("on") && filePart != null && !filePart.getSubmittedFileName().equals("") && shortcode != null && !shortcode.equals("")){  //user wants their uploaded image to be an emoji
+      InputStream fileContent = filePart.getInputStream();
+      Blob image = new Blob(IOUtils.toByteArray(fileContent));
+      emojiStore.addEmoji(shortcode, image);
+      messageToSend = false;
+      message = //not needed, but gets rid of compiler error "might not be initialized"
+          new Message(
+              UUID.randomUUID(),
+              conversation.getId(),
+              user.getId(),
+              parsedMessageContent,
+              Instant.now());
+    }
+    else if(filePart != null && !filePart.getSubmittedFileName().equals("")){
+      InputStream fileContent = filePart.getInputStream();
+
+      // ImagesService imagesService = ImagesServiceFactory.getImagesService();
+
+      Blob image = new Blob(IOUtils.toByteArray(fileContent));
+
+      message =
+          new Message(
+              UUID.randomUUID(),
+              conversation.getId(),
+              user.getId(),
+              parsedMessageContent,
+              Instant.now(),
+              image);
+    }
+    else if(this.currentCustomEmoji != null){
+      message =
+          new Message(
+              UUID.randomUUID(),
+              conversation.getId(),
+              user.getId(),
+              parsedMessageContent,
+              Instant.now(),
+              this.currentCustomEmoji);
+    }
+
+    else{
+      message =
+          new Message(
+              UUID.randomUUID(),
+              conversation.getId(),
+              user.getId(),
+              parsedMessageContent,
+              Instant.now());
+    }
+
+    if(messageToSend){
+      //send notification
+      Collection tokens = notificationTokenStore.getAllNotificationTokens();
+      for(Object token:tokens) {
+        sendNotification.sendMsg(parsedMessageContent, (String) token, notificationTokenStore.getMessagingAPIKey());
+      }
+
+      messageStore.addMessage(message);
+    }
     // redirect to a GET request
     response.sendRedirect("/chat/" + conversationTitle);
   }

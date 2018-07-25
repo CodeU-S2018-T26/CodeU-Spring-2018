@@ -17,6 +17,15 @@ package codeu.model.data;
 import java.time.Instant;
 import java.util.UUID;
 
+// import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.datastore.Blob;
+
+
 /** Class representing a message. Messages are sent by a User in a Conversation. */
 public class Message {
 
@@ -25,6 +34,7 @@ public class Message {
   private final UUID author;
   private final String content;
   private final Instant creation;
+  private final Blob image;
 
   /**
    * Constructs a new Message.
@@ -34,14 +44,26 @@ public class Message {
    * @param author the ID of the User who sent this Message
    * @param content the text content of this Message
    * @param creation the creation time of this Message
+   * @param image an image to send with this message
    */
+  public Message(UUID id, UUID conversation, UUID author, String content, Instant creation, Blob image) {
+    this.id = id;
+    this.conversation = conversation;
+    this.author = author;
+    this.content = content;
+    this.creation = creation;
+    this.image = image;
+  }
+
   public Message(UUID id, UUID conversation, UUID author, String content, Instant creation) {
     this.id = id;
     this.conversation = conversation;
     this.author = author;
     this.content = content;
     this.creation = creation;
+    this.image = null;
   }
+
 
   /** Returns the ID of this Message. */
   public UUID getId() {
@@ -71,5 +93,19 @@ public class Message {
   /** Returns the creation time of this Message. */
   public Instant getCreationTime() {
     return creation;
+  }
+
+  /** Returns image associated with this Message */
+  public Blob getImage(){
+    return this.image;
+  }
+
+  public boolean imageExists(){
+    if (this.image != null){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 }

@@ -18,6 +18,9 @@
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.store.basic.UserStore" %>
 <%@ page import="java.util.Arrays" %>
+
+<%@ page import="com.google.appengine.api.datastore.Blob"%>
+
 <%
 Conversation conversation = (Conversation) request.getAttribute("conversation");
 List<Message> messages = (List<Message>) request.getAttribute("messages");
@@ -47,12 +50,30 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
       var chatDiv = document.getElementById('chat');
       chatDiv.scrollTop = chatDiv.scrollHeight;
     };
+
+    function displayShortcodeEntry() {
+      var checkBox = document.getElementById("emoji-checkbox");
+    // Get the output text
+      var messageTextBox = document.getElementById("text");
+      var shortcodeTextBox = document.getElementById("shortcode");
+      var emojiPrompt = document.getElementById("emoji-prompt");
+      if(checkBox.checked==true){
+        shortcodeTextBox.style.display = "inline";
+        messageTextBox.style.display = "none";
+        emojiPrompt.style.display = "none";
+      } else {
+        shortcodeTextBox.style.display = "none";
+        messageTextBox.style.display = "inline";
+        emojiPrompt.style.display = "inline";
+
+      }
+    };
   </script>
 </head>
 <body onload="scrollChat()">
 
   <nav>
-    <a id="navTitle" href="/">CodeU Chat App</a>
+    <a id="navTitle" href="/">JRAAM Chat</a>
     <a href="/conversations">Conversations</a>
       <% if (request.getSession().getAttribute("user") != null) { %>
     <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
@@ -74,12 +95,21 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
     <div id="chat">
       <ul>
-    <%
-      for (Message message : messages) {
-        String author = UserStore.getInstance()
-          .getUser(message.getAuthorId()).getName();
-    %>
-      <li><strong><%= author %>:</strong> <%= message.getContent() %></li>
+      <%
+        for (Message message : messages) {
+          String author = UserStore.getInstance()
+            .getUser(message.getAuthorId()).getName();
+      %>
+        <li><strong><%= author %>:</strong> <%= message.getContent() %> </li>
+        <%if (message.imageExists()) {
+             Blob blob = message.getImage();
+             String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(blob.getBytes());
+             %>
+
+             <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found" />
+
+      <%} %>
+
     <%
       }
     %>
@@ -89,11 +119,20 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     <hr/>
 
     <% if (request.getSession().getAttribute("user") != null) { %>
-    <form action="/chat/<%= conversation.getTitle() %>" method="POST">
-        <input type="text" name="message">
+    <form action="/chat/<%= conversation.getTitle() %>" enctype="multipart/form-data" method="POST">
+        <input type="text" style="display:inline" name="message" placeholder="message">
+        <input type="file" accept="image/*" name="image">
+        <input type="checkbox" id="emoji-checkbox" name="emoji-checkbox" onclick="displayShortcodeEntry()">
+        <p id="emoji-prompt" style="display:inline"> Upload custom emoji?</p>
+        <input type="text" style="display:none" id="shortcode" name="shortcode" placeholder="emoji name">
         <br/>
         <button type="submit">Send</button>
     </form>
+    <%-- <form method='post' enctype='multipart/form-data' action='/file-upload'>
+        <input type='file' name='thumbnail' />
+        <input type='hidden' name='base64data' />
+        <input type='submit' formenctype='application/x-www-form-urlencoded' />
+    </form> --%>
     <% } else { %>
       <p><a href="/login">Login</a> to send a message.</p>
     <% } %>
