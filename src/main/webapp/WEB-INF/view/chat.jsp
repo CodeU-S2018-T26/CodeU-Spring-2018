@@ -106,6 +106,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
         <li><strong><%= author %>:</strong>
         <%
           int emojiLocation = 0;
+          String subMessage = "";
           for (char messageChar : messageContent.toCharArray()){
             if (messageChar == '|' && message.emojisExist()){
               ArrayList<Blob> blobs = message.getEmojis();
@@ -113,15 +114,16 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
               String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(currentBlob.getBytes());
               emojiLocation += 1;
         %>
+              <p style="display:inline"><%=subMessage%></p>
               <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found"/>
-            <%
-            }else{
-            %>
-              <p style="display:inline"><%=messageChar%></p>
         <%
+              subMessage = "";
+            }else{
+              subMessage += messageChar;
             }
           }
         %>
+        <p style="display:inline"><%=subMessage%></p>
         </li>
         <%if (message.imageExists()) {
              Blob blob = message.getImage();
