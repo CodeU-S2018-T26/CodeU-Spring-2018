@@ -18,6 +18,8 @@
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.store.basic.UserStore" %>
 <%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.ArrayList" %>
+
 
 <%@ page import="com.google.appengine.api.datastore.Blob"%>
 
@@ -99,14 +101,34 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
         for (Message message : messages) {
           String author = UserStore.getInstance()
             .getUser(message.getAuthorId()).getName();
+          String messageContent = message.getContent();
       %>
-        <li><strong><%= author %>:</strong> <%= message.getContent() %> </li>
+        <li><strong><%= author %>:</strong>
+        <%
+          int emojiLocation = 0;
+          for (char messageChar : messageContent.toCharArray()){
+            if (messageChar == '|' && message.emojisExist()){
+              ArrayList<Blob> blobs = message.getEmojis();
+              Blob currentBlob = blobs.get(emojiLocation);
+              String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(currentBlob.getBytes());
+              emojiLocation += 1;
+        %>
+              <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found"/>
+            <%
+            }else{
+            %>
+              <p style="display:inline"><%=messageChar%></p>
+        <%
+            }
+          }
+        %>
+        </li>
         <%if (message.imageExists()) {
              Blob blob = message.getImage();
              String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(blob.getBytes());
              %>
 
-             <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found" />
+             <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found"/>
 
       <%} %>
 

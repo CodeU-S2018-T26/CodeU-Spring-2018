@@ -16,8 +16,8 @@ package codeu.model.data;
 
 import java.time.Instant;
 import java.util.UUID;
+import java.util.ArrayList;
 
-// import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -35,6 +35,7 @@ public class Message {
   private final String content;
   private final Instant creation;
   private final Blob image;
+  private ArrayList <Blob> emojis;
 
   /**
    * Constructs a new Message.
@@ -45,7 +46,18 @@ public class Message {
    * @param content the text content of this Message
    * @param creation the creation time of this Message
    * @param image an image to send with this message
+   * @param emojis
    */
+   public Message(UUID id, UUID conversation, UUID author, String content, Instant creation, Blob image, ArrayList <Blob> emojis) {
+     this.id = id;
+     this.conversation = conversation;
+     this.author = author;
+     this.content = content;
+     this.creation = creation;
+     this.image = image;
+     this.emojis = emojis;
+   }
+
   public Message(UUID id, UUID conversation, UUID author, String content, Instant creation, Blob image) {
     this.id = id;
     this.conversation = conversation;
@@ -53,6 +65,17 @@ public class Message {
     this.content = content;
     this.creation = creation;
     this.image = image;
+    this.emojis = null;
+  }
+
+  public Message(UUID id, UUID conversation, UUID author, String content, Instant creation, ArrayList <Blob> emojis) {
+    this.id = id;
+    this.conversation = conversation;
+    this.author = author;
+    this.content = content;
+    this.creation = creation;
+    this.image = null;
+    this.emojis = emojis;
   }
 
   public Message(UUID id, UUID conversation, UUID author, String content, Instant creation) {
@@ -62,6 +85,7 @@ public class Message {
     this.content = content;
     this.creation = creation;
     this.image = null;
+    this.emojis = null;
   }
 
 
@@ -101,11 +125,14 @@ public class Message {
   }
 
   public boolean imageExists(){
-    if (this.image != null){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return this.image != null;
+  }
+
+  public ArrayList <Blob> getEmojis(){
+    return this.emojis;
+  }
+
+  public boolean emojisExist(){
+    return this.emojis != null;
   }
 }

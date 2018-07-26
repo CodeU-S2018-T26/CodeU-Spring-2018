@@ -225,7 +225,7 @@ public class ChatServlet extends HttpServlet {
   /**
   Parses tokens and replaces supported flags with the correct HTML syntax.
   */
-  public void parseMessage(ArrayList<String> tokenizedMessageContent,
+  public ArrayList<Blob> parseMessage(ArrayList<String> tokenizedMessageContent,
                            List<Character> validCharFlags,
                            List<String> validStrFlags,
                            List<String> linkPrefix,
@@ -233,6 +233,7 @@ public class ChatServlet extends HttpServlet {
                            Map<String, String[]> markToHtml){
 
       Hashtable<String, Blob> customEmojis = new Hashtable<String, Blob>();
+      ArrayList<Blob> customEmojisToReturn = new ArrayList<Blob>();
       if (emojiStore != null){
         customEmojis = emojiStore.getEmojiTable();
       }
@@ -265,7 +266,11 @@ public class ChatServlet extends HttpServlet {
               // if there was a closing emojiFlag and the shortcode is valid
               // then replace the shortcode and flags with emoji html code
               if(validSyntax && customEmojis.containsKey(shortcode)){
-                this.currentCustomEmoji = customEmojis.get(shortcode);
+                  customEmojisToReturn.add(customEmojis.get(shortcode));
+                  tokenizedMessageContent.set(i, "|");
+                  for (int k = j; k > i; k--){
+                      tokenizedMessageContent.remove(k);
+                  }
               }
               else if (validSyntax && validEmojis.containsKey(shortcode)){
                   tokenizedMessageContent.set(i, validEmojis.get(shortcode));
@@ -297,6 +302,7 @@ public class ChatServlet extends HttpServlet {
               }
           }
       }
+      return customEmojisToReturn;
   }
 
   /**
@@ -363,8 +369,8 @@ public class ChatServlet extends HttpServlet {
             validCharFlags, validStrFlags, linkPrefix);
 
     // matches valid pairs of tokens and replaces with html syntax
-    parseMessage(tokenizedMessageContent, validCharFlags, validStrFlags,
-                 linkPrefix, emojiFlag, markToHtml);
+    ArrayList<Blob> requestedCustomEmojis = parseMessage(tokenizedMessageContent,
+              validCharFlags, validStrFlags,linkPrefix, emojiFlag, markToHtml);
 
     // converts ArrayList to string
     String parsedMessageContent = "";
@@ -388,7 +394,7 @@ public class ChatServlet extends HttpServlet {
 
       ImagesService imagesService = ImagesServiceFactory.getImagesService();
       Image originalImage = ImagesServiceFactory.makeImage(IOUtils.toByteArray(fileContent));
-      Transform resize = ImagesServiceFactory.makeResize(70, 70);
+      Transform resize = ImagesServiceFactory.makeResize(20, 20);
       Image resizedImage = imagesService.applyTransform(resize, originalImage);
 
       Blob image = new Blob(resizedImage.getImageData());
@@ -401,6 +407,26 @@ public class ChatServlet extends HttpServlet {
               user.getId(),
               parsedMessageContent,
               Instant.now());
+    }
+    else if(filePart != null && !filePart.getSubmittedFileName().equals("") && requestedCustomEmojis.size() > 0){
+      InputStream fileContent = filePart.getInputStream();
+
+      ImagesService imagesService = ImagesServiceFactory.getImagesService();
+      Image originalImage = ImagesServiceFactory.makeImage(IOUtils.toByteArray(fileContent));
+      Transform resize = ImagesServiceFactory.makeResize(350, 600);
+      Image resizedImage = imagesService.applyTransform(resize, originalImage);
+
+      Blob image = new Blob(resizedImage.getImageData());
+
+      message =
+          new Message(
+              UUID.randomUUID(),
+              conversation.getId(),
+              user.getId(),
+              parsedMessageContent,
+              Instant.now(),
+              image,
+              requestedCustomEmojis);
     }
     else if(filePart != null && !filePart.getSubmittedFileName().equals("")){
       InputStream fileContent = filePart.getInputStream();
@@ -421,7 +447,7 @@ public class ChatServlet extends HttpServlet {
               Instant.now(),
               image);
     }
-    else if(this.currentCustomEmoji != null){
+    else if(requestedCustomEmojis.size() > 0){
       message =
           new Message(
               UUID.randomUUID(),
@@ -429,7 +455,7 @@ public class ChatServlet extends HttpServlet {
               user.getId(),
               parsedMessageContent,
               Instant.now(),
-              this.currentCustomEmoji);
+              requestedCustomEmojis);
     }
 
     else{
