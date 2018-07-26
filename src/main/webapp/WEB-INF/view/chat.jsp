@@ -104,6 +104,8 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
           String messageContent = message.getContent();
       %>
         <li><strong><%= author %>:</strong>
+        <%-- Prints out strings of message parts, inserting custom emojis --%>
+        <%-- wherever there is a '|' character --%>
         <%
           int emojiLocation = 0;
           String subMessage = "";
@@ -129,19 +131,13 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
              Blob blob = message.getImage();
              String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(blob.getBytes());
              %>
-
              <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found"/>
-
-      <%} %>
-
-    <%
+    <%    }
       }
     %>
       </ul>
     </div>
-
     <hr/>
-
     <% if (request.getSession().getAttribute("user") != null) { %>
     <form action="/chat/<%= conversation.getTitle() %>" enctype="multipart/form-data" method="POST">
         <input type="text" style="display:inline" name="message" placeholder="message">
@@ -155,10 +151,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
     <% } else { %>
       <p><a href="/login">Login</a> to send a message.</p>
     <% } %>
-
     <hr/>
-
   </div>
-
 </body>
 </html>

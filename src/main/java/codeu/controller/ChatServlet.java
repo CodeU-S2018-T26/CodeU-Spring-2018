@@ -265,6 +265,9 @@ public class ChatServlet extends HttpServlet {
               }
               // if there was a closing emojiFlag and the shortcode is valid
               // then replace the shortcode and flags with emoji html code
+
+              // adds custom emoji to arraylist and '|' char to mark location
+              // of the custom emoji
               if(validSyntax && customEmojis.containsKey(shortcode)){
                   customEmojisToReturn.add(customEmojis.get(shortcode));
                   tokenizedMessageContent.set(i, "|");
@@ -272,6 +275,8 @@ public class ChatServlet extends HttpServlet {
                       tokenizedMessageContent.remove(k);
                   }
               }
+
+              // inserts the code corresponding to the native emoji shortcode
               else if (validSyntax && validEmojis.containsKey(shortcode)){
                   tokenizedMessageContent.set(i, validEmojis.get(shortcode));
                   for (int k = j; k > i; k--){
@@ -390,6 +395,7 @@ public class ChatServlet extends HttpServlet {
     }
 
     if(checkboxOut.equals("on") && filePart != null && !filePart.getSubmittedFileName().equals("") && shortcode != null && !shortcode.equals("")){  //user wants their uploaded image to be an emoji
+      // Handles when the user uploads a new custom emoji
       InputStream fileContent = filePart.getInputStream();
 
       ImagesService imagesService = ImagesServiceFactory.getImagesService();
@@ -409,6 +415,7 @@ public class ChatServlet extends HttpServlet {
               Instant.now());
     }
     else if(filePart != null && !filePart.getSubmittedFileName().equals("") && requestedCustomEmojis.size() > 0){
+      // Handles when the user uploads an image and includes custom emojis in their message
       InputStream fileContent = filePart.getInputStream();
 
       ImagesService imagesService = ImagesServiceFactory.getImagesService();
@@ -429,6 +436,7 @@ public class ChatServlet extends HttpServlet {
               requestedCustomEmojis);
     }
     else if(filePart != null && !filePart.getSubmittedFileName().equals("")){
+      // Handles when the user uploads an image
       InputStream fileContent = filePart.getInputStream();
 
       ImagesService imagesService = ImagesServiceFactory.getImagesService();
@@ -448,6 +456,7 @@ public class ChatServlet extends HttpServlet {
               image);
     }
     else if(requestedCustomEmojis.size() > 0){
+      // Handles when the user includes custom emojis in their message
       message =
           new Message(
               UUID.randomUUID(),
@@ -459,6 +468,7 @@ public class ChatServlet extends HttpServlet {
     }
 
     else{
+      // Handles plain text messages
       message =
           new Message(
               UUID.randomUUID(),
