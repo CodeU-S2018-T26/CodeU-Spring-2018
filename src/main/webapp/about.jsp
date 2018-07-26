@@ -23,7 +23,7 @@
 <body>
 
   <nav>
-    <a id="navTitle" href="/">JRAAM Chat</a>
+    <a id="navTitle" href="/">JRAMM Chat</a>
     <a href="/conversations">Conversations</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
       <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
@@ -51,7 +51,9 @@
       <ul>
         <li><strong>Notifications:</strong> Using the Firebase API, our app
         pushes notifications to the user's browser whenever a new message
-        is sent in a conversation they are subscribed to.</li>
+        is sent in a conversation they are subscribed to. For demonstration
+        purposes, you will recieve notifications even for messages that you
+        send. This way you can actually see notifications in action!</li>
         <li><strong>Activity Feed:</strong> The Activity Feed allows the user
         to see what's going on in the conversations that they follow. You can
         when new users join the chat and send messages.</li>
@@ -61,7 +63,7 @@
         custom emojis by uploading a photo and giving it a "shortcode" name.
         Custom emojis are sent by typing the :shortcode: surrounded by the ':'
         character. You can also send standaard emojis by using the shortcodes
-        <a href="https://www.webpagefx.com/tools/emoji-cheat-sheet/" target="blank_">here</a></li>
+        <a href="https://www.webpagefx.com/tools/emoji-cheat-sheet/" target="blank_">here</a>.</li>
       </ul>
     </div>
   </div>

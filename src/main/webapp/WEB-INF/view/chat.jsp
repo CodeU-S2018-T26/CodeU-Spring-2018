@@ -18,6 +18,8 @@
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.store.basic.UserStore" %>
 <%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.ArrayList" %>
+
 
 <%@ page import="com.google.appengine.api.datastore.Blob"%>
 
@@ -73,7 +75,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 <body onload="scrollChat()">
 
   <nav>
-    <a id="navTitle" href="/">JRAAM Chat</a>
+    <a id="navTitle" href="/">JRAMM Chat</a>
     <a href="/conversations">Conversations</a>
       <% if (request.getSession().getAttribute("user") != null) { %>
     <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
@@ -99,47 +101,57 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
         for (Message message : messages) {
           String author = UserStore.getInstance()
             .getUser(message.getAuthorId()).getName();
+          String messageContent = message.getContent();
       %>
-        <li><strong><%= author %>:</strong> <%= message.getContent() %> </li>
+        <li><strong><%= author %>:</strong>
+        <%-- Prints out strings of message parts, inserting custom emojis --%>
+        <%-- wherever there is a '|' character --%>
+        <%
+          int emojiLocation = 0;
+          String subMessage = "";
+          for (char messageChar : messageContent.toCharArray()){
+            if (messageChar == '|' && message.emojisExist()){
+              ArrayList<Blob> blobs = message.getEmojis();
+              Blob currentBlob = blobs.get(emojiLocation);
+              String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(currentBlob.getBytes());
+              emojiLocation += 1;
+        %>
+              <p style="display:inline"><%=subMessage%></p>
+              <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found"/>
+        <%
+              subMessage = "";
+            }else{
+              subMessage += messageChar;
+            }
+          }
+        %>
+        <p style="display:inline"><%=subMessage%></p>
+        </li>
         <%if (message.imageExists()) {
              Blob blob = message.getImage();
              String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(blob.getBytes());
              %>
-
-             <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found" />
-
-      <%} %>
-
-    <%
+             <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found"/>
+    <%    }
       }
     %>
       </ul>
     </div>
-
     <hr/>
-
     <% if (request.getSession().getAttribute("user") != null) { %>
     <form action="/chat/<%= conversation.getTitle() %>" enctype="multipart/form-data" method="POST">
         <input type="text" style="display:inline" name="message" placeholder="message">
         <input type="file" accept="image/*" name="image">
         <input type="checkbox" id="emoji-checkbox" name="emoji-checkbox" onclick="displayShortcodeEntry()">
-        <p id="emoji-prompt" style="display:inline"> Upload custom emoji?</p>
+        <p id="emoji-prompt" style="display:inline; font-size:14px"> Upload custom emoji?</p>
         <input type="text" style="display:none" id="shortcode" name="shortcode" placeholder="emoji name">
         <br/>
         <button type="submit">Send</button>
     </form>
-    <%-- <form method='post' enctype='multipart/form-data' action='/file-upload'>
-        <input type='file' name='thumbnail' />
-        <input type='hidden' name='base64data' />
-        <input type='submit' formenctype='application/x-www-form-urlencoded' />
-    </form> --%>
     <% } else { %>
       <p><a href="/login">Login</a> to send a message.</p>
     <% } %>
-
     <hr/>
-
   </div>
-
 </body>
 </html>
