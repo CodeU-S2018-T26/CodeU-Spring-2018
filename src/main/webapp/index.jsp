@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CodeU Chat App</title>
+  <title>JRAMM Chat</title>
   <link rel="stylesheet" href="/css/main.css">
   <%-- for testing --%>
   <meta http-equiv="Cache-control" content="no-cache">
@@ -41,7 +41,7 @@
 <body>
 
   <nav>
-    <a id="navTitle" href="/">JRAMM Chat</a>
+    <a href="/"><img src="/icon.png" width="96" height="96" hspace="10" vspace="10" alt="JRAMM Chat"></a>
     <a href="/conversations">Conversations</a>
     <% if(request.getSession().getAttribute("user") != null){ %>
       <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
@@ -57,8 +57,8 @@
     <div
       style="width:75%; margin-left:auto; margin-right:auto; margin-top: 50px;">
 
-      <h1>CodeU Chat App</h1>
-      <h2>Team JRAMM</h2>
+      <h1>JRAMM Chat</h1>
+      <h2>CodeU Chat App</h2>
       <h3>Welcome!</h3>
 
       <ul>

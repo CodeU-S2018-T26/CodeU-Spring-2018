@@ -22,9 +22,6 @@ body {
   background-color: #FFF0F5;
 }
 
-a:visited{
-  color: #228B22;
-}
 
 nav {
   background-color: #00CED1;
@@ -42,16 +39,29 @@ nav a {
   font-size: 36px;
 }
 
+/* .navicon{
+  height: auto;
+  width: auto;
+  max-height: 96px;
+  max-width: 96px;
+} */
+
 #container {
   margin-left: auto;
   margin-right: auto;
   width: 800px;
-  color: #00CED1;
+  color: #3119a0;
   background: #FFF0F5;
 }
 
 h1 {
-  color: #00CED1;
+  color: #3119a0;
+}
+h2 {
+  color: #3119a0;
+}
+h3 {
+  color: #3119a0;
 }
 
 input {
