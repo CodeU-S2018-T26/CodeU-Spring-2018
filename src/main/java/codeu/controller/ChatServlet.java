@@ -480,9 +480,10 @@ public class ChatServlet extends HttpServlet {
 
     if(messageToSend){
       //send notification
-      Collection tokens = notificationTokenStore.getAllNotificationTokens();
-      for(Object token:tokens) {
-        sendNotification.sendMsg(parsedMessageContent, (String) token, notificationTokenStore.getMessagingAPIKey());
+      List <String> tokens = conversation.getSubscribersTokens();
+      for(String token:tokens) {
+        System.out.println(token);
+        sendNotification.sendMsg(parsedMessageContent, token, notificationTokenStore.getMessagingAPIKey());
       }
 
       messageStore.addMessage(message);
