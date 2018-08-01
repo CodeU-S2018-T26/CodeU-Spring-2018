@@ -52,7 +52,7 @@
         <li><strong>Notifications:</strong> Using the Firebase API, our app
         pushes notifications to the user's browser whenever a new message
         is sent in a conversation they are subscribed to. For demonstration
-        purposes, you will recieve notifications even for messages that you
+        purposes, you will receive notifications even for messages that you
         send. This way you can actually see notifications in action!</li>
         <li><strong>Activity Feed:</strong> The Activity Feed allows the user
         to see what's going on in the conversations that they follow. You can
@@ -62,8 +62,21 @@
         then saved with the message in DataStore. Additionally, you can create
         custom emojis by uploading a photo and giving it a "shortcode" name.
         Custom emojis are sent by typing the :shortcode: surrounded by the ':'
-        character. You can also send standaard emojis by using the shortcodes
+        character. You can also make your text <strong>**BOLD**</strong> or
+        <em>_italics_</em> or <code>`code`</code> using standard markdown syntax.
+        We also make links automatically clickable, and you can send standard
+        emojis by using the shortcodes
         <a href="https://www.webpagefx.com/tools/emoji-cheat-sheet/" target="blank_">here</a>.</li>
+        Some things to try:
+        <ul>
+          <li>Enable notifications! You can do this after logging in.</li>
+          <li>Follow some chats!</li>
+          <li>Make your text <strong>BOLD</strong></li>
+          <li>Send a 🍔</li>
+          <li>Paste in a link! (make sure to include the http://)</li>
+          <li>Share your favorite meme or picture of a puppy.</li>
+          <li>Upload a custom emoji! Make sure to give it a good name :)</li>
+        </ul>
       </ul>
     </div>
   </div>
