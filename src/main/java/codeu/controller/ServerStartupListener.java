@@ -7,6 +7,7 @@ import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.MessageStore;
 import codeu.model.store.basic.NotificationTokenStore;
 import codeu.model.store.basic.UserStore;
+import codeu.model.store.basic.EmojiStore;
 import codeu.model.store.persistence.PersistentDataStoreException;
 import codeu.model.store.persistence.PersistentStorageAgent;
 
@@ -15,6 +16,9 @@ import java.util.List;
 import java.util.UUID;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import com.google.appengine.api.datastore.Blob;
+
 
 /**
  * Listener class that fires when the server first starts up, before any servlet classes are
@@ -40,6 +44,9 @@ public class ServerStartupListener implements ServletContextListener {
 
       String messagingAPIKey = PersistentStorageAgent.getInstance().loadMessagingAPIKey();
       NotificationTokenStore.getInstance().setMessagingAPIKey(messagingAPIKey);
+
+      Hashtable<String,Blob> customEmojis = PersistentStorageAgent.getInstance().loadEmojis();
+      EmojiStore.getInstance().setEmojis(customEmojis);
 
     } catch (PersistentDataStoreException e) {
       System.err.println("Server didn't start correctly. An error occurred during Datastore load!");
