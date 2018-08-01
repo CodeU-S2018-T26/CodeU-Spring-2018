@@ -150,8 +150,9 @@ public class PersistentDataStore {
         Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
         String content = (String) entity.getProperty("content");
         Blob image = (Blob) entity.getProperty("image");
+        ArrayList <Blob> emojis = (ArrayList <Blob>) entity.getProperty("emojis");
 
-        Message message = new Message(uuid, conversationUuid, authorUuid, content, creationTime, image);
+        Message message = new Message(uuid, conversationUuid, authorUuid, content, creationTime, image, emojis);
         messages.add(message);
       } catch (Exception e) {
         // In a production environment, errors should be very rare. Errors which may
@@ -271,6 +272,7 @@ public class PersistentDataStore {
     messageEntity.setProperty("content", message.getContent());
     messageEntity.setProperty("creation_time", message.getCreationTime().toString());
     messageEntity.setProperty("image", message.getImage());
+    messageEntity.setProperty("emojis", message.getEmojis());
     datastore.put(messageEntity);
   }
 
