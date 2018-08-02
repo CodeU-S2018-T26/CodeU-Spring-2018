@@ -482,7 +482,6 @@ public class ChatServlet extends HttpServlet {
       //send notification
       List <String> tokens = conversation.getSubscribersTokens();
       for(String token:tokens) {
-        System.out.println(token);
         sendNotification.sendMsg(parsedMessageContent, token, notificationTokenStore.getMessagingAPIKey());
       }
 
