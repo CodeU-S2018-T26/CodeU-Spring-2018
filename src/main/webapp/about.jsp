@@ -54,7 +54,8 @@
         pushes notifications to the user's browser whenever a new message
         is sent in a conversation they are subscribed to. For demonstration
         purposes, you will receive notifications even for messages that you
-        send. This way you can actually see notifications in action!</li>
+        send. This way you can actually see notifications in action! Note:
+        notifications only work if you're using a secure connection (https).</li>
         <li><strong>Activity Feed:</strong> The Activity Feed allows the user
         to see what's going on in the conversations that they follow. You can
         when new users join the chat and send messages.</li>
@@ -70,7 +71,7 @@
         <a href="https://www.webpagefx.com/tools/emoji-cheat-sheet/" target="blank_">here</a>.</li>
         Some things to try:
         <ul>
-          <li>Enable notifications! You can do this after logging in.</li>
+          <li>Enable notifications! You can do this after logging in. Make sure you use https!</li>
           <li>Follow some chats!</li>
           <li>Make your text <strong>BOLD</strong></li>
           <li>Send a :hamburger:</li>
