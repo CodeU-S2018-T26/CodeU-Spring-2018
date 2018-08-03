@@ -14,8 +14,12 @@
 
 package codeu.model.data;
 
+import codeu.model.store.basic.UserStore;
+
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Class representing a conversation, which can be thought of as a chat room. Conversations are
@@ -60,5 +64,13 @@ public class Conversation {
   /** Returns the creation time of this Conversation. */
   public Instant getCreationTime() {
     return creation;
+  }
+
+  public List<String> getSubscribersTokens (){
+
+    return UserStore.getInstance().getAllUsers().parallelStream()
+      .filter(user -> ! user.isConversationUnfollowed(this))
+      .map(User::getNotificationToken)
+      .collect(Collectors.toList());
   }
 }

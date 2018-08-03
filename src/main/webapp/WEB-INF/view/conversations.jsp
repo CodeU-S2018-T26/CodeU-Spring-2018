@@ -96,6 +96,8 @@
 			  for (Conversation conversation : conversations) {
 			%>
 			<li><a href="/chat/<%=conversation.getTitle()%>"> <%=conversation.getTitle()%></a>
+				<% if (request.getSession().getAttribute("user") != null) {
+				%>
 				<form method='post'>
 					<input type="hidden" value=<%=conversation.getTitle()%>
 						name="hiddenConversationTitle" />
@@ -111,13 +113,15 @@
 					%>
 					<input align="right" type="submit" id="submit" value=Unfollow name="Following"
 						id="following" />
-				</form> <%
-   }
-     }
- %>
+				</form>
+					<%
+					}
+					}
+					}
+					%>
 		</ul>
 		<%
-		  }
+			}
 		%>
 		<hr />
 	</div>

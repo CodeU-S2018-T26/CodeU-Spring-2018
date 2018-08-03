@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import codeu.model.store.basic.ConversationStore;
+import codeu.model.store.basic.NotificationTokenStore;
 
 /** Class representing a registered user. */
 public class User {
@@ -103,5 +104,9 @@ public class User {
         return true;
     }
     return false;
+  }
+
+  public String getNotificationToken(){
+    return NotificationTokenStore.getInstance().getNotificationToken(id);
   }
 }
