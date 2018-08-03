@@ -1,9 +1,50 @@
-# CodeU Example Project
+# JRAMM Chat
+## Google CodeU 2018
 
-This is an example chat application. It's complete and functional, but leaves
-plenty of room for improvement.
+Access the online version [here](https://projecteam26.appspot.com).
 
-## Step 1: Download Java
+Our chat app has a few interesting features, namely
+**Notifications**, an **Activity Feed**,
+the ability to **Send Images**,
+and **Custom Emojis.**
+
+
+* **Notifications:** Using the Firebase API, our app
+pushes notifications to the user's browser whenever a new message
+is sent in a conversation they are subscribed to. For demonstration
+purposes, you will receive notifications even for messages that you
+send. This way you can actually see notifications in action! Note:
+notifications only work if you're using a secure connection (https).
+
+* **Activity Feed:** The Activity Feed allows the user
+to see what's going on in the conversations that they follow. You can
+when new users join the chat and send messages.
+
+* **Images and Custom Emojis:** When composing a message,
+the user has the option to attach and send any image. That image is
+then saved with the message in DataStore. Additionally, you can create
+custom emojis by uploading a photo and giving it a "shortcode" name.
+Custom emojis are sent by typing the :shortcode: surrounded by the ':'
+character. You can also make your text **BOLD** or
+_italics_ or `code` using standard markdown syntax.
+We also make links automatically clickable, and you can send standard
+emojis by using the shortcodes [here](https://www.webpagefx.com/tools/emoji-cheat-sheet/).
+
+Some things to try:
+* Enable notifications! You can do this after logging in. Make sure you use https!
+* Follow some chats!
+* Make your text **BOLD**
+* Send a 🍔
+* Paste in a link! (make sure to include the http://)
+* Share your favorite meme or picture of a puppy.
+* Upload a custom emoji! Make sure to give it a good name :)
+
+For more information, check out our [design doc](https://docs.google.com/document/d/1ZK5JpwcB58RJzrTG0JrfnKAY7AT46HHn-arOTPXiovU/edit?usp=sharing).
+
+
+## Here are some instructions for running our app locally.
+
+### Step 1: Download Java
 
 Check whether you already have Java installed by opening a console and typing:
 
@@ -22,7 +63,7 @@ installation. If you still don't see a version number, then update your `PATH`
 environment variable so it contains Java's `bin` directory. Follow [these
 directions](https://www.java.com/en/download/help/path.xml) to do so.
 
-## Step 2: Download Maven
+### Step 2: Download Maven
 
 This project uses [Maven](https://maven.apache.org/) to compile and run our
 code. Maven also manages dependencies, runs the dev server, and deploys to App
@@ -39,7 +80,7 @@ variable. Instructions for both can be found
 Open a console window and execute `mvn -v` to confirm that Maven is correctly
 installed.
 
-## Step 3: Install Git
+### Step 3: Install Git
 
 This project uses [Git](https://git-scm.com/) for source version control and
 [GitHub](https://github.com/) to host our repository.
@@ -54,11 +95,11 @@ git --version
 
 If you don't see a version number, then make sure Git is on your `PATH`.
 
-## Step 4: Setup your repository
+### Step 4: Setup your repository
 
 Follow the instructions in the first project to get your repository setup.
 
-## Step 5: Run a development server
+### Step 5: Run a development server
 
 In order to test changes locally, you'll want to run the server locally, on your
 own computer.
@@ -75,7 +116,7 @@ App Engine server.
 You should now be able to use a local version of the chat app by opening your
 browser to [http://localhost:8080](http://localhost:8080).
 
-## Step 6: Make a change!
+### Step 6: Make a change!
 
 - Bring down the existing server by pressing `ctrl+c` in the console running the
 App Engine devserver.

@@ -75,17 +75,17 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 <body onload="scrollChat()">
 
   <nav>
-    <a id="navTitle" href="/">JRAMM Chat</a>
-    <a href="/conversations">Conversations</a>
-      <% if (request.getSession().getAttribute("user") != null) { %>
-    <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
+    <a href="/"><img src="/icon.png" width="96" height="96" hspace="10" vspace="10" alt="JRAMM Chat"></a>
+    <% if(request.getSession().getAttribute("user") != null){ %>
+      <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
     <%if((boolean) request.getSession().getAttribute("isAdmin") == true){%>
-    <a href = "/admin">Admin</a><%}
-      } else { %>
+      <a href = "/admin">Admin</a><%}
+        } else{ %>
       <a href="/login">Login</a>
     <% } %>
-    <a href="/about.jsp">About</a>
+    <a href="/conversations">Conversations</a>
     <a href="/activity">Feed</a>
+    <a href="/about.jsp">About</a>
   </nav>
 
   <div id="container">
@@ -103,7 +103,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
             .getUser(message.getAuthorId()).getName();
           String messageContent = message.getContent();
       %>
-        <li><strong><%= author %>:</strong>
+        <li style="color: #00CED1"><strong><%= author %>:</strong>
         <%-- Prints out strings of message parts, inserting custom emojis --%>
         <%-- wherever there is a '|' character --%>
         <%
@@ -116,7 +116,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
               String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(currentBlob.getBytes());
               emojiLocation += 1;
         %>
-              <p style="display:inline"><%=subMessage%></p>
+              <p style="color: #00CED1; display:inline"><%=subMessage%></p>
               <img src="data:image/jpg;base64, <%=b64%>" alt="Image not found"/>
         <%
               subMessage = "";
@@ -125,7 +125,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
             }
           }
         %>
-        <p style="display:inline"><%=subMessage%></p>
+        <p style="color: #00CED1; display:inline"><%=subMessage%></p>
         </li>
         <%if (message.imageExists()) {
              Blob blob = message.getImage();

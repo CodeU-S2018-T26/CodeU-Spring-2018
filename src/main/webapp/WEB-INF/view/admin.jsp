@@ -11,17 +11,17 @@
 <body>
 
 <nav>
-  <a id="navTitle" href="/">JRAMM Chat</a>
-  <a href="/conversations">Conversations</a>
-  <% if (request.getSession().getAttribute("user") != null) { %>
-  <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
+  <a href="/"><img src="/icon.png" width="96" height="96" hspace="10" vspace="10" alt="JRAMM Chat"></a>
+  <% if(request.getSession().getAttribute("user") != null){ %>
+    <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
   <%if((boolean) request.getSession().getAttribute("isAdmin") == true){%>
-  <a href = "/admin">Admin</a><%}
-  } else { %>
-  <a href="/login">Login</a>
+    <a href = "/admin">Admin</a><%}
+      } else{ %>
+    <a href="/login">Login</a>
   <% } %>
-  <a href="/about.jsp">About</a>
+  <a href="/conversations">Conversations</a>
   <a href="/activity">Feed</a>
+  <a href="/about.jsp">About</a>
 </nav>
 
   <% String username = (String)request.getSession().getAttribute("user");

@@ -20,4 +20,11 @@
     <threadsafe>false</threadsafe>
     <sessions-enabled>true</sessions-enabled>
     <runtime>java8</runtime>
+    <static-files>
+      <include path="/favicon.ico" />
+      <include path="/icon.png" />
+      <include path="/css/main.css" />
+      <include path="/js/main.js" />
+
+    </static-files>
 </appengine-web-app>
