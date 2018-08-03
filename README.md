@@ -9,18 +9,18 @@ the ability to **Send Images**,
 and **Custom Emojis.**
 
 
--**Notifications:** Using the Firebase API, our app
+* **Notifications:** Using the Firebase API, our app
 pushes notifications to the user's browser whenever a new message
 is sent in a conversation they are subscribed to. For demonstration
 purposes, you will receive notifications even for messages that you
 send. This way you can actually see notifications in action! Note:
 notifications only work if you're using a secure connection (https).
 
--**Activity Feed:** The Activity Feed allows the user
+* **Activity Feed:** The Activity Feed allows the user
 to see what's going on in the conversations that they follow. You can
 when new users join the chat and send messages.
 
--**Images and Custom Emojis:** When composing a message,
+* **Images and Custom Emojis:** When composing a message,
 the user has the option to attach and send any image. That image is
 then saved with the message in DataStore. Additionally, you can create
 custom emojis by uploading a photo and giving it a "shortcode" name.
