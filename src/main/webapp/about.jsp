@@ -80,6 +80,12 @@
           <li>Upload a custom emoji! Make sure to give it a good name :)</li>
         </ul>
       </ul>
+
+      <p>
+        For more information, check out our
+        <a href="https://github.com/CodeU-S2018-T26/CodeU-Spring-2018">source code</a>
+        and our <a href="https://docs.google.com/document/d/1ZK5JpwcB58RJzrTG0JrfnKAY7AT46HHn-arOTPXiovU/edit?usp=sharing">design doc</a>.
+      </p>
     </div>
   </div>
 </body>

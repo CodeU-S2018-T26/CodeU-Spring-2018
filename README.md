@@ -1,6 +1,8 @@
 # JRAMM Chat
 ## Google CodeU 2018
 
+Access the online version [here](https://projecteam26.appspot.com).
+
 Our chat app has a few interesting features, namely
 **Notifications**, an **Activity Feed**,
 the ability to **Send Images**,
@@ -11,7 +13,8 @@ and **Custom Emojis.**
 pushes notifications to the user's browser whenever a new message
 is sent in a conversation they are subscribed to. For demonstration
 purposes, you will receive notifications even for messages that you
-send. This way you can actually see notifications in action!
+send. This way you can actually see notifications in action! Note:
+notifications only work if you're using a secure connection (https).
 
 -**Activity Feed:** The Activity Feed allows the user
 to see what's going on in the conversations that they follow. You can
@@ -28,13 +31,15 @@ We also make links automatically clickable, and you can send standard
 emojis by using the shortcodes [here](https://www.webpagefx.com/tools/emoji-cheat-sheet/).
 
 Some things to try:
--Enable notifications! You can do this after logging in.
--Follow some chats!
--Make your text **BOLD**
--Send a 🍔
--Paste in a link! (make sure to include the http://)
--Share your favorite meme or picture of a puppy.
--Upload a custom emoji! Make sure to give it a good name :)
+* Enable notifications! You can do this after logging in. Make sure you use https!
+* Follow some chats!
+* Make your text **BOLD**
+* Send a 🍔
+* Paste in a link! (make sure to include the http://)
+* Share your favorite meme or picture of a puppy.
+* Upload a custom emoji! Make sure to give it a good name :)
+
+For more information, check out our [design doc](https://docs.google.com/document/d/1ZK5JpwcB58RJzrTG0JrfnKAY7AT46HHn-arOTPXiovU/edit?usp=sharing).
 
 
 ## Here are some instructions for running our app locally.
