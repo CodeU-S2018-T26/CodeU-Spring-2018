@@ -72,7 +72,7 @@
           <li>Enable notifications! You can do this after logging in.</li>
           <li>Follow some chats!</li>
           <li>Make your text <strong>BOLD</strong></li>
-          <li>Send a 🍔</li>
+          <li>Send a :hamburger:</li>
           <li>Paste in a link! (make sure to include the http://)</li>
           <li>Share your favorite meme or picture of a puppy.</li>
           <li>Upload a custom emoji! Make sure to give it a good name :)</li>
